@@ -9,6 +9,19 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const configService = app.get(ConfigService);
+  const frontendUrl = configService.get<string>(
+    'FRONTEND_URL',
+    'http://localhost:3000',
+  );
+
+  app.enableCors({
+    origin: [frontendUrl, 'http://localhost:3000', 'http://localhost:3001'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -33,8 +46,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT', 3000);
+  const port = configService.get<number>('PORT', 3001);
 
   await app.listen(port);
   console.log(`Bhalobasha API running on http://localhost:${port}`);
