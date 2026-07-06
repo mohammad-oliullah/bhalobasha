@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SEEKER
+  OWNER
+  ADMIN
+}
+
+enum ListingType {
+  FULL_FLAT
+  SINGLE_ROOM
+  SHARED_SEAT
+  SUBLET
+  MESS
+}
+
+enum TenantPolicy {
+  BACHELOR_ONLY
+  FAMILY_ONLY
+  STUDENT_ONLY
+  ANY
+}
+
+enum GenderPreference {
+  MALE
+  FEMALE
+  ANY
+}
+
+enum ListingStatus {
+  ACTIVE
+  FILLED
+  EXPIRED
+  DRAFT
+}
+
+model User {
+  id           String    @id @default(uuid())
+  phone        String    @unique
+  name         String?
+  email        String?
+  role         UserRole  @default(SEEKER)
+  isVerified   Boolean   @default(false)
+  isActive     Boolean   @default(true)
+  profilePhoto String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  listings     Listing[]
+}
+
+model OtpVerification {
+  id        String   @id @default(uuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([phone, code])
+}
+
+model Division {
+  id        Int        @id @default(autoincrement())
+  name      String
+  nameBn    String
+  districts District[]
+}
+
+model District {
+  id         Int      @id @default(autoincrement())
+  name       String
+  nameBn     String
+  divisionId Int
+  division   Division @relation(fields: [divisionId], references: [id])
+  thanas     Thana[]
+
+  @@index([divisionId])
+}
+
+model Thana {
+  id         Int      @id @default(autoincrement())
+  name       String
+  nameBn     String
+  districtId Int
+  district   District @relation(fields: [districtId], references: [id])
+  areas      Area[]
+
+  @@index([districtId])
+}
+
+model Area {
+  id       Int       @id @default(autoincrement())
+  name     String
+  nameBn   String
+  thanaId  Int
+  thana    Thana     @relation(fields: [thanaId], references: [id])
+  listings Listing[]
+
+  @@index([thanaId])
+}
+
+model Listing {
+  id                 String           @id @default(uuid())
+  title              String
+  description        String
+  type               ListingType
+  tenantPolicy       TenantPolicy
+  genderPreference   GenderPreference
+  rent               Int
+  advanceAmount      Int?
+  negotiable         Boolean
+  totalRooms         Int?
+  totalBaths         Int?
+  floor              Int?
+  isFurnished        Boolean
+  utilitiesIncluded  Boolean
+  availableFrom      DateTime
+  status             ListingStatus    @default(DRAFT)
+  contactPhone       String
+  address            String
+  areaId             Int
+  ownerId            String
+  area               Area             @relation(fields: [areaId], references: [id])
+  owner              User             @relation(fields: [ownerId], references: [id])
+  photos             ListingPhoto[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  expiresAt          DateTime?
+
+  @@index([areaId])
+  @@index([ownerId])
+  @@index([status])
+  @@index([type])
+}
+
+model ListingPhoto {
+  id        String   @id @default(uuid())
+  url       String
+  isPrimary Boolean  @default(false)
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([listingId])
+}
