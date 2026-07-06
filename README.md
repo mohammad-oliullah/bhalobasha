@@ -201,7 +201,7 @@ bhalobasha-web/
 ### Backend setup
 
 ```bash
-git clone https://github.com/yourusername/bhalobasha-api
+git clone https://github.com/mohammad-oliullah/bhalobasha
 cd bhalobasha-api
 npm install
 
@@ -224,7 +224,6 @@ Swagger docs at `http://localhost:3001/api/docs`
 ### Frontend setup
 
 ```bash
-git clone https://github.com/yourusername/bhalobasha-web
 cd bhalobasha-web
 npm install
 
