@@ -218,8 +218,8 @@ npx prisma db seed
 npm run start:dev
 ```
 
-API runs at `http://localhost:3001`
-Swagger docs at `http://localhost:3001/api/docs`
+API runs at `http://localhost:4040`
+Swagger docs at `http://localhost:4040/api/docs`
 
 ### Frontend setup
 
@@ -228,7 +228,7 @@ cd bhalobasha-web
 npm install
 
 cp .env.local.example .env.local
-# Set NEXT_PUBLIC_API_URL=http://localhost:3001
+# Set NEXT_PUBLIC_API_URL=http://localhost:4040
 
 npm run dev
 ```
