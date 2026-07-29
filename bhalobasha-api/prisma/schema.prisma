@@ -41,6 +41,32 @@ enum ListingStatus {
   DRAFT
 }
 
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  EXPIRED
+}
+
+model Bid {
+  id         String    @id @default(uuid())
+  amount     Int
+  message    String?
+  status     BidStatus @default(PENDING)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  expiresAt  DateTime?
+
+  listing    Listing   @relation(fields: [listingId], references: [id])
+  listingId  String
+
+  seeker     User      @relation(fields: [seekerId], references: [id])
+  seekerId   String
+
+  @@unique([listingId, seekerId]) // one active bid per seeker per listing
+}
+
 model User {
   id           String    @id @default(uuid())
   phone        String    @unique
@@ -53,6 +79,8 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   listings     Listing[]
+
+  bids  Bid[]
 }
 
 model OtpVerification {
@@ -133,6 +161,11 @@ model Listing {
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
   expiresAt          DateTime?
+
+  isBiddingEnabled  Boolean   @default(false)
+  minimumBid        Int?
+  biddingDeadline   DateTime?
+  bids              Bid[]
 
   @@index([areaId])
   @@index([ownerId])

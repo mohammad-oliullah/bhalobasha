@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { ListingsModule } from './listings/listings.module';
 import { LocationsModule } from './locations/locations.module';
 import { MediaModule } from './media/media.module';
+import { BidsService } from './bids/bids.service';
 
 @Module({
   imports: [
@@ -20,5 +21,6 @@ import { MediaModule } from './media/media.module';
     LocationsModule,
     MediaModule,
   ],
+  providers: [BidsService],
 })
 export class AppModule {}
