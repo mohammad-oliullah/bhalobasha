@@ -1,14 +1,16 @@
 import apiClient from "./client";
 import {
+  BidsResponse,
+  BidSummary,
   CreateListingPayload,
   Listing,
   ListingFilters,
   ListingStatus,
-  UpdateProfilePayload,
-  User,
 } from "@/types";
 
-export async function getListings(filters?: ListingFilters): Promise<Listing[]> {
+export async function getListings(
+  filters?: ListingFilters,
+): Promise<Listing[]> {
   const { data } = await apiClient.get<Listing[]>("/listings", {
     params: filters,
   });
@@ -48,9 +50,8 @@ export async function updateListing(
   return data;
 }
 
-export async function deleteListing(id: string): Promise<Listing> {
-  const { data } = await apiClient.delete<Listing>(`/listings/${id}`);
-  return data;
+export async function deleteListing(id: string): Promise<void> {
+  await apiClient.delete(`/listings/${id}`);
 }
 
 export async function markListingFilled(id: string): Promise<Listing> {
@@ -60,14 +61,18 @@ export async function markListingFilled(id: string): Promise<Listing> {
   return data;
 }
 
-export async function getMyProfile(): Promise<User> {
-  const { data } = await apiClient.get<User>("/users/me");
+export async function getListingBidSummary(
+  listingId: string,
+): Promise<BidSummary> {
+  const { data } = await apiClient.get<BidSummary>(
+    `/listings/${listingId}/bids/summary`,
+  );
   return data;
 }
 
-export async function updateProfile(
-  payload: UpdateProfilePayload,
-): Promise<User> {
-  const { data } = await apiClient.patch<User>("/users/me", payload);
+export async function getListingBids(listingId: string): Promise<BidsResponse> {
+  const { data } = await apiClient.get<BidsResponse>(
+    `/listings/${listingId}/bids`,
+  );
   return data;
 }

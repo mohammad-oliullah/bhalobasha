@@ -128,6 +128,12 @@ export interface Listing {
   createdAt: string;
   updatedAt: string;
   expiresAt: string | null;
+
+  // Bidding fields
+  isBiddingEnabled: boolean;
+  minimumBid: number | null;
+  biddingDeadline: string | null;
+  bids?: Bid[];
 }
 
 export interface ListingFilters {
@@ -174,4 +180,37 @@ export interface CreateListingPayload {
   address: string;
   areaId: number;
   photos?: string[];
+}
+
+export interface Bid {
+  id: string;
+  amount: number;
+  message?: string;
+  status: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN" | "EXPIRED";
+  listingId: string;
+  seekerId: string;
+  seeker?: {
+    id: string;
+    name: string | null;
+    phone: string;
+    profilePhoto?: string | null;
+  };
+  listing?: Partial<Listing>;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt?: string | null;
+}
+
+export interface BidSummary {
+  isBiddingEnabled: boolean;
+  minimumBid?: number | null;
+  biddingDeadline?: string | null;
+  totalBids: number;
+  highestBid: number | null;
+}
+
+export interface BidsResponse {
+  bids: Bid[];
+  totalBids: number;
+  highestBid: number | null;
 }

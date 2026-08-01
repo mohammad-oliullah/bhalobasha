@@ -11,44 +11,46 @@ import {
   Matches,
   Min,
   ArrayMaxSize,
-} from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   GenderPreference,
   ListingStatus,
   ListingType,
   TenantPolicy,
-} from '@prisma/client';
+} from "@prisma/client";
 
 export const MAX_LISTING_PHOTOS = 8;
 
 export class CreateListingDto {
-  @ApiProperty({ example: 'Spacious 2BHK Flat in Mirpur' })
+  @ApiProperty({ example: "Spacious 2BHK Flat in Mirpur" })
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
-  @ApiProperty({ example: 'Well-maintained flat near main road with 24/7 security.' })
+  @ApiProperty({
+    example: "Well-maintained flat near main road with 24/7 security.",
+  })
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @ApiProperty({ enum: ListingType })
   @IsEnum(ListingType)
-  type: ListingType;
+  type!: ListingType;
 
   @ApiProperty({ enum: TenantPolicy })
   @IsEnum(TenantPolicy)
-  tenantPolicy: TenantPolicy;
+  tenantPolicy!: TenantPolicy;
 
   @ApiProperty({ enum: GenderPreference })
   @IsEnum(GenderPreference)
-  genderPreference: GenderPreference;
+  genderPreference!: GenderPreference;
 
   @ApiProperty({ example: 15000 })
   @IsInt()
   @Min(0)
-  rent: number;
+  rent!: number;
 
   @ApiPropertyOptional({ example: 30000 })
   @IsOptional()
@@ -58,7 +60,7 @@ export class CreateListingDto {
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  negotiable: boolean;
+  negotiable!: boolean;
 
   @ApiPropertyOptional({ example: 2 })
   @IsOptional()
@@ -79,50 +81,66 @@ export class CreateListingDto {
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  isFurnished: boolean;
+  isFurnished!: boolean;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  utilitiesIncluded: boolean;
+  utilitiesIncluded!: boolean;
 
-  @ApiProperty({ example: '2026-07-01T00:00:00.000Z' })
+  @ApiProperty({ example: "2026-07-01T00:00:00.000Z" })
   @IsDateString()
-  availableFrom: string;
+  availableFrom!: string;
 
   @ApiPropertyOptional({ enum: ListingStatus, default: ListingStatus.DRAFT })
   @IsOptional()
   @IsEnum(ListingStatus)
   status?: ListingStatus;
 
-  @ApiProperty({ example: '01712345678' })
+  @ApiProperty({ example: "01712345678" })
   @IsString()
   @Matches(/^01[3-9]\d{8}$/, {
-    message: 'Contact phone must be a valid Bangladesh mobile number',
+    message: "Contact phone must be a valid Bangladesh mobile number",
   })
-  contactPhone: string;
+  contactPhone!: string;
 
-  @ApiProperty({ example: 'House 5, Road 12, Block A, Mirpur-10, Dhaka' })
+  @ApiProperty({ example: "House 5, Road 12, Block A, Mirpur-10, Dhaka" })
   @IsString()
   @IsNotEmpty()
-  address: string;
+  address!: string;
 
   @ApiProperty({ example: 1 })
   @IsInt()
-  areaId: number;
+  areaId!: number;
 
   @ApiPropertyOptional({
     example: [
-      'https://res.cloudinary.com/demo/image/upload/v123/photo1.jpg',
-      'https://res.cloudinary.com/demo/image/upload/v123/photo2.jpg',
+      "https://res.cloudinary.com/demo/image/upload/v123/photo1.jpg",
+      "https://res.cloudinary.com/demo/image/upload/v123/photo2.jpg",
     ],
-    description: 'Cloudinary URLs from POST /media/upload',
+    description: "Cloudinary URLs from POST /media/upload",
     type: [String],
   })
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(MAX_LISTING_PHOTOS, {
-    message: 'A listing can have a maximum of 8 photos',
+    message: "A listing can have a maximum of 8 photos",
   })
   @IsUrl({}, { each: true })
   photos?: string[];
+
+  @ApiPropertyOptional({ description: "Enable bidding on this listing" })
+  @IsOptional()
+  @IsBoolean()
+  isBiddingEnabled?: boolean;
+
+  @ApiPropertyOptional({ description: "Minimum bid amount in BDT" })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  minimumBid?: number;
+
+  @ApiPropertyOptional({ description: "Bidding deadline datetime" })
+  @IsOptional()
+  @IsDateString()
+  biddingDeadline?: string;
 }
