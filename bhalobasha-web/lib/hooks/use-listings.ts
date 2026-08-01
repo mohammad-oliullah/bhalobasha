@@ -9,14 +9,13 @@ import {
   updateListing,
   deleteListing,
   markListingFilled,
-  getMyProfile,
-  updateProfile,
 } from "@/lib/api/listings";
 import {
   CreateListingPayload,
   ListingFilters,
   UpdateProfilePayload,
 } from "@/types";
+import { getMyProfile, updateProfile } from "../api/users";
 
 export function useListings(filters?: ListingFilters) {
   return useQuery({
@@ -79,7 +78,11 @@ export function useDeleteListing() {
       const previous = queryClient.getQueryData(["my-listings"]);
       queryClient.setQueriesData(
         { queryKey: ["my-listings"] },
-        (old: ReturnType<typeof getListings> extends Promise<infer T> ? T : never) =>
+        (
+          old: ReturnType<typeof getListings> extends Promise<infer T>
+            ? T
+            : never,
+        ) =>
           old?.map((l) =>
             l.id === id ? { ...l, status: "EXPIRED" as const } : l,
           ),
@@ -101,7 +104,11 @@ export function useMarkListingFilled() {
       await queryClient.cancelQueries({ queryKey: ["my-listings"] });
       queryClient.setQueriesData(
         { queryKey: ["my-listings"] },
-        (old: ReturnType<typeof getListings> extends Promise<infer T> ? T : never) =>
+        (
+          old: ReturnType<typeof getListings> extends Promise<infer T>
+            ? T
+            : never,
+        ) =>
           old?.map((l) =>
             l.id === id ? { ...l, status: "FILLED" as const } : l,
           ),
