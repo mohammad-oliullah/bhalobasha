@@ -155,6 +155,7 @@ export interface AuthVerifyResponse {
 }
 
 export interface UpdateProfilePayload {
+  phone?: string;
   name?: string;
   email?: string;
   profilePhoto?: string;
