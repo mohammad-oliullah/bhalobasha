@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { UpdateProfileDto } from "./dto/update-profile.dto";
 
 @Injectable()
 export class UsersService {
@@ -24,7 +28,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     return user;
@@ -36,7 +40,29 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
+    }
+    const { phone, email, ...rest } = dto;
+    const updatedData: any = { ...rest };
+
+    // Check phone isn't already taken by another user
+    if (dto.phone) {
+      const phoneExists = await this.prisma.user.findUnique({
+        where: { phone: dto.phone },
+      });
+      if (phoneExists && phoneExists.id !== userId) {
+        throw new BadRequestException("Phone number is already in use");
+      }
+    }
+
+    // Check email isn't already taken by another user
+    if (dto.email) {
+      const emailExists = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+      if (emailExists && emailExists.id !== userId) {
+        throw new BadRequestException("Email is already in use");
+      }
     }
 
     return this.prisma.user.update({
