@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { ProfilePhoto } from "./profile-photo";
 import { useUpdateProfile } from "@/lib/hooks/use-listings";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { formatPhone } from "@/lib/utils/format";
 import { User, UserRole } from "@/types";
 
 interface ProfileFormProps {
@@ -48,13 +47,34 @@ export function ProfileForm({ profile }: ProfileFormProps) {
 
   const handleSave = async () => {
     try {
-      const updated = await updateProfile.mutateAsync({
-        name: name || undefined,
-        // Only send phone/email if the field was missing and user filled it in
-        ...(!phoneExists && phone ? { phone } : {}),
-        ...(!emailExists && email ? { email } : {}),
-        profilePhoto: profilePhoto || undefined,
-      });
+      const payload: Record<string, string> = {};
+
+      // Only send name if changed
+      if (name !== (profile.name ?? "")) {
+        payload.name = name;
+      }
+
+      // Only send phone if it was missing and user filled it in
+      if (!phoneExists && phone && phone !== (profile.phone ?? "")) {
+        payload.phone = phone;
+      }
+
+      // Only send email if it was missing and user filled it in
+      if (!emailExists && email && email !== (profile.email ?? "")) {
+        payload.email = email;
+      }
+
+      // Only send profilePhoto if changed
+      if (profilePhoto !== profile.profilePhoto) {
+        payload.profilePhoto = profilePhoto ?? "";
+      }
+
+      if (Object.keys(payload).length === 0) {
+        toast.info("No changes to save");
+        return;
+      }
+
+      const updated = await updateProfile.mutateAsync(payload);
       setUser(updated);
       toast.success("Profile updated");
     } catch (err) {
@@ -86,7 +106,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           </Label>
           {phoneExists ? (
             <Input
-              value={formatPhone(profile.phone)}
+              value={profile.phone ?? ""} // ← raw value, not formatPhone()
               disabled
               className="bg-gray-50"
             />
