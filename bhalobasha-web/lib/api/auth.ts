@@ -1,17 +1,40 @@
 import apiClient from "./client";
-import { AuthVerifyResponse } from "@/types";
 
-export async function sendOtp(phone: string): Promise<void> {
-  await apiClient.post("/auth/send-otp", { phone });
+interface SendOtpPayload {
+  phone?: string;
+  email?: string;
+}
+
+interface VerifyOtpPayload {
+  phone?: string;
+  email?: string;
+  code: string;
+}
+
+interface VerifyOtpResponse {
+  accessToken: string;
+  user: {
+    id: string;
+    phone: string | null;
+    email: string | null;
+    name: string | null;
+    role: string;
+    isVerified: boolean;
+    profilePhoto: string | null;
+    createdAt: string;
+  };
+}
+
+export async function sendOtp(payload: SendOtpPayload): Promise<void> {
+  await apiClient.post("/auth/send-otp", payload);
 }
 
 export async function verifyOtp(
-  phone: string,
-  code: string,
-): Promise<AuthVerifyResponse> {
-  const { data } = await apiClient.post<AuthVerifyResponse>("/auth/verify-otp", {
-    phone,
-    code,
-  });
+  payload: VerifyOtpPayload,
+): Promise<VerifyOtpResponse> {
+  const { data } = await apiClient.post<VerifyOtpResponse>(
+    "/auth/verify-otp",
+    payload,
+  );
   return data;
 }

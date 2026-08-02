@@ -32,7 +32,8 @@ export function formatDate(date: string): string {
   return `${day} ${month} ${year}`;
 }
 
-export function formatPhone(phone: string): string {
+export function formatPhone(phone: string | null | undefined): string {
+  if (!phone) return "";
   const cleaned = phone.replace(/\D/g, "");
   const local = cleaned.startsWith("880") ? cleaned.slice(3) : cleaned;
   if (local.length !== 11) return phone;

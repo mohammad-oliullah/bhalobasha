@@ -5,6 +5,18 @@ import { useRouter } from "next/navigation";
 import { sendOtp, verifyOtp } from "@/lib/api/auth";
 import { setAuthCookie, clearAuthCookie } from "@/lib/actions/auth";
 import { useAuthStore } from "@/lib/store/auth.store";
+import { User } from "@/types";
+
+interface SendOtpPayload {
+  phone?: string;
+  email?: string;
+}
+
+interface VerifyOtpPayload {
+  phone?: string;
+  email?: string;
+  code: string;
+}
 
 export function useAuth() {
   const router = useRouter();
@@ -12,15 +24,14 @@ export function useAuth() {
     useAuthStore();
 
   const sendOtpMutation = useMutation({
-    mutationFn: (phone: string) => sendOtp(phone),
+    mutationFn: (payload: SendOtpPayload) => sendOtp(payload),
   });
 
   const verifyOtpMutation = useMutation({
-    mutationFn: ({ phone, code }: { phone: string; code: string }) =>
-      verifyOtp(phone, code),
+    mutationFn: (payload: VerifyOtpPayload) => verifyOtp(payload),
     onSuccess: async (data) => {
       await setAuthCookie(data.accessToken);
-      setAuth(data.user, data.accessToken);
+      setAuth(data.user as User, data.accessToken);
     },
   });
 

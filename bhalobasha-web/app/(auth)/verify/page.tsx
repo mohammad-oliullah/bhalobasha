@@ -14,15 +14,17 @@ function VerifyForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const phone = searchParams.get("phone") || "";
+  const email = searchParams.get("email") || "";
   const redirect = searchParams.get("redirect") || "/dashboard";
 
   const { verifyOtp, sendOtp } = useAuth();
   const [code, setCode] = useState("");
   const [countdown, setCountdown] = useState(60);
 
+  // Must have either phone or email
   useEffect(() => {
-    if (!phone) router.replace("/login");
-  }, [phone, router]);
+    if (!phone && !email) router.replace("/login");
+  }, [phone, email, router]);
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -36,7 +38,10 @@ function VerifyForm() {
       return;
     }
     try {
-      await verifyOtp.mutateAsync({ phone, code });
+      await verifyOtp.mutateAsync({
+        ...(phone ? { phone } : { email }),
+        code,
+      });
       toast.success("Login successful!");
       router.push(redirect);
     } catch (err) {
@@ -46,7 +51,7 @@ function VerifyForm() {
 
   const handleResend = async () => {
     try {
-      await sendOtp.mutateAsync(phone);
+      await sendOtp.mutateAsync(phone ? { phone } : { email });
       setCountdown(60);
       toast.success("OTP resent");
     } catch (err) {
@@ -54,20 +59,22 @@ function VerifyForm() {
     }
   };
 
+  // Display label — show email or formatted phone
+  const contactLabel = email || formatPhone(phone);
+
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Verify OTP</CardTitle>
         <p className="text-sm text-muted">
-          Code sent to {formatPhone(phone)}
+          Code sent to{" "}
+          <span className="font-medium text-foreground">{contactLabel}</span>
         </p>
-        <Link
-          href="/login"
-          className="text-sm text-primary hover:underline"
-        >
-          Change phone number
+        <Link href="/login" className="text-sm text-primary hover:underline">
+          {email ? "Change email" : "Change phone number"}
         </Link>
       </CardHeader>
+
       <CardContent className="space-y-6">
         <OtpInput
           value={code}
