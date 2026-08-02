@@ -3,7 +3,8 @@ import { ApiResponse } from "@/types";
 import { useAuthStore } from "@/lib/store/auth.store";
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  baseURL:
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:4040" + "/api/v1",
   headers: { "Content-Type": "application/json" },
 });
 

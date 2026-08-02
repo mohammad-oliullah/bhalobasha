@@ -1,12 +1,28 @@
-import { IsNotEmpty, IsString, Matches } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  ValidateIf,
+} from "class-validator";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class SendOtpDto {
-  @ApiProperty({ example: '01712345678' })
+  @ApiPropertyOptional({ example: "01712345678" })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @Matches(/^01[3-9]\d{8}$/, {
-    message: 'Phone must be a valid Bangladesh mobile number',
+    message: "Phone must be a valid Bangladesh mobile number",
   })
-  phone: string;
+  phone?: string;
+
+  @ApiPropertyOptional({ example: "user@example.com" })
+  @IsOptional()
+  @IsEmail({}, { message: "Must be a valid email address" })
+  email?: string;
+
+  @ValidateIf((o) => !o.phone && !o.email)
+  @IsNotEmpty({ message: "Either phone or email must be provided" })
+  _atLeastOne?: never;
 }

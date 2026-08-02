@@ -37,6 +37,10 @@ async function bootstrap() {
     allowedHeaders: ["Content-Type", "Authorization"],
   });
 
+  app.setGlobalPrefix("api", {
+    exclude: ["api/docs"], // keep swagger at /api/docs not /api/v1/api/docs
+  });
+
   // API Versioning (optional)
   app.enableVersioning({
     type: VersioningType.URI,
@@ -92,7 +96,6 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`🚀 Server running at: http://localhost:${port}`);
-  console.log(`📚 Swagger Docs: http://localhost:${port}/api/docs`);
 }
 
 bootstrap();
