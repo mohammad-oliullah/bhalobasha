@@ -16,20 +16,25 @@ export class SmsService {
     const authToken = this.configService.get<string>("TWILIO_AUTH_TOKEN");
     this.twilioClient = new Twilio(accountSid, authToken);
 
-    // Nodemailer transporter (optimized for Railway — pooled connections,
-    // rate limiting to avoid Gmail throttling, and timeouts to prevent hangs)
+    // Configure Nodemailer
     this.transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      service: "gmail",
       auth: {
         user: this.configService.get<string>("GMAIL_USER"),
         pass: this.configService.get<string>("GMAIL_APP_PASSWORD"),
       },
-    } as nodemailer.TransportOptions);
+    });
   }
 
   async sendOtp(contact: string, code: string): Promise<void> {
+    try {
+      await this.transporter.verify();
+      console.log("✅ SMTP connection successful");
+    } catch (err) {
+      console.error("❌ SMTP verify failed");
+      console.error(err);
+    }
+
     const isEmail = contact.includes("@");
 
     if (isEmail) {
