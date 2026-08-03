@@ -2,13 +2,13 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Twilio } from "twilio";
 import axios from "axios";
-import * as nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 @Injectable()
 export class SmsService {
   private twilioClient: Twilio;
   private readonly logger = new Logger(SmsService.name);
-  private transporter: nodemailer.Transporter;
+  private resend: Resend;
 
   constructor(private configService: ConfigService) {
     // Twilio client
@@ -16,16 +16,8 @@ export class SmsService {
     const authToken = this.configService.get<string>("TWILIO_AUTH_TOKEN");
     this.twilioClient = new Twilio(accountSid, authToken);
 
-    // Nodemailer transporter
-    this.transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: this.configService.get<string>("GMAIL_USER"),
-        pass: this.configService.get<string>("GMAIL_APP_PASSWORD"),
-      },
-    } as nodemailer.TransportOptions);
+    // Resend client
+    this.resend = new Resend(this.configService.get<string>("RESEND_API_KEY"));
   }
 
   async sendOtp(contact: string, code: string): Promise<void> {
@@ -38,12 +30,12 @@ export class SmsService {
     }
   }
 
-  // ─── Email via Nodemailer ───────────────────────────────────────────────────
+  // ─── Email via Resend ───────────────────────────────────────────────────────
 
   private async sendEmailOtp(email: string, code: string): Promise<void> {
     try {
-      await this.transporter.sendMail({
-        from: `"Bhalobasha ভালোবাসা" <${this.configService.get("GMAIL_USER")}>`,
+      await this.resend.emails.send({
+        from: "Bhalobasha ভালোবাসা <noreply@bhalobasha.com>",
         to: email,
         subject: "Your Bhalobasha OTP Code",
         html: `
