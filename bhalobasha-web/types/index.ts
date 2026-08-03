@@ -193,7 +193,8 @@ export interface Bid {
   seeker?: {
     id: string;
     name: string | null;
-    phone: string;
+    phone: string | null;
+    email: string | null;
     profilePhoto?: string | null;
   };
   listing?: Partial<Listing>;

@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Home,
-  User,
-  PlusCircle,
-} from "lucide-react";
+import { LayoutDashboard, Home, User, PlusCircle, Gavel } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -15,6 +10,7 @@ const navItems = [
   { href: "/dashboard/listings", label: "My Listings", icon: Home },
   { href: "/dashboard/listings/new", label: "Post New", icon: PlusCircle },
   { href: "/dashboard/profile", label: "Profile", icon: User },
+  { href: "/dashboard/bids", label: "My Bids", icon: Gavel },
 ];
 
 export default function DashboardLayout({
