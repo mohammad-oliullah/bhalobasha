@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -12,6 +13,8 @@ import { SmsService } from "../common/services/sms.service";
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -37,7 +40,10 @@ export class AuthService {
     });
 
     const contact = dto.email ?? dto.phone!;
-    await this.otpService.sendOtp(contact, code);
+    // Fire and forget: send email asynchronously without blocking the response
+    this.otpService.sendOtp(contact, code).catch((error) => {
+      this.logger.error(`Failed to send OTP email: ${error}`);
+    });
 
     return {
       success: true,
