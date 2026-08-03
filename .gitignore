@@ -39,3 +39,4 @@ next-env.d.ts
 *.bakup
 *.bak
 /bhalobasha_dump.backup
+DOC.md
