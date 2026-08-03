@@ -22,20 +22,10 @@ export class SmsService {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
-      pool: {
-        maxConnections: 1,
-        maxMessages: 100,
-        rateDelta: 1000,
-        rateLimit: 5,
-      },
-      connectionTimeout: 10000,
-      socketTimeout: 10000,
       auth: {
         user: this.configService.get<string>("GMAIL_USER"),
         pass: this.configService.get<string>("GMAIL_APP_PASSWORD"),
       },
-      logger: true,
-      debug: true,
     } as nodemailer.TransportOptions);
   }
 
