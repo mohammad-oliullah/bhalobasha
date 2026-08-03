@@ -21,7 +21,6 @@ export class SmsService {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
-      family: 4,
       auth: {
         user: this.configService.get<string>("GMAIL_USER"),
         pass: this.configService.get<string>("GMAIL_APP_PASSWORD"),
