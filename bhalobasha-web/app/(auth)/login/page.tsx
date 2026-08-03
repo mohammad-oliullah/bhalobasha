@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -43,8 +44,12 @@ export default function LoginPage() {
         await sendOtp.mutateAsync({ email });
         toast.success("OTP sent to your email");
         router.push(`/verify?email=${encodeURIComponent(email)}`);
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Failed to send OTP");
+      } catch (err: any) {
+        toast.error(
+          err?.response?.data?.message ??
+            err?.message ??
+            "Failed to send OTP. Please try again.",
+        );
       }
     }
   };

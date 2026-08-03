@@ -18,12 +18,15 @@ export class SmsService {
 
     // Nodemailer transporter
     this.transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      family: 4,
       auth: {
         user: this.configService.get<string>("GMAIL_USER"),
         pass: this.configService.get<string>("GMAIL_APP_PASSWORD"),
       },
-    });
+    } as nodemailer.TransportOptions);
   }
 
   async sendOtp(contact: string, code: string): Promise<void> {
@@ -68,7 +71,7 @@ export class SmsService {
         `,
       });
 
-      this.logger.log(`OTP email sent to ${email}`);
+      // this.logger.log(`OTP email sent to ${email}`);
     } catch (error) {
       this.logger.error(`Failed to send OTP email to ${email}: ${error}`);
       this.logger.warn(`[FALLBACK] Email: ${email} → Code: ${code}`);
