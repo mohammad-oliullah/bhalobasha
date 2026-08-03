@@ -20,7 +20,7 @@ export class SmsService {
     // rate limiting to avoid Gmail throttling, and timeouts to prevent hangs)
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 587,
+      port: 465,
       secure: false,
       auth: {
         user: this.configService.get<string>("GMAIL_USER"),
@@ -72,10 +72,22 @@ export class SmsService {
       });
 
       // this.logger.log(`OTP email sent to ${email}`);
-    } catch (error) {
-      this.logger.error(`Failed to send OTP email to ${email}: ${error}`);
-      this.logger.warn(`[FALLBACK] Email: ${email} → Code: ${code}`);
-      throw error;
+    } catch (err: any) {
+      switch (err.code) {
+        case "ECONNECTION":
+        case "ETIMEDOUT":
+          console.error("Network error - retry later:", err.message);
+          break;
+        case "EAUTH":
+          console.error("Authentication failed:", err.message);
+          break;
+        case "EENVELOPE":
+          // err.rejected is only present when every recipient was refused
+          console.error("Invalid envelope:", err.message, err.rejected || []);
+          break;
+        default:
+          console.error("Send failed:", err.message);
+      }
     }
   }
 
