@@ -20,22 +20,12 @@ export class SmsService {
     // rate limiting to avoid Gmail throttling, and timeouts to prevent hangs)
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      pool: {
-        maxConnections: 1,
-        maxMessages: 100,
-        rateDelta: 1000,
-        rateLimit: 5,
-      },
-      connectionTimeout: 10000,
-      socketTimeout: 10000,
+      port: 587,
+      secure: false,
       auth: {
         user: this.configService.get<string>("GMAIL_USER"),
         pass: this.configService.get<string>("GMAIL_APP_PASSWORD"),
       },
-      logger: true,
-      debug: true,
     } as nodemailer.TransportOptions);
   }
 
