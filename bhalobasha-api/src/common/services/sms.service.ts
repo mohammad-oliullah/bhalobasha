@@ -2,13 +2,13 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Twilio } from "twilio";
 import axios from "axios";
-import { Resend } from "resend";
+import * as nodemailer from "nodemailer";
 
 @Injectable()
 export class SmsService {
   private twilioClient: Twilio;
   private readonly logger = new Logger(SmsService.name);
-  private resend: Resend;
+  private transporter: nodemailer.Transporter;
 
   constructor(private configService: ConfigService) {
     // Twilio client
@@ -16,8 +16,27 @@ export class SmsService {
     const authToken = this.configService.get<string>("TWILIO_AUTH_TOKEN");
     this.twilioClient = new Twilio(accountSid, authToken);
 
-    // Resend client
-    this.resend = new Resend(this.configService.get<string>("RESEND_API_KEY"));
+    // Nodemailer transporter (optimized for Railway — pooled connections,
+    // rate limiting to avoid Gmail throttling, and timeouts to prevent hangs)
+    this.transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      pool: {
+        maxConnections: 1,
+        maxMessages: 100,
+        rateDelta: 1000,
+        rateLimit: 5,
+      },
+      connectionTimeout: 10000,
+      socketTimeout: 10000,
+      auth: {
+        user: this.configService.get<string>("GMAIL_USER"),
+        pass: this.configService.get<string>("GMAIL_APP_PASSWORD"),
+      },
+      logger: true,
+      debug: true,
+    } as nodemailer.TransportOptions);
   }
 
   async sendOtp(contact: string, code: string): Promise<void> {
@@ -30,12 +49,12 @@ export class SmsService {
     }
   }
 
-  // ─── Email via Resend ───────────────────────────────────────────────────────
+  // ─── Email via Nodemailer (Gmail SMTP) ─────────────────────────────────────
 
   private async sendEmailOtp(email: string, code: string): Promise<void> {
     try {
-      await this.resend.emails.send({
-        from: "Bhalobasha ভালোবাসা <noreply@bhalobasha.com>",
+      await this.transporter.sendMail({
+        from: `"Bhalobasha ভালোবাসা" <${this.configService.get("GMAIL_USER")}>`,
         to: email,
         subject: "Your Bhalobasha OTP Code",
         html: `
