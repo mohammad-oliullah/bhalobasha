@@ -1,13 +1,14 @@
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
-  Matches,
   Length,
+  Matches,
   ValidateIf,
 } from "class-validator";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class VerifyOtpDto {
   @ApiPropertyOptional({ example: "01712345678" })
@@ -23,11 +24,19 @@ export class VerifyOtpDto {
   @IsEmail()
   email?: string;
 
-  @ApiProperty({ example: "123456" })
+  @ApiPropertyOptional({ example: "123456" })
   @IsString()
   @IsNotEmpty()
   @Length(6, 6, { message: "OTP must be exactly 6 digits" })
   code!: string;
+
+  @ApiPropertyOptional({
+    example: true,
+    description: "Demo bypass for recruiter testing",
+  })
+  @IsOptional()
+  @IsBoolean()
+  isDemoLogin?: boolean;
 
   @ValidateIf((o) => !o.phone && !o.email)
   @IsNotEmpty({ message: "Either phone or email must be provided" })

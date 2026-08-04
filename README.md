@@ -15,6 +15,22 @@ A full-stack, broker-free property rental platform built for Bangladesh — solv
 
 ---
 
+## Demo Access
+
+The live app has instant one-click demo login — no email or OTP required.
+
+Visit the **[Login page](https://bhalobasha.vercel.app/login)** and select the **🎯 Demo** tab.
+
+| Role          | What you can explore                                                                                |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| 👤 **Seeker** | Browse listings, filter by location/type/policy, place bids, view bid status, manage profile        |
+| 🏠 **Owner**  | Post a listing (3-step flow), manage listings, view and accept/reject bids, mark listings as filled |
+| 🛡️ **Admin**  | Full platform access                                                                                |
+
+> No signup. No email. One click → logged in.
+
+---
+
 ## The Problem
 
 Finding rental accommodation in Bangladesh — especially Dhaka — is broken in specific, fixable ways:
