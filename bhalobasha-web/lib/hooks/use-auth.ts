@@ -5,18 +5,7 @@ import { useRouter } from "next/navigation";
 import { sendOtp, verifyOtp } from "@/lib/api/auth";
 import { setAuthCookie, clearAuthCookie } from "@/lib/actions/auth";
 import { useAuthStore } from "@/lib/store/auth.store";
-import { User } from "@/types";
-
-interface SendOtpPayload {
-  phone?: string;
-  email?: string;
-}
-
-interface VerifyOtpPayload {
-  phone?: string;
-  email?: string;
-  code: string;
-}
+import { User, SendOtpPayload, VerifyOtpPayload } from "@/types";
 
 export function useAuth() {
   const router = useRouter();

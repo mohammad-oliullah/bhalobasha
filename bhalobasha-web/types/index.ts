@@ -216,3 +216,29 @@ export interface BidsResponse {
   totalBids: number;
   highestBid: number | null;
 }
+
+export interface SendOtpPayload {
+  phone?: string;
+  email?: string;
+}
+
+export interface VerifyOtpPayload {
+  phone?: string;
+  email?: string;
+  code: string;
+  isDemoLogin?: boolean;
+}
+
+export interface VerifyOtpResponse {
+  accessToken: string;
+  user: {
+    id: string;
+    phone: string | null;
+    email: string | null;
+    name: string | null;
+    role: string;
+    isVerified: boolean;
+    profilePhoto: string | null;
+    createdAt: string;
+  };
+}

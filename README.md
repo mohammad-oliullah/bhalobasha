@@ -41,6 +41,22 @@ A full-stack platform that tackles all four — with one product decision at the
 
 ---
 
+## Demo Access
+
+The live app has instant one-click demo login — no email or OTP required.
+
+Visit the **[Login page](https://bhalobasha.vercel.app/login)** and select the **🎯 Demo** tab.
+
+| Role          | What you can explore                                                                                |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| 👤 **Seeker** | Browse listings, filter by location/type/policy, place bids, view bid status, manage profile        |
+| 🏠 **Owner**  | Post a listing (3-step flow), manage listings, view and accept/reject bids, mark listings as filled |
+| 🛡️ **Admin**  | Full platform access                                                                                |
+
+> No signup. No email. One click → logged in.
+
+---
+
 ## Tech Stack
 
 | Layer      | Choice                   | Reason                                                                 |

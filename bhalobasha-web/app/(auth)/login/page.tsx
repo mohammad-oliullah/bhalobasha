@@ -2,57 +2,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { PhoneInput } from "@/components/auth/phone-input";
-import { useAuth } from "@/lib/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoginToggle } from "./_components/login-toggle";
+import { PhoneLogin } from "./_components/phone-login";
+import { EmailLogin } from "./_components/email-login";
+import { DemoLogin } from "./_components/demo-login";
 
-type LoginMethod = "phone" | "email";
+type LoginMethod = "phone" | "email" | "demo";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { sendOtp } = useAuth();
-  const [method, setMethod] = useState<LoginMethod>("phone");
-  const [phone, setPhone] = useState("");
+  const [method, setMethod] = useState<LoginMethod>("demo");
   const [email, setEmail] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (method === "phone") {
-      if (!/^01[3-9]\d{8}$/.test(phone)) {
-        toast.error("Enter a valid Bangladesh mobile number");
-        return;
-      }
-      try {
-        await sendOtp.mutateAsync({ phone });
-        toast.success("OTP sent to your phone");
-        router.push(`/verify?phone=${phone}`);
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Failed to send OTP");
-      }
-    } else {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        toast.error("Enter a valid email address");
-        return;
-      }
-      try {
-        await sendOtp.mutateAsync({ email });
-        toast.success("OTP sent to your email");
-        router.push(`/verify?email=${encodeURIComponent(email)}`);
-      } catch (err: any) {
-        toast.error(
-          err?.response?.data?.message ??
-            err?.message ??
-            "Failed to send OTP. Please try again.",
-        );
-      }
-    }
-  };
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4 py-12">
@@ -66,70 +26,13 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent>
-          {/* Toggle */}
-          <div className="mb-6 flex rounded-lg border p-1">
-            <button
-              type="button"
-              onClick={() => setMethod("phone")}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                method === "phone"
-                  ? "bg-primary text-white shadow-sm"
-                  : "text-muted hover:text-foreground"
-              }`}
-            >
-              📱 Phone
-            </button>
-            <button
-              type="button"
-              onClick={() => setMethod("email")}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                method === "email"
-                  ? "bg-primary text-white shadow-sm"
-                  : "text-muted hover:text-foreground"
-              }`}
-            >
-              ✉️ Email
-            </button>
-          </div>
+          <LoginToggle method={method} onChange={setMethod} />
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {method === "phone" ? (
-              <>
-                <p className="text-red-700 text-sm">
-                  Unavailable Now, Please Try With An Email
-                </p>
-                <div className="space-y-2">
-                  <Label>Phone Number</Label>
-                  <PhoneInput
-                    value={phone}
-                    onChange={setPhone}
-                    // disabled={sendOtp.isPending}
-                    disabled={true}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="space-y-2">
-                <Label>Email Address</Label>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={sendOtp.isPending}
-                />
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full"
-              size="lg"
-              disabled={sendOtp.isPending}
-            >
-              {sendOtp.isPending ? "Sending..." : "Send OTP"}
-            </Button>
-          </form>
+          {method === "phone" && <PhoneLogin />}
+          {method === "email" && (
+            <EmailLogin email={email} onChange={setEmail} />
+          )}
+          {method === "demo" && <DemoLogin />}
 
           <p className="mt-6 text-center text-xs text-muted">
             By continuing, you agree to Bhalobasha&apos;s terms of service.
