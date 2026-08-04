@@ -134,15 +134,6 @@ cp .env.local.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:40
 npm run dev                         # → http://localhost:3000
 ```
 
-### Test accounts (seeded)
-
-| Role  | Phone       |
-| ----- | ----------- |
-| Admin | 01700000000 |
-| Owner | 01700000001 |
-
-> In development, OTP prints to the backend console — no SMS credits needed.
-
 ---
 
 ## Roadmap
