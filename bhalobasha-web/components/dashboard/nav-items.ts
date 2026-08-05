@@ -17,13 +17,13 @@ export const navItems = [
     icon: PlusCircle,
   },
   {
-    href: "/dashboard/profile",
-    label: "Profile",
-    icon: User,
-  },
-  {
     href: "/dashboard/bids",
     label: "My Bids",
     icon: Gavel,
+  },
+  {
+    href: "/dashboard/profile",
+    label: "Profile",
+    icon: User,
   },
 ];
