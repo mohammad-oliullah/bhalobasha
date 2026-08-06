@@ -1,0 +1,151 @@
+[
+  { "id": 1, "name": "Mirpur-1", "nameBn": "মিরপুর-১", "thanaId": 1 },
+  { "id": 2, "name": "Mirpur-2", "nameBn": "মিরপুর-২", "thanaId": 1 },
+  { "id": 3, "name": "Mirpur-6", "nameBn": "মিরপুর-৬", "thanaId": 1 },
+  { "id": 4, "name": "Mirpur-10", "nameBn": "মিরপুর-১০", "thanaId": 1 },
+  { "id": 5, "name": "Mirpur-11", "nameBn": "মিরপুর-১১", "thanaId": 1 },
+  { "id": 6, "name": "Mirpur-12", "nameBn": "মিরপুর-১২", "thanaId": 1 },
+  { "id": 7, "name": "Mirpur-13", "nameBn": "মিরপুর-১৩", "thanaId": 1 },
+  { "id": 8, "name": "Mirpur-14", "nameBn": "মিরপুর-১৪", "thanaId": 1 },
+  { "id": 9, "name": "Kazipara", "nameBn": "কাজীপাড়া", "thanaId": 1 },
+  { "id": 10, "name": "Shewrapara", "nameBn": "শেওড়াপাড়া", "thanaId": 1 },
+  { "id": 11, "name": "Shyamoli", "nameBn": "শ্যামলী", "thanaId": 2 },
+  { "id": 12, "name": "Mohammadpur", "nameBn": "মোহাম্মদপুর", "thanaId": 2 },
+  { "id": 13, "name": "Tajmahal Road", "nameBn": "তাজমহল রোড", "thanaId": 2 },
+  { "id": 14, "name": "Adabor", "nameBn": "আদাবর", "thanaId": 2 },
+  { "id": 15, "name": "Lalmatia", "nameBn": "লালমাটিয়া", "thanaId": 2 },
+  { "id": 16, "name": "Geneva Camp", "nameBn": "জেনেভা ক্যাম্প", "thanaId": 2 },
+  { "id": 17, "name": "Dhanmondi", "nameBn": "ধানমন্ডি", "thanaId": 3 },
+  { "id": 18, "name": "Dhanmondi-27", "nameBn": "ধানমন্ডি-২৭", "thanaId": 3 },
+  { "id": 19, "name": "Jigatola", "nameBn": "জিগাতলা", "thanaId": 3 },
+  {
+    "id": 20,
+    "name": "Satmasjid Road",
+    "nameBn": "সাতমসজিদ রোড",
+    "thanaId": 3
+  },
+  {
+    "id": 21,
+    "name": "Uttara Sector 1",
+    "nameBn": "উত্তরা সেক্টর ১",
+    "thanaId": 4
+  },
+  {
+    "id": 22,
+    "name": "Uttara Sector 3",
+    "nameBn": "উত্তরা সেক্টর ৩",
+    "thanaId": 4
+  },
+  {
+    "id": 23,
+    "name": "Uttara Sector 4",
+    "nameBn": "উত্তরা সেক্টর ৪",
+    "thanaId": 4
+  },
+  {
+    "id": 24,
+    "name": "Uttara Sector 6",
+    "nameBn": "উত্তরা সেক্টর ৬",
+    "thanaId": 4
+  },
+  {
+    "id": 25,
+    "name": "Uttara Sector 7",
+    "nameBn": "উত্তরা সেক্টর ৭",
+    "thanaId": 4
+  },
+  {
+    "id": 26,
+    "name": "Uttara Sector 10",
+    "nameBn": "উত্তরা সেক্টর ১০",
+    "thanaId": 4
+  },
+  {
+    "id": 27,
+    "name": "Uttara Sector 11",
+    "nameBn": "উত্তরা সেক্টর ১১",
+    "thanaId": 4
+  },
+  { "id": 28, "name": "Gulshan-1", "nameBn": "গুলশান-১", "thanaId": 5 },
+  { "id": 29, "name": "Gulshan-2", "nameBn": "গুলশান-২", "thanaId": 5 },
+  { "id": 30, "name": "Niketan", "nameBn": "নিকেতন", "thanaId": 5 },
+  { "id": 31, "name": "Baridhara", "nameBn": "বারিধারা", "thanaId": 5 },
+  { "id": 32, "name": "Banani", "nameBn": "বনানী", "thanaId": 6 },
+  { "id": 33, "name": "Banani DOHS", "nameBn": "বনানী ডিওএইচএস", "thanaId": 6 },
+  { "id": 34, "name": "Tejgaon", "nameBn": "তেজগাঁও", "thanaId": 7 },
+  { "id": 35, "name": "Farmgate", "nameBn": "ফার্মগেট", "thanaId": 7 },
+  {
+    "id": 36,
+    "name": "Karwan Bazar",
+    "nameBn": "কারওয়ান বাজার",
+    "thanaId": 7
+  },
+  { "id": 37, "name": "Nakhalpara", "nameBn": "নাখালপাড়া", "thanaId": 7 },
+  { "id": 38, "name": "Motijheel", "nameBn": "মতিঝিল", "thanaId": 8 },
+  { "id": 39, "name": "Arambagh", "nameBn": "আরামবাগ", "thanaId": 8 },
+  { "id": 40, "name": "Rajarbagh", "nameBn": "রাজারবাগ", "thanaId": 8 },
+  { "id": 41, "name": "Wari", "nameBn": "ওয়ারী", "thanaId": 9 },
+  { "id": 42, "name": "Gopibagh", "nameBn": "গোপীবাগ", "thanaId": 9 },
+  { "id": 43, "name": "Tikatuli", "nameBn": "টিকাটুলি", "thanaId": 9 },
+  { "id": 44, "name": "Lalbagh", "nameBn": "লালবাগ", "thanaId": 10 },
+  { "id": 45, "name": "Azimpur", "nameBn": "আজিমপুর", "thanaId": 10 },
+  { "id": 46, "name": "Chawkbazar", "nameBn": "চকবাজার", "thanaId": 10 },
+  { "id": 47, "name": "Imamganj", "nameBn": "ইমামগঞ্জ", "thanaId": 10 },
+  { "id": 48, "name": "Hazaribagh", "nameBn": "হাজারীবাগ", "thanaId": 11 },
+  { "id": 49, "name": "Rayer Bazar", "nameBn": "রায়ের বাজার", "thanaId": 16 },
+  { "id": 50, "name": "Badda", "nameBn": "বাড্ডা", "thanaId": 17 },
+  { "id": 51, "name": "Aftabnagar", "nameBn": "আফতাবনগর", "thanaId": 17 },
+  { "id": 52, "name": "Satarkul", "nameBn": "সাতারকুল", "thanaId": 17 },
+  { "id": 53, "name": "Khilkhet", "nameBn": "খিলক্ষেত", "thanaId": 18 },
+  { "id": 54, "name": "Nikunja", "nameBn": "নিকুঞ্জ", "thanaId": 18 },
+  { "id": 55, "name": "Pallabi", "nameBn": "পল্লবী", "thanaId": 20 },
+  { "id": 56, "name": "Rupnagar", "nameBn": "রূপনগর", "thanaId": 20 },
+  { "id": 57, "name": "East Kafrul", "nameBn": "পূর্ব কাফরুল", "thanaId": 21 },
+  { "id": 58, "name": "Ibrahimpur", "nameBn": "ইব্রাহিমপুর", "thanaId": 21 },
+  { "id": 59, "name": "Agargaon", "nameBn": "আগারগাঁও", "thanaId": 23 },
+  {
+    "id": 60,
+    "name": "Sher-e-Bangla Nagar",
+    "nameBn": "শেরেবাংলা নগর",
+    "thanaId": 23
+  },
+  { "id": 61, "name": "Tongi", "nameBn": "টঙ্গী", "thanaId": 26 },
+  { "id": 62, "name": "Joydebpur", "nameBn": "জয়দেবপুর", "thanaId": 25 },
+  {
+    "id": 63,
+    "name": "Narayanganj Sadar",
+    "nameBn": "নারায়ণগঞ্জ সদর",
+    "thanaId": 30
+  },
+  { "id": 64, "name": "Siddhirganj", "nameBn": "সিদ্ধিরগঞ্জ", "thanaId": 30 },
+  { "id": 65, "name": "Fatullah", "nameBn": "ফতুল্লাহ", "thanaId": 30 },
+  { "id": 66, "name": "Pahartali", "nameBn": "পাহাড়তলী", "thanaId": 36 },
+  { "id": 67, "name": "Agrabad", "nameBn": "আগ্রাবাদ", "thanaId": 35 },
+  { "id": 68, "name": "CDA Avenue", "nameBn": "সিডিএ এভিনিউ", "thanaId": 35 },
+  { "id": 69, "name": "GEC Circle", "nameBn": "জিইসি সার্কেল", "thanaId": 37 },
+  { "id": 70, "name": "Nasirabad", "nameBn": "নাসিরাবাদ", "thanaId": 41 },
+  { "id": 71, "name": "Oxygen", "nameBn": "অক্সিজেন", "thanaId": 41 },
+  { "id": 72, "name": "Khulna Sadar", "nameBn": "খুলনা সদর", "thanaId": 43 },
+  { "id": 73, "name": "Sonadanga", "nameBn": "সোনাডাঙ্গা", "thanaId": 44 },
+  { "id": 74, "name": "Boyra", "nameBn": "বয়রা", "thanaId": 44 },
+  {
+    "id": 75,
+    "name": "Rajshahi Sadar",
+    "nameBn": "রাজশাহী সদর",
+    "thanaId": 48
+  },
+  { "id": 76, "name": "Uposhohor", "nameBn": "উপশহর", "thanaId": 49 },
+  { "id": 77, "name": "Sylhet Sadar", "nameBn": "সিলেট সদর", "thanaId": 52 },
+  { "id": 78, "name": "Ambarkhana", "nameBn": "আম্বরখানা", "thanaId": 52 },
+  { "id": 79, "name": "Zindabazar", "nameBn": "জিন্দাবাজার", "thanaId": 52 },
+  {
+    "id": 80,
+    "name": "Mymensingh Sadar",
+    "nameBn": "ময়মনসিংহ সদর",
+    "thanaId": 55
+  },
+  { "id": 81, "name": "Barishal Sadar", "nameBn": "বরিশাল সদর", "thanaId": 57 },
+  { "id": 82, "name": "Nathullabad", "nameBn": "নাথুল্লাবাদ", "thanaId": 57 },
+  { "id": 83, "name": "Rangpur Sadar", "nameBn": "রংপুর সদর", "thanaId": 59 },
+  { "id": 84, "name": "Dhap", "nameBn": "ধাপ", "thanaId": 59 }
+]
