@@ -9,6 +9,7 @@ import {
   updateListing,
   deleteListing,
   markListingFilled,
+  markListingUnFilled,
 } from "@/lib/api/listings";
 import {
   CreateListingPayload,
@@ -111,6 +112,31 @@ export function useMarkListingFilled() {
         ) =>
           old?.map((l) =>
             l.id === id ? { ...l, status: "FILLED" as const } : l,
+          ),
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      queryClient.invalidateQueries({ queryKey: ["my-listings"] });
+    },
+  });
+}
+
+export function useMarkListingUnFilled() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => markListingUnFilled(id),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["my-listings"] });
+      queryClient.setQueriesData(
+        { queryKey: ["my-listings"] },
+        (
+          old: ReturnType<typeof getListings> extends Promise<infer T>
+            ? T
+            : never,
+        ) =>
+          old?.map((l) =>
+            l.id === id ? { ...l, status: "ACTIVE" as const } : l,
           ),
       );
     },

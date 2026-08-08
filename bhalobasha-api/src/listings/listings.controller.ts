@@ -97,6 +97,21 @@ export class ListingsController {
     return this.listingsService.markFilled(id, user.sub, user.role as UserRole);
   }
 
+  @Patch(":id/mark-unfilled")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "Mark listing as unfilled" })
+  markUnFilled(
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.listingsService.markUnFilled(
+      id,
+      user.sub,
+      user.role as UserRole,
+    );
+  }
+
   @Patch(":id")
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
