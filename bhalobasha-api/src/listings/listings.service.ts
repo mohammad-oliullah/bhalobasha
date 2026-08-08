@@ -249,6 +249,17 @@ export class ListingsService {
     });
   }
 
+  async markUnFilled(id: string, userId: string, userRole: UserRole) {
+    const listing = await this.findOne(id);
+    this.assertOwner(listing.ownerId, userId, userRole);
+
+    return this.prisma.listing.update({
+      where: { id },
+      data: { status: ListingStatus.ACTIVE },
+      include: listingInclude,
+    });
+  }
+
   private assertOwner(ownerId: string, userId: string, userRole: UserRole) {
     if (userRole === UserRole.ADMIN) {
       return;

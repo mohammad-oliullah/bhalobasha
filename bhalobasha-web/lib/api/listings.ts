@@ -61,6 +61,13 @@ export async function markListingFilled(id: string): Promise<Listing> {
   return data;
 }
 
+export async function markListingUnFilled(id: string): Promise<Listing> {
+  const { data } = await apiClient.patch<Listing>(
+    `/listings/${id}/mark-unfilled`,
+  );
+  return data;
+}
+
 export async function getListingBidSummary(
   listingId: string,
 ): Promise<BidSummary> {
