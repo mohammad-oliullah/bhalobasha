@@ -1,8 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  getListingBidSummary,
-  getPublicListingBids,
-} from "@/lib/api/listings";
+import { getListingBidSummary, getPublicListingBids } from "@/lib/api/listings";
 import {
   getMyBids,
   placeBid,

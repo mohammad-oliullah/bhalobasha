@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBidSummary, useMyBids, usePublicBids } from "@/lib/hooks/use-bids";
 import { Listing } from "@/types";
-import { BidSummaryCard } from "@/components/bids/BidSummary";
-import { PublicBidsList } from "@/components/bids/PublicBidsList";
-import { MyBidStatus } from "@/components/bids/MyBidStatus";
-import { PlaceBidModal } from "@/components/bids/PlaceBidModal";
+import { PublicBidsList } from "@/components/bids/public-bids-list";
+import { MyBidStatus } from "@/components/bids/my-bid-status";
+import { PlaceBidModal } from "@/components/bids/place-bid-modal";
+import { BidSummaryCard } from "@/components/bids/bid-summary";
 
 interface ListingBiddingSectionProps {
   listing: Listing;
@@ -101,9 +101,7 @@ export function ListingBiddingSection({
         <Button
           variant="outline"
           className="w-full"
-          onClick={() =>
-            router.push(`/login?redirect=/listings/${listing.id}`)
-          }
+          onClick={() => router.push(`/login?redirect=/listings/${listing.id}`)}
         >
           Login to Place a Bid
         </Button>
