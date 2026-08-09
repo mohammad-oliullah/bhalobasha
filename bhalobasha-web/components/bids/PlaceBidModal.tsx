@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { placeBid } from "@/lib/api/bids";
 import { formatBDT } from "@/lib/utils/format";
 import { BidSummary } from "@/types";
@@ -37,6 +38,7 @@ export function PlaceBidModal({
   onSuccess,
 }: PlaceBidModalProps) {
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const schema = z.object({
     amount: z
@@ -65,6 +67,9 @@ export function PlaceBidModal({
         amount: data.amount,
         message: data.message,
       });
+      queryClient.invalidateQueries({ queryKey: ["bid-summary", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["public-bids", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["my-bids"] });
       toast.success("Bid placed successfully!");
       reset();
       onSuccess();

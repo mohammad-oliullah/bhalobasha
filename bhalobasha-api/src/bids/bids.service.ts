@@ -132,6 +132,36 @@ export class BidsService {
     };
   }
 
+  // Public: pending bids without contact info (for listing detail page)
+  async getPublicBidsForListing(listingId: string) {
+    const listing = await this.prisma.listing.findUnique({
+      where: { id: listingId },
+    });
+
+    if (!listing) throw new NotFoundException("Listing not found");
+    if (!listing.isBiddingEnabled) {
+      return { bids: [], totalBids: 0, highestBid: null };
+    }
+
+    const bids = await this.prisma.bid.findMany({
+      where: { listingId, status: BidStatus.PENDING },
+      orderBy: { amount: "desc" },
+      select: {
+        id: true,
+        amount: true,
+        message: true,
+        createdAt: true,
+        seeker: { select: { name: true } },
+      },
+    });
+
+    return {
+      bids,
+      totalBids: bids.length,
+      highestBid: bids[0]?.amount ?? null,
+    };
+  }
+
   // Public: get bid summary for a listing (no seeker details exposed)
   async getBidSummaryForListing(listingId: string) {
     const listing = await this.prisma.listing.findUnique({

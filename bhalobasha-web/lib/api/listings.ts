@@ -83,3 +83,12 @@ export async function getListingBids(listingId: string): Promise<BidsResponse> {
   );
   return data;
 }
+
+export async function getPublicListingBids(
+  listingId: string,
+): Promise<BidsResponse> {
+  const { data } = await apiClient.get<BidsResponse>(
+    `/listings/${listingId}/bids/public`,
+  );
+  return data;
+}
