@@ -39,7 +39,7 @@ export default function ListingDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
-        <Skeleton className="aspect-[16/9] w-full rounded-xl" />
+        <Skeleton className="aspect-[16/7] max-h-[420px] w-full rounded-xl" />
         <Skeleton className="h-8 w-2/3" />
         <Skeleton className="h-4 w-1/2" />
       </div>

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getListingBidSummary } from "@/lib/api/listings";
+import { getListingBidSummary, getPublicListingBids } from "@/lib/api/listings";
 import {
   getMyBids,
   placeBid,
@@ -13,6 +13,15 @@ export function useBidSummary(listingId: string) {
     queryKey: ["bid-summary", listingId],
     queryFn: () => getListingBidSummary(listingId),
     staleTime: 30_000,
+  });
+}
+
+export function usePublicBids(listingId: string, enabled = true) {
+  return useQuery({
+    queryKey: ["public-bids", listingId],
+    queryFn: () => getPublicListingBids(listingId),
+    staleTime: 30_000,
+    enabled: enabled && !!listingId,
   });
 }
 
@@ -31,6 +40,7 @@ export function usePlaceBid(listingId: string) {
       placeBid(listingId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bid-summary", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["public-bids", listingId] });
       queryClient.invalidateQueries({ queryKey: ["my-bids"] });
     },
   });
@@ -42,6 +52,7 @@ export function useWithdrawBid(listingId: string) {
     mutationFn: (bidId: string) => withdrawBid(bidId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bid-summary", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["public-bids", listingId] });
       queryClient.invalidateQueries({ queryKey: ["my-bids"] });
     },
   });
