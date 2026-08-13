@@ -1,16 +1,16 @@
 import axios from "axios";
-import { useAuthStore } from "@/lib/store/auth.store";
 import { ApiResponse } from "@/types";
+import { getAuthToken } from "../actions/get-token";
 
 export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const token = useAuthStore.getState().token;
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const token = await getAuthToken();
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4040";
 
   const response = await axios.post<ApiResponse<{ url: string }>>(
-    `${baseURL}/media/upload`,
+    `${baseURL}/api/v1/media/upload`,
     formData,
     {
       headers: {
