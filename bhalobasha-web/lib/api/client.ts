@@ -1,15 +1,12 @@
 import axios from "axios";
-import { ApiResponse } from "@/types";
-import { useAuthStore } from "@/lib/store/auth.store";
 
 const apiClient = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:4040" + "/api/v1",
-  headers: { "Content-Type": "application/json" },
+  baseURL: process.env.NEXT_PUBLIC_API_URL + "/api/v1",
 });
 
-apiClient.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().token;
+apiClient.interceptors.request.use(async (config) => {
+  const { getAuthToken } = await import("@/lib/actions/get-token");
+  const token = await getAuthToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -17,23 +14,14 @@ apiClient.interceptors.request.use((config) => {
 });
 
 apiClient.interceptors.response.use(
-  (response) => {
-    const envelope = response.data as ApiResponse<unknown>;
-    if (envelope && typeof envelope === "object" && "success" in envelope) {
-      response.data = envelope.data;
-    }
-    return response;
-  },
-  (error) => {
+  (response) => response.data,
+  async (error) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().clearAuth();
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
-      }
+      const { clearAuthCookie } = await import("@/lib/actions/auth");
+      await clearAuthCookie();
+      window.location.href = "/login";
     }
-    const message =
-      error.response?.data?.message || error.message || "Something went wrong";
-    return Promise.reject(new Error(message));
+    return Promise.reject(error);
   },
 );
 

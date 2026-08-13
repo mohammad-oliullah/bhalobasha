@@ -17,6 +17,10 @@ const config: Config = {
         },
         accent: "#f59e0b",
         muted: "#6b7280",
+        info: {
+          DEFAULT: "#007BFF",
+          100: "#2196F3",
+        },
       },
       fontFamily: {
         sans: [

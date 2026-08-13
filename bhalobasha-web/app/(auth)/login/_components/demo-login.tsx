@@ -10,13 +10,15 @@ const DEMO_ROLES = [
     email: "demo-seeker@bhalobasha.com",
     icon: "👤",
     label: "Seeker",
-    description: "Browse listings, place bids, contact owners",
+    description:
+      "Post listings, Browse listings, place bids, contact owners, manage bids, mark as filled",
   },
   {
     email: "demo-owner@bhalobasha.com",
     icon: "🏠",
     label: "Owner",
-    description: "Post listings, manage bids, mark as filled",
+    description:
+      "Post listings, Browse listings,place bids, contact owners, manage bids, mark as filled",
   },
   {
     email: "demo-admin@bhalobasha.com",
@@ -55,6 +57,14 @@ export function DemoLogin() {
         </p>
       </div>
 
+      <div>
+        <p className="text-xs text-info">
+          Roles are not mutually exclusive — a Seeker can also post listings and
+          an Owner can also browse and bid. Someone renting out a seat in their
+          mess while looking for a new flat themselves is a common real-world
+          pattern Bhalobasha supports natively.
+        </p>
+      </div>
       <div className="space-y-2">
         {DEMO_ROLES.map((role) => (
           <button

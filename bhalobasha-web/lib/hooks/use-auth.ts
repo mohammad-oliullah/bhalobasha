@@ -5,12 +5,11 @@ import { useRouter } from "next/navigation";
 import { sendOtp, verifyOtp } from "@/lib/api/auth";
 import { setAuthCookie, clearAuthCookie } from "@/lib/actions/auth";
 import { useAuthStore } from "@/lib/store/auth.store";
-import { User, SendOtpPayload, VerifyOtpPayload } from "@/types";
+import { SendOtpPayload, VerifyOtpPayload } from "@/types";
 
 export function useAuth() {
   const router = useRouter();
-  const { user, token, isAuthenticated, setAuth, clearAuth, setUser } =
-    useAuthStore();
+  const { user, isAuthenticated, setAuth, clearAuth, setUser } = useAuthStore();
 
   const sendOtpMutation = useMutation({
     mutationFn: (payload: SendOtpPayload) => sendOtp(payload),
@@ -19,8 +18,8 @@ export function useAuth() {
   const verifyOtpMutation = useMutation({
     mutationFn: (payload: VerifyOtpPayload) => verifyOtp(payload),
     onSuccess: async (data) => {
-      await setAuthCookie(data.accessToken);
-      setAuth(data.user as User, data.accessToken);
+      await setAuthCookie(data.accessToken); // token → httpOnly cookie
+      setAuth(data.user); // user data → Zustand memory only
     },
   });
 
@@ -32,7 +31,6 @@ export function useAuth() {
 
   return {
     user,
-    token,
     isAuthenticated,
     setAuth,
     setUser,

@@ -21,11 +21,13 @@ The live app has instant one-click demo login — no email or OTP required.
 
 Visit the **[Login page](https://bhalobasha.vercel.app/login)** and select the **🎯 Demo** tab.
 
-| Role          | What you can explore                                                                                |
-| ------------- | --------------------------------------------------------------------------------------------------- |
-| 👤 **Seeker** | Browse listings, filter by location/type/policy, place bids, view bid status, manage profile        |
-| 🏠 **Owner**  | Post a listing (3-step flow), manage listings, view and accept/reject bids, mark listings as filled |
-| 🛡️ **Admin**  | Full platform access                                                                                |
+| Role          | What you can explore                                                                                                        |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 👤 **Seeker** | Browse listings, filter by location/type/policy, place bids, track bid status, withdraw & reactivate bids, manage profile   |
+| 🏠 **Owner**  | Post a listing (3-step flow), manage listings, view & accept/reject bids, mark listings as filled/available, manage profile |
+| 🛡️ **Admin**  | Full platform access                                                                                                        |
+
+> **Note:** Roles are not mutually exclusive — a Seeker can also post listings and an Owner can also browse and bid. Someone renting out a seat in their mess while looking for a new flat themselves is a common real-world pattern Bhalobasha supports natively.
 
 > No signup. No email. One click → logged in.
 
@@ -138,16 +140,29 @@ npm run dev                         # → http://localhost:3000
 
 ## Roadmap
 
-- [x] NestJS API with full auth, listings, bidding, locations, media upload
-- [x] Next.js web app — browse, search, listing detail, owner dashboard, bidding UI
-- [x] Deployed to Railway + Vercel
-- [ ] Map view (Leaflet + OpenStreetMap)
-- [ ] Bangla ↔ English i18n (next-intl)
-- [ ] Save / favorite listings
-- [ ] Open Graph previews for WhatsApp sharing
-- [ ] Admin moderation queue
+### Shipped ✅
+
+- [x] NestJS API — auth (phone + email OTP), listings CRUD, bidding system, location hierarchy, media upload, role-based access
+- [x] Next.js 14 web app — browse, search, listing detail, owner dashboard, bidding UI, seeker bid tracking, undo withdraw
+- [x] Demo login — one-click recruiter access (Seeker / Owner / Admin)
+- [x] Deployed — Railway (API + PostgreSQL) + Vercel (frontend)
+
+### Up Next 🔄
+
+- [ ] Map view (Leaflet + OpenStreetMap — listing pins, click → detail)
+- [ ] Bangla ↔ English i18n toggle (next-intl)
+- [ ] Save / favorite listings (optimistic UI, many-to-many)
+- [ ] Open Graph meta tags (rich WhatsApp / social previews per listing)
+- [ ] Admin moderation queue (approve / reject pending listings)
+
+### Later 📋
+
 - [ ] Payment integration (SSLCommerz → bKash + Nagad + cards)
-- [ ] React Native mobile app (Android first)
+- [ ] Saved search alerts (email when new listing matches saved filters)
+- [ ] Tenant / landlord reviews after tenancy ends
+- [ ] NID-based owner verification badge
+- [ ] React Native mobile app (Android first, same API)
+- [ ] PostGIS geo search ("listings near me")
 
 ---
 
