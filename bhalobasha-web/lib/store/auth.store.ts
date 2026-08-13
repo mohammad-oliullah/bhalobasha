@@ -1,28 +1,28 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { User } from "@/types";
+
+interface User {
+  id: string;
+  phone: string | null;
+  email: string | null;
+  name: string | null;
+  role: string;
+  isVerified: boolean;
+  profilePhoto: string | null;
+  createdAt: string;
+}
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
-  setAuth: (user: User, token: string) => void;
-  clearAuth: () => void;
+  setAuth: (user: User) => void;
   setUser: (user: User) => void;
+  clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      setAuth: (user, token) =>
-        set({ user, token, isAuthenticated: true }),
-      clearAuth: () =>
-        set({ user: null, token: null, isAuthenticated: false }),
-      setUser: (user) => set({ user }),
-    }),
-    { name: "bhalobasha-auth" },
-  ),
-);
+export const useAuthStore = create<AuthState>()((set) => ({
+  user: null,
+  isAuthenticated: false,
+  setAuth: (user) => set({ user, isAuthenticated: true }),
+  setUser: (user) => set({ user }),
+  clearAuth: () => set({ user: null, isAuthenticated: false }),
+}));
