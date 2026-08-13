@@ -34,11 +34,11 @@ export const LISTING_STATUS_LABELS: Record<ListingStatus, string> = {
 };
 
 export const LISTING_TYPE_COLORS: Record<ListingType, string> = {
-  [ListingType.FULL_FLAT]: "bg-green-100 text-green-800",
-  [ListingType.SINGLE_ROOM]: "bg-blue-100 text-blue-800",
-  [ListingType.SHARED_SEAT]: "bg-orange-100 text-orange-800",
-  [ListingType.SUBLET]: "bg-purple-100 text-purple-800",
-  [ListingType.MESS]: "bg-red-100 text-red-800",
+  [ListingType.FULL_FLAT]: "bg-green-800 text-green-100",
+  [ListingType.SINGLE_ROOM]: "bg-blue-800 text-blue-100",
+  [ListingType.SHARED_SEAT]: "bg-orange-800 text-orange-100",
+  [ListingType.SUBLET]: "bg-purple-800 text-purple-100",
+  [ListingType.MESS]: "bg-red-800 text-red-100",
 };
 
 export const LISTING_STATUS_COLORS: Record<ListingStatus, string> = {

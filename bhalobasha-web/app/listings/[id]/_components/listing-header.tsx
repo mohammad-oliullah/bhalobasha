@@ -13,7 +13,7 @@ export function ListingHeader({ listing }: { listing: Listing }) {
   return (
     <>
       <div className="mt-6 flex flex-wrap gap-2">
-        <Badge className={LISTING_TYPE_COLORS[listing.type]}>
+        <Badge className={`${LISTING_TYPE_COLORS[listing.type]}`}>
           {LISTING_TYPE_LABELS[listing.type]}
         </Badge>
         <Badge variant="secondary">

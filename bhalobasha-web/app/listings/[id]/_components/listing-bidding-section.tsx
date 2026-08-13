@@ -72,7 +72,7 @@ export function ListingBiddingSection({
       {isOwner && (
         <Button
           className="w-full bg-[#1a6b3c] hover:bg-[#145c32]"
-          onClick={() => router.push(`/listings/${listing.id}/bids`)}
+          onClick={() => router.push(`/dashboard/listings/${listing.id}/bids`)}
         >
           <Gavel className="h-4 w-4 mr-2" />
           Manage Bids ({bidSummary.totalBids})

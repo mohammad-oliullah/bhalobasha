@@ -49,7 +49,9 @@ export class BidsController {
 
   @Public()
   @Get("listings/:listingId/bids/public")
-  @ApiOperation({ summary: "Get public bid list for a listing (no contact info)" })
+  @ApiOperation({
+    summary: "Get public bid list for a listing (no contact info)",
+  })
   getPublicBids(@Param("listingId") listingId: string) {
     return this.bidsService.getPublicBidsForListing(listingId);
   }
@@ -88,5 +90,15 @@ export class BidsController {
   @ApiOperation({ summary: "Get all my bids (seeker)" })
   getMyBids(@CurrentUser() user: JwtPayload) {
     return this.bidsService.getMyBids(user.sub);
+  }
+
+  // Seeker reactivates their own withdrawn bid
+  @Patch("bids/:bidId/reactivate")
+  @ApiOperation({ summary: "Reactivate a withdrawn bid (seeker)" })
+  reactivateBid(
+    @Param("bidId") bidId: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.bidsService.reactivateBid(bidId, user.sub);
   }
 }

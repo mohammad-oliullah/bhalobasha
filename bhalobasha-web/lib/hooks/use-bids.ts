@@ -6,6 +6,7 @@ import {
   withdrawBid,
   acceptBid,
   rejectBid,
+  reactivateBid,
 } from "@/lib/api/bids";
 
 export function useBidSummary(listingId: string) {
@@ -75,6 +76,17 @@ export function useRejectBid(listingId: string) {
     mutationFn: (bidId: string) => rejectBid(bidId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bid-summary", listingId] });
+    },
+  });
+}
+
+export function useReactivateBid(listingId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (bidId: string) => reactivateBid(bidId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bid-summary", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["my-bids"] });
     },
   });
 }

@@ -323,4 +323,48 @@ export class BidsService {
 
     return { expired: result.count };
   }
+
+  // Seeker reactivates their own withdrawn bid
+  async reactivateBid(bidId: string, seekerId: string) {
+    const bid = await this.prisma.bid.findUnique({
+      where: { id: bidId },
+      include: { listing: true },
+    });
+
+    if (!bid) throw new NotFoundException("Bid not found");
+
+    if (bid.seekerId !== seekerId) {
+      throw new ForbiddenException("This is not your bid");
+    }
+
+    if (bid.status !== BidStatus.WITHDRAWN) {
+      throw new BadRequestException("Only withdrawn bids can be reactivated");
+    }
+
+    // Check listing is still active and bidding still open
+    if (bid.listing.status !== ListingStatus.ACTIVE) {
+      throw new BadRequestException("This listing is no longer active");
+    }
+
+    if (!bid.listing.isBiddingEnabled) {
+      throw new BadRequestException(
+        "Bidding is no longer enabled on this listing",
+      );
+    }
+
+    if (
+      bid.listing.biddingDeadline &&
+      new Date() > bid.listing.biddingDeadline
+    ) {
+      throw new BadRequestException("Bidding deadline has passed");
+    }
+
+    return this.prisma.bid.update({
+      where: { id: bidId },
+      data: { status: BidStatus.PENDING },
+      include: {
+        seeker: { select: { id: true, name: true, phone: true } },
+      },
+    });
+  }
 }
