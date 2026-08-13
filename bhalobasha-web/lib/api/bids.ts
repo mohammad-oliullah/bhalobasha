@@ -31,3 +31,8 @@ export async function getMyBids(): Promise<Bid[]> {
   const { data } = await apiClient.get<Bid[]>("/users/me/bids");
   return data;
 }
+
+export async function reactivateBid(bidId: string): Promise<Bid> {
+  const { data } = await apiClient.patch<Bid>(`/bids/${bidId}/reactivate`);
+  return data;
+}

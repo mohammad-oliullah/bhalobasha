@@ -39,7 +39,10 @@ export function ListingCard({ listing }: ListingCardProps) {
             </div>
           )}
           <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-            <Badge className={LISTING_TYPE_COLORS[listing.type]}>
+            <Badge
+              variant="custom"
+              className={LISTING_TYPE_COLORS[listing.type]}
+            >
               {LISTING_TYPE_LABELS[listing.type].split(" / ")[0]}
             </Badge>
           </div>
@@ -55,7 +58,10 @@ export function ListingCard({ listing }: ListingCardProps) {
               </Badge>
             )}
             {listing.utilitiesIncluded && (
-              <Badge variant="outline" className="flex items-center gap-0.5 text-xs">
+              <Badge
+                variant="outline"
+                className="flex items-center gap-0.5 text-xs"
+              >
                 <Zap className="h-3 w-3" />
                 Utilities
               </Badge>
