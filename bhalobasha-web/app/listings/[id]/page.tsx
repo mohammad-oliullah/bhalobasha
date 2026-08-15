@@ -77,8 +77,6 @@ export default function ListingDetailPage() {
         isAuthenticated={isAuthenticated}
       />
 
-      {/* -----> Next task: WHERE is listingaction section, this is not visible */}
-      {/* Test contact with owner posting new list with bidding enable == false */}
       <ListingActions
         listing={listing}
         isOwner={isOwner}
