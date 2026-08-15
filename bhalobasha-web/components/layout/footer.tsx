@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BhalobashaLogo } from "../common/bhalobasha-logo";
 
 export function Footer() {
   return (
@@ -6,10 +7,10 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <h3 className="text-lg font-bold text-primary">Bhalobasha</h3>
+            <BhalobashaLogo />
             <p className="mt-2 text-sm text-muted">
-              ভালোবাসা — Bangladesh&apos;s trusted platform to find flats, rooms,
-              sublets, bachelor seats, and mess accommodations.
+              ভালোবাসা — Bangladesh&apos;s trusted platform to find flats,
+              rooms, sublets, bachelor seats, and mess accommodations.
             </p>
           </div>
           <div>
@@ -21,7 +22,10 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/listings/new" className="hover:text-primary">
+                <Link
+                  href="/dashboard/listings/new"
+                  className="hover:text-primary"
+                >
                   Post a Listing
                 </Link>
               </li>

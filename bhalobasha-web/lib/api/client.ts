@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from "@/lib/store/auth.store";
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL + "/api/v1",
@@ -19,7 +20,17 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       const { clearAuthCookie } = await import("@/lib/actions/auth");
       await clearAuthCookie();
-      window.location.href = "/login";
+      useAuthStore.getState().clearAuth();
+
+      // Only redirect to login if on a protected route
+      if (
+        typeof window !== "undefined" &&
+        window.location.pathname.startsWith("/dashboard")
+      ) {
+        window.location.href = "/login";
+      }
+      // On public pages (/, /listings, /listings/:id) — do nothing
+      // Just clear the state silently
     }
     return Promise.reject(error);
   },
