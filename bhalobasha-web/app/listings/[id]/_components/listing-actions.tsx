@@ -19,7 +19,7 @@ export function ListingActions({
 }: ListingActionsProps) {
   return (
     <div className="mt-8 flex flex-wrap gap-3">
-      {!listing.isBiddingEnabled && (
+      {!isOwner && (
         <Button size="lg" onClick={onContactClick}>
           <Phone className="h-5 w-5" />
           Contact Owner

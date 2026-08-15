@@ -76,6 +76,7 @@ export default function ListingDetailPage() {
         isOwner={isOwner}
         isAuthenticated={isAuthenticated}
       />
+
       <ListingActions
         listing={listing}
         isOwner={isOwner}

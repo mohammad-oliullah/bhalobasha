@@ -1,4 +1,4 @@
 {
-    "editor.formatOnSaveMode": "modificationsIfAvailable",
-    "editor.formatOnSave": true
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnSave": true
 }
