@@ -135,37 +135,3 @@ npm install
 cp .env.local.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:4040
 npm run dev                         # → http://localhost:3000
 ```
-
----
-
-## Roadmap
-
-### Shipped ✅
-
-- [x] NestJS API — auth (phone + email OTP), listings CRUD, bidding system, location hierarchy, media upload, role-based access
-- [x] Next.js 14 web app — browse, search, listing detail, owner dashboard, bidding UI, seeker bid tracking, undo withdraw
-- [x] Demo login — one-click recruiter access (Seeker / Owner / Admin)
-- [x] Deployed — Railway (API + PostgreSQL) + Vercel (frontend)
-
-### Up Next 🔄
-
-- [ ] Map view (Leaflet + OpenStreetMap — listing pins, click → detail)
-- [ ] Bangla ↔ English i18n toggle (next-intl)
-- [ ] Save / favorite listings (optimistic UI, many-to-many)
-- [ ] Open Graph meta tags (rich WhatsApp / social previews per listing)
-- [ ] Admin moderation queue (approve / reject pending listings)
-
-### Later 📋
-
-- [ ] Payment integration (SSLCommerz → bKash + Nagad + cards)
-- [ ] Saved search alerts (email when new listing matches saved filters)
-- [ ] Tenant / landlord reviews after tenancy ends
-- [ ] NID-based owner verification badge
-- [ ] React Native mobile app (Android first, same API)
-- [ ] PostGIS geo search ("listings near me")
-
----
-
-## License
-
-MIT · Built with ❤️ for Bangladesh
