@@ -8,6 +8,11 @@ import {
   ListingStatus,
 } from "@/types";
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
 export async function getListings(
   filters?: ListingFilters,
 ): Promise<Listing[]> {
@@ -91,4 +96,18 @@ export async function getPublicListingBids(
     `/listings/${listingId}/bids/public`,
   );
   return data;
+}
+
+export async function getListingServer(id: string): Promise<Listing> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/listings/${id}`,
+    {
+      next: { revalidate: 60 }, // cache for 60 seconds
+    },
+  );
+
+  if (!res.ok) throw new Error("Listing not found");
+
+  const json: ApiResponse<Listing> = await res.json();
+  return json.data;
 }
