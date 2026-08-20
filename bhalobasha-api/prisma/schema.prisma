@@ -80,6 +80,7 @@ model User {
   updatedAt    DateTime  @updatedAt
   listings     Listing[]
   bids         Bid[]
+  favorites FavoriteListing[]
 }
 
 model OtpVerification {
@@ -168,6 +169,8 @@ model Listing {
   biddingDeadline   DateTime?
   bids              Bid[]
 
+  favoritedBy FavoriteListing[]
+
   @@index([areaId])
   @@index([ownerId])
   @@index([status])
@@ -183,4 +186,17 @@ model ListingPhoto {
   createdAt DateTime @default(now())
 
   @@index([listingId])
+}
+
+model FavoriteListing {
+  id        String    @id @default(uuid())
+  userId    String
+  listingId String
+  createdAt DateTime   @default(now())
+
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing   Listing     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId])
+  @@index([userId]) 
 }
