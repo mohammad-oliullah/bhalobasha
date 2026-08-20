@@ -84,7 +84,7 @@ export function PhotoUploader({
       <div
         className={cn(
           "flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 transition-colors",
-          dragOver ? "border-primary bg-primary-light" : "border-gray-200",
+          dragOver ? "border-primary bg-primary-light" : "border-border",
           uploading && "opacity-50 pointer-events-none",
         )}
         onDragOver={(e) => {

@@ -24,7 +24,7 @@ export function BidSummaryCard({ summary }: BidSummaryProps) {
       <h3 className="font-semibold text-amber-800">Bidding Open</h3>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="flex flex-col items-center rounded-lg bg-white p-3 shadow-sm">
+        <div className="flex flex-col items-center rounded-lg bg-card p-3 shadow-sm">
           <Users className="h-4 w-4 text-amber-500 mb-1" />
           <span className="text-lg font-bold text-gray-800">
             {summary.totalBids}
@@ -32,7 +32,7 @@ export function BidSummaryCard({ summary }: BidSummaryProps) {
           <span className="text-xs text-gray-500">Bids</span>
         </div>
 
-        <div className="flex flex-col items-center rounded-lg bg-white p-3 shadow-sm">
+        <div className="flex flex-col items-center rounded-lg bg-card p-3 shadow-sm">
           <TrendingUp className="h-4 w-4 text-green-500 mb-1" />
           <span className="text-lg font-bold text-gray-800">
             {summary.highestBid ? formatBDT(summary.highestBid) : "—"}
@@ -40,7 +40,7 @@ export function BidSummaryCard({ summary }: BidSummaryProps) {
           <span className="text-xs text-gray-500">Highest</span>
         </div>
 
-        <div className="flex flex-col items-center rounded-lg bg-white p-3 shadow-sm">
+        <div className="flex flex-col items-center rounded-lg bg-card p-3 shadow-sm">
           <Clock className="h-4 w-4 text-red-400 mb-1" />
           <span className="text-sm font-bold text-gray-800">
             {isExpired ? "Ended" : (timeLeft ?? "—")}

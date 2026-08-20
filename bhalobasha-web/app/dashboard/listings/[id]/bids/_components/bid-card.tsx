@@ -12,8 +12,8 @@ const bidStatusConfig = {
   PENDING: { label: "Pending", className: "bg-amber-100 text-amber-700" },
   ACCEPTED: { label: "Accepted", className: "bg-green-100 text-green-700" },
   REJECTED: { label: "Rejected", className: "bg-red-100 text-red-600" },
-  WITHDRAWN: { label: "Withdrawn", className: "bg-gray-100 text-gray-500" },
-  EXPIRED: { label: "Expired", className: "bg-gray-100 text-gray-400" },
+  WITHDRAWN: { label: "Withdrawn", className: "bg-muted/20 text-gray-500" },
+  EXPIRED: { label: "Expired", className: "bg-muted/20 text-gray-400" },
 };
 
 interface BidCardProps {
@@ -80,7 +80,7 @@ export function BidCard({ bid, listingId, isHighest, isLocked }: BidCardProps) {
             </div>
 
             {bid.message && (
-              <p className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-600 italic">
+              <p className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-muted-foreground italic">
                 {bid.message}
               </p>
             )}

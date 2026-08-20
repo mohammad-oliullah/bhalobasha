@@ -24,9 +24,11 @@ export function ListingGrid({ listings, isLoading }: ListingGridProps) {
 
   if (listings.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 py-16 text-center">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16 text-center">
         <p className="text-lg font-medium">কোনো বাসা পাওয়া যায়নি</p>
-        <p className="mt-1 text-sm text-muted">No listings found. Try adjusting your filters.</p>
+        <p className="mt-1 text-sm text-muted">
+          No listings found. Try adjusting your filters.
+        </p>
       </div>
     );
   }

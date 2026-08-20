@@ -11,7 +11,7 @@ export function CtaBanner() {
         asChild
         variant="secondary"
         size="lg"
-        className="mt-6 bg-white text-primary hover:bg-white/90"
+        className="mt-6 bg-card text-primary hover:bg-card/90"
       >
         <a href="/dashboard/listings/new">Post a Listing</a>
       </Button>

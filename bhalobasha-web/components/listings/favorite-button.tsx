@@ -55,7 +55,9 @@ export function FavoriteButton({ listingId, className }: FavoriteButtonProps) {
       <Heart
         className={cn(
           "h-4 w-4 transition-colors",
-          isFavorited ? "fill-red-500 text-red-500" : "fill-none text-gray-600",
+          isFavorited
+            ? "fill-red-500 text-red-500"
+            : "fill-none text-muted-foreground",
         )}
       />
     </button>

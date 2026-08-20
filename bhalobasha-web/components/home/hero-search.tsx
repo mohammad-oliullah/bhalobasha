@@ -56,7 +56,7 @@ export function HeroSearch() {
           bachelor seats
         </p>
 
-        <div className="mx-auto mt-10 max-w-3xl rounded-xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6">
+        <div className="mx-auto mt-10 max-w-3xl rounded-xl border border-gray-100 bg-card p-4 shadow-sm sm:p-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-1.5 text-left">
               <Label>Division</Label>

@@ -49,10 +49,7 @@ export default function ListingsPage() {
   const [page, setPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const filters = useMemo(
-    () => parseFilters(searchParams),
-    [searchParams],
-  );
+  const filters = useMemo(() => parseFilters(searchParams), [searchParams]);
 
   const apiFilters: ListingFilters = {
     type: filters.type,
@@ -80,7 +77,10 @@ export default function ListingsPage() {
     return result;
   }, [listings, filters.isFurnished, filters.utilitiesIncluded]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / LISTINGS_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filtered.length / LISTINGS_PER_PAGE),
+  );
   const paginated = filtered.slice(
     (page - 1) * LISTINGS_PER_PAGE,
     page * LISTINGS_PER_PAGE,
@@ -103,8 +103,7 @@ export default function ListingsPage() {
       if (newFilters.minRent) params.set("minRent", String(newFilters.minRent));
       if (newFilters.maxRent) params.set("maxRent", String(newFilters.maxRent));
       if (newFilters.isFurnished) params.set("isFurnished", "true");
-      if (newFilters.utilitiesIncluded)
-        params.set("utilitiesIncluded", "true");
+      if (newFilters.utilitiesIncluded) params.set("utilitiesIncluded", "true");
       setPage(1);
       router.push(`/listings?${params.toString()}`);
     },
@@ -116,9 +115,7 @@ export default function ListingsPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Browse Listings</h1>
-          <p className="text-muted">
-            {filtered.length} টি বাসা পাওয়া গেছে
-          </p>
+          <p className="text-muted">{filtered.length} টি বাসা পাওয়া গেছে</p>
         </div>
         <Button
           variant="outline"
@@ -136,7 +133,7 @@ export default function ListingsPage() {
             showMobileFilters ? "block" : "hidden lg:block"
           }`}
         >
-          <div className="sticky top-20 rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="sticky top-20 rounded-xl border border-gray-100 bg-card p-5 shadow-sm">
             <h2 className="mb-4 font-semibold">Filters</h2>
             <ListingFiltersPanel filters={filters} onChange={updateFilters} />
           </div>
