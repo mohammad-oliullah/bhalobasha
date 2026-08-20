@@ -12,6 +12,7 @@ import {
 } from "@/lib/utils/constants";
 import { formatBDT, formatDate, isFutureDate } from "@/lib/utils/format";
 import { Home, Zap } from "lucide-react";
+import { FavoriteButton } from "./favorite-button";
 
 interface ListingCardProps {
   listing: Listing;
@@ -38,6 +39,7 @@ export function ListingCard({ listing }: ListingCardProps) {
               <Home className="h-12 w-12 opacity-30" />
             </div>
           )}
+          {/* Type badge — top left */}
           <div className="absolute left-2 top-2 flex flex-wrap gap-1">
             <Badge
               variant="custom"
@@ -46,6 +48,12 @@ export function ListingCard({ listing }: ListingCardProps) {
               {LISTING_TYPE_LABELS[listing.type].split(" / ")[0]}
             </Badge>
           </div>
+
+          {/* Favorite button — top right */}
+          <FavoriteButton
+            listingId={listing.id}
+            className="absolute right-2 top-2"
+          />
         </div>
         <CardContent className="p-4">
           <div className="mb-2 flex flex-wrap gap-1">
