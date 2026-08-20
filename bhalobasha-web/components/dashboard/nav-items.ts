@@ -1,4 +1,11 @@
-import { LayoutDashboard, Home, User, PlusCircle, Gavel } from "lucide-react";
+import {
+  LayoutDashboard,
+  Home,
+  User,
+  PlusCircle,
+  Gavel,
+  Heart,
+} from "lucide-react";
 
 export const navItems = [
   {
@@ -26,4 +33,5 @@ export const navItems = [
     label: "Profile",
     icon: User,
   },
+  { href: "/dashboard/favorites", label: "Saved", icon: Heart },
 ];
