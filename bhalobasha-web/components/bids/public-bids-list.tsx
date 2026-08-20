@@ -18,7 +18,7 @@ export function PublicBidsList({
 }: PublicBidsListProps) {
   if (bids.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-8 text-center text-sm text-muted">
+      <div className="rounded-xl border border-dashed border-border bg-gray-50 px-4 py-8 text-center text-sm text-muted">
         No bids yet. Be the first to place one!
       </div>
     );
@@ -46,7 +46,7 @@ export function PublicBidsList({
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-600">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted/20 text-xs font-bold text-muted-foreground">
                   #{index + 1}
                 </span>
                 <div className="min-w-0">

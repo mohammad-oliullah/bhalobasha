@@ -23,7 +23,7 @@ export function ListingPhotos({ photos, title }: ListingPhotosProps) {
 
   if (photos.length === 0) {
     return (
-      <div className="flex aspect-[16/7] max-h-[420px] items-center justify-center rounded-xl bg-gray-100">
+      <div className="flex aspect-[16/7] max-h-[420px] items-center justify-center rounded-xl bg-muted/20">
         <Home className="h-16 w-16 text-muted opacity-30" />
       </div>
     );
@@ -34,7 +34,7 @@ export function ListingPhotos({ photos, title }: ListingPhotosProps) {
       <div className="space-y-3">
         <button
           type="button"
-          className="relative aspect-[16/7] w-full max-h-[420px] overflow-hidden rounded-xl bg-gray-100"
+          className="relative aspect-[16/7] w-full max-h-[420px] overflow-hidden rounded-xl bg-muted/20"
           onClick={() => setLightboxOpen(true)}
         >
           <Image

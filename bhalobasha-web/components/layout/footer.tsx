@@ -3,7 +3,7 @@ import { BhalobashaLogo } from "../common/bhalobasha-logo";
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-100 bg-white">
+    <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
@@ -45,7 +45,7 @@ export function Footer() {
             </p>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-100 pt-6 text-center text-sm text-muted">
+        <div className="mt-8 border-t border-border pt-6 text-center text-sm text-muted">
           © {new Date().getFullYear()} Bhalobasha. All rights reserved.
         </div>
       </div>

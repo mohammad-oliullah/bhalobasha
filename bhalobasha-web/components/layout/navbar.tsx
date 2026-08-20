@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { cn } from "@/lib/utils";
 import { BhalobashaLogo } from "../common/bhalobasha-logo";
+import { ThemeToggle } from "../ui/theme-toggle";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -18,7 +19,7 @@ export function Navbar() {
   const isDashboard = pathname.startsWith("/dashboard");
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <BhalobashaLogo />
@@ -75,6 +76,8 @@ export function Navbar() {
               </Link>
             </Button>
           )}
+
+          <ThemeToggle />
 
           <Button asChild variant="ghost" size="icon" className="md:hidden">
             <Link href="/">

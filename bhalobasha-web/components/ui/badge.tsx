@@ -8,8 +8,8 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: "bg-primary-light text-primary",
-        secondary: "bg-gray-100 text-gray-700",
-        outline: "border border-gray-200 text-foreground",
+        secondary: "bg-muted/20 text-gray-700",
+        outline: "border border-border text-foreground",
         custom: "", // ← empty — lets className take full control
       },
     },

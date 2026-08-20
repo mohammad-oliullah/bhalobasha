@@ -44,7 +44,7 @@ export const LISTING_TYPE_COLORS: Record<ListingType, string> = {
 export const LISTING_STATUS_COLORS: Record<ListingStatus, string> = {
   [ListingStatus.ACTIVE]: "bg-green-100 text-green-800",
   [ListingStatus.FILLED]: "bg-blue-100 text-blue-800",
-  [ListingStatus.EXPIRED]: "bg-gray-100 text-gray-600",
+  [ListingStatus.EXPIRED]: "bg-muted/20 text-muted-foreground",
   [ListingStatus.DRAFT]: "bg-yellow-100 text-yellow-800",
 };
 

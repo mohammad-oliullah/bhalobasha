@@ -10,7 +10,7 @@ export function StepIndicator({ step }: { step: number }) {
           <div
             className={cn(
               "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-medium",
-              i <= step ? "bg-primary text-white" : "bg-gray-100 text-muted",
+              i <= step ? "bg-primary text-white" : "bg-muted/20 text-muted",
             )}
           >
             {i + 1}

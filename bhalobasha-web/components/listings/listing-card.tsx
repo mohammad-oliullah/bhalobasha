@@ -25,7 +25,7 @@ export function ListingCard({ listing }: ListingCardProps) {
   return (
     <Link href={`/listings/${listing.id}`}>
       <Card className="group overflow-hidden transition-shadow hover:shadow-md">
-        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted/20">
           {primaryPhoto ? (
             <Image
               src={primaryPhoto.url}
