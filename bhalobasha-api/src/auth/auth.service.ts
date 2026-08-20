@@ -16,6 +16,7 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   private readonly DEMO_ACCOUNTS = [
     { email: "demo-seeker@bhalobasha.com", code: "123456", role: "SEEKER" },
+    { email: "demo-seeker1@bhalobasha.com", code: "123456", role: "SEEKER" },
     { email: "demo-owner@bhalobasha.com", code: "123456", role: "OWNER" },
     { email: "demo-admin@bhalobasha.com", code: "123456", role: "ADMIN" },
   ];

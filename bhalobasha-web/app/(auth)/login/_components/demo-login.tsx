@@ -14,6 +14,13 @@ const DEMO_ROLES = [
       "Post listings, Browse listings, place bids, contact owners, manage bids, mark as filled",
   },
   {
+    email: "demo-seeker1@bhalobasha.com",
+    icon: "👤",
+    label: "Seeker1",
+    description:
+      "Post listings, Browse listings, place bids, contact owners, manage bids, mark as filled",
+  },
+  {
     email: "demo-owner@bhalobasha.com",
     icon: "🏠",
     label: "Owner",
