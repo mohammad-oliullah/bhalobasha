@@ -10,7 +10,7 @@ import { CreateListingDto, MAX_LISTING_PHOTOS } from "./dto/create-listing.dto";
 import { UpdateListingDto } from "./dto/update-listing.dto";
 import { FilterListingDto } from "./dto/filter-listing.dto";
 
-const listingInclude = {
+export const listingInclude = {
   photos: true,
   area: {
     include: {
