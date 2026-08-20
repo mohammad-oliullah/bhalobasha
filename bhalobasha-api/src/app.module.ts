@@ -10,6 +10,7 @@ import { BidsService } from "./bids/bids.service";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { BidsModule } from "./bids/bids.module";
+import { HealthController } from "./health/health.controller";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { BidsModule } from "./bids/bids.module";
     MediaModule,
     BidsModule,
   ],
+  controllers: [HealthController],
   providers: [
     {
       provide: APP_GUARD,
