@@ -133,7 +133,7 @@ export default function ListingsPage() {
             showMobileFilters ? "block" : "hidden lg:block"
           }`}
         >
-          <div className="sticky top-20 rounded-xl border border-gray-100 bg-card p-5 shadow-sm">
+          <div className="sticky top-20 rounded-xl border border-border bg-card p-5 shadow-sm">
             <h2 className="mb-4 font-semibold">Filters</h2>
             <ListingFiltersPanel filters={filters} onChange={updateFilters} />
           </div>

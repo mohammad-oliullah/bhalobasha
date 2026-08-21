@@ -9,32 +9,50 @@
 
     --primary: 26 107 60;
     --primary-light: 232 245 238;
+    --primary-foreground: 255 255 255;
 
     --muted: 107 114 128;
+    --muted-foreground: 75 85 99;
     --accent: 245 158 11;
+    --accent-foreground: 69 26 3;
     --info: 37 99 235;
 
     --border: 229 231 235;
     --card: 255 255 255;
+    --surface-muted: 249 250 251;
+    --popover: 255 255 255;
+    --destructive: 220 38 38;
+    --destructive-foreground: 255 255 255;
   }
 
   .dark {
     --background: 15 20 25;
     --foreground: 237 237 237;
 
-    --primary: 26 71 65;
-    --primary-light: 42 93 84;
+    --primary: 52 211 153;
+    --primary-light: 20 83 65;
+    --primary-foreground: 6 47 35;
 
     --muted: 156 163 175;
+    --muted-foreground: 203 213 225;
     --accent: 251 191 36;
+    --accent-foreground: 69 26 3;
     --info: 96 165 250;
 
     --border: 40 50 60;
     --card: 22 30 38;
+    --surface-muted: 30 41 59;
+    --popover: 22 30 38;
+    --destructive: 248 113 113;
+    --destructive-foreground: 69 10 10;
   }
 }
 
 body {
   background-color: rgb(var(--background));
   color: rgb(var(--foreground));
+}
+
+* {
+  border-color: rgb(var(--border));
 }

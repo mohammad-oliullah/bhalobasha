@@ -37,7 +37,7 @@ export default function FavoritesPage() {
 
       {favorites.length === 0 ? (
         <div className="rounded-xl border border-dashed py-16 text-center">
-          <Heart className="mx-auto mb-3 h-10 w-10 text-gray-300" />
+          <Heart className="mx-auto mb-3 h-10 w-10 text-muted/50" />
           <p className="text-muted">No saved listings yet.</p>
           <Button asChild className="mt-4">
             <Link href="/listings">Browse Listings</Link>

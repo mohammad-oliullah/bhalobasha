@@ -22,8 +22,8 @@ export function LoginToggle({ method, onChange }: LoginToggleProps) {
           className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
             method === tab.value
               ? tab.value === "demo"
-                ? "bg-amber-500 text-white shadow-sm"
-                : "bg-primary text-white shadow-sm"
+                ? "bg-amber-500 text-amber-950 shadow-sm"
+                : "bg-primary text-primary-foreground shadow-sm"
               : "text-muted hover:text-foreground"
           }`}
         >
