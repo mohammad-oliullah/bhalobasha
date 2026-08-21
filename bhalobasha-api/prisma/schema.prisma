@@ -171,6 +171,9 @@ model Listing {
 
   favoritedBy FavoriteListing[]
 
+  latitude  Float?
+  longitude Float?
+
   @@index([areaId])
   @@index([ownerId])
   @@index([status])
