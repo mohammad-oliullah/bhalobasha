@@ -20,37 +20,37 @@ export function BidSummaryCard({ summary }: BidSummaryProps) {
   const timeLeft = deadline ? getTimeLeft(deadline) : null;
 
   return (
-    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-3">
-      <h3 className="font-semibold text-amber-800">Bidding Open</h3>
+    <div className="rounded-xl border border-amber-300/70 bg-amber-100/70 p-4 text-amber-950 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-100 space-y-3">
+      <h3 className="font-semibold">Bidding Open</h3>
 
       <div className="grid grid-cols-3 gap-3">
         <div className="flex flex-col items-center rounded-lg bg-card p-3 shadow-sm">
           <Users className="h-4 w-4 text-amber-500 mb-1" />
-          <span className="text-lg font-bold text-gray-800">
+          <span className="text-lg font-bold text-foreground">
             {summary.totalBids}
           </span>
-          <span className="text-xs text-gray-500">Bids</span>
+          <span className="text-xs text-muted-foreground">Bids</span>
         </div>
 
         <div className="flex flex-col items-center rounded-lg bg-card p-3 shadow-sm">
           <TrendingUp className="h-4 w-4 text-green-500 mb-1" />
-          <span className="text-lg font-bold text-gray-800">
+          <span className="text-lg font-bold text-foreground">
             {summary.highestBid ? formatBDT(summary.highestBid) : "—"}
           </span>
-          <span className="text-xs text-gray-500">Highest</span>
+          <span className="text-xs text-muted-foreground">Highest</span>
         </div>
 
         <div className="flex flex-col items-center rounded-lg bg-card p-3 shadow-sm">
           <Clock className="h-4 w-4 text-red-400 mb-1" />
-          <span className="text-sm font-bold text-gray-800">
+          <span className="text-sm font-bold text-foreground">
             {isExpired ? "Ended" : (timeLeft ?? "—")}
           </span>
-          <span className="text-xs text-gray-500">Left</span>
+          <span className="text-xs text-muted-foreground">Left</span>
         </div>
       </div>
 
       {summary.minimumBid && (
-        <p className="text-xs text-amber-700">
+        <p className="text-xs text-amber-900 dark:text-amber-200">
           Minimum bid: {formatBDT(summary.minimumBid)}
         </p>
       )}

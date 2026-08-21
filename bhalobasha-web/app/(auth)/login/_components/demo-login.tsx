@@ -79,12 +79,12 @@ export function DemoLogin() {
             type="button"
             onClick={() => handleDemoLogin(role.email)}
             disabled={verifyOtp.isPending}
-            className="w-full rounded-lg border border-amber-200 bg-card px-4 py-3 text-left transition-all hover:border-amber-400 hover:bg-amber-50 disabled:opacity-50"
+            className="w-full rounded-lg border border-amber-300/70 bg-card px-4 py-3 text-left transition-all hover:border-amber-400 hover:bg-amber-100/70 dark:border-amber-400/40 dark:hover:bg-amber-400/10 disabled:opacity-50"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">{role.icon}</span>
               <div>
-                <p className="font-medium text-gray-800">{role.label}</p>
+                <p className="font-medium text-foreground">{role.label}</p>
                 <p className="text-xs text-muted">{role.description}</p>
               </div>
             </div>

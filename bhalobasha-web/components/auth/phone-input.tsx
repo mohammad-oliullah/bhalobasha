@@ -23,7 +23,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 
     return (
       <div className={cn("flex", className)}>
-        <div className="flex h-10 items-center rounded-l-lg border border-r-0 border-border bg-gray-50 px-3 text-sm font-medium text-muted">
+        <div className="flex h-10 items-center rounded-l-lg border border-r-0 border-border bg-surface-muted px-3 text-sm font-medium text-muted-foreground">
           +880
         </div>
         <Input

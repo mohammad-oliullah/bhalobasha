@@ -7,7 +7,7 @@ interface StatsBarProps {
 
 export function StatsBar({ listingCount, areaCount }: StatsBarProps) {
   return (
-    <section className="border-y border-gray-100 bg-card py-8">
+    <section className="border-y border-border bg-card py-8">
       <div className="mx-auto grid max-w-4xl grid-cols-3 gap-4 px-4 text-center">
         <div>
           <p className="text-2xl font-bold text-primary">{listingCount}+</p>

@@ -18,7 +18,7 @@ export function PublicBidsList({
 }: PublicBidsListProps) {
   if (bids.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-gray-50 px-4 py-8 text-center text-sm text-muted">
+      <div className="rounded-xl border border-dashed border-border bg-surface-muted px-4 py-8 text-center text-sm text-muted-foreground">
         No bids yet. Be the first to place one!
       </div>
     );
@@ -26,7 +26,7 @@ export function PublicBidsList({
 
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-semibold text-gray-700">
+      <h3 className="text-sm font-semibold text-foreground">
         Current Bids ({bids.length})
       </h3>
       <div className="space-y-2">
@@ -39,10 +39,10 @@ export function PublicBidsList({
               key={bid.id}
               className={`flex items-center justify-between rounded-lg border px-4 py-3 ${
                 isHighest
-                  ? "border-green-200 bg-green-50"
+                  ? "border-green-300/70 bg-green-100/70 dark:border-green-400/40 dark:bg-green-400/10"
                   : isMine
-                    ? "border-amber-200 bg-amber-50"
-                    : "border-gray-100 bg-white"
+                    ? "border-amber-300/70 bg-amber-100/70 dark:border-amber-400/40 dark:bg-amber-400/10"
+                    : "border-border bg-card"
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -55,12 +55,12 @@ export function PublicBidsList({
                       {bid.seeker?.name ?? "Anonymous Bidder"}
                     </p>
                     {isMine && (
-                      <Badge className="bg-amber-100 text-amber-700 text-xs">
+                      <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-400/20 dark:text-amber-200 text-xs">
                         You
                       </Badge>
                     )}
                     {isHighest && (
-                      <Badge className="bg-green-100 text-green-700 text-xs gap-1">
+                      <Badge className="bg-green-100 text-green-800 dark:bg-green-400/20 dark:text-green-200 text-xs gap-1">
                         <Crown className="h-3 w-3" />
                         Highest
                       </Badge>
