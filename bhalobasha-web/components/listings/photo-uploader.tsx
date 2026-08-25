@@ -84,7 +84,7 @@ export function PhotoUploader({
       <div
         className={cn(
           "flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 transition-colors",
-          dragOver ? "border-primary bg-primary-light" : "border-gray-200",
+          dragOver ? "border-primary bg-primary-light" : "border-border",
           uploading && "opacity-50 pointer-events-none",
         )}
         onDragOver={(e) => {
@@ -104,7 +104,7 @@ export function PhotoUploader({
           or click to browse (max {maxPhotos}, JPEG/PNG/WebP, 5MB each)
         </p>
         <label className="mt-4 cursor-pointer">
-          <span className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90">
+          <span className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
             {uploading ? "Uploading..." : "Choose Files"}
           </span>
           <input
@@ -133,7 +133,7 @@ export function PhotoUploader({
                 sizes="150px"
               />
               {index === 0 && (
-                <span className="absolute left-1 top-1 rounded bg-primary px-1.5 py-0.5 text-xs text-white">
+                <span className="absolute left-1 top-1 rounded bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
                   Primary
                 </span>
               )}

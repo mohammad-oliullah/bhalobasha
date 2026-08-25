@@ -31,7 +31,13 @@ async function main() {
   for (const t of thanas) {
     await prisma.thana.upsert({
       where: { id: t.id },
-      update: { name: t.name, nameBn: t.nameBn, districtId: t.districtId },
+      update: {
+        name: t.name,
+        nameBn: t.nameBn,
+        districtId: t.districtId,
+        latitude: (t as any).latitude ?? null,
+        longitude: (t as any).longitude ?? null,
+      },
       create: t,
     });
   }
@@ -41,7 +47,13 @@ async function main() {
   for (const a of areas) {
     await prisma.area.upsert({
       where: { id: a.id },
-      update: { name: a.name, nameBn: a.nameBn, thanaId: a.thanaId },
+      update: {
+        name: a.name,
+        nameBn: a.nameBn,
+        thanaId: a.thanaId,
+        latitude: (a as any).latitude ?? null,
+        longitude: (a as any).longitude ?? null,
+      },
       create: a,
     });
   }

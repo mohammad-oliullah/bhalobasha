@@ -71,7 +71,7 @@ export function ListingBiddingSection({
 
       {isOwner && (
         <Button
-          className="w-full bg-[#1a6b3c] hover:bg-[#145c32]"
+          className="w-full"
           onClick={() => router.push(`/dashboard/listings/${listing.id}/bids`)}
         >
           <Gavel className="h-4 w-4 mr-2" />
@@ -86,7 +86,7 @@ export function ListingBiddingSection({
           ) : (
             !biddingDeadlinePassed && (
               <Button
-                className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+                className="w-full bg-amber-500 text-amber-950 hover:bg-amber-400"
                 onClick={() => setBidModalOpen(true)}
               >
                 <Gavel className="h-4 w-4 mr-2" />

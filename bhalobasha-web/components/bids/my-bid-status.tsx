@@ -13,8 +13,8 @@ const statusConfig = {
   PENDING: { label: "Pending", className: "bg-amber-100 text-amber-700" },
   ACCEPTED: { label: "Accepted 🎉", className: "bg-green-100 text-green-700" },
   REJECTED: { label: "Rejected", className: "bg-red-100 text-red-600" },
-  WITHDRAWN: { label: "Withdrawn", className: "bg-gray-100 text-gray-500" },
-  EXPIRED: { label: "Expired", className: "bg-gray-100 text-gray-400" },
+  WITHDRAWN: { label: "Withdrawn", className: "bg-muted/20 text-muted-foreground" },
+  EXPIRED: { label: "Expired", className: "bg-muted/20 text-muted" },
 };
 
 const UNDO_SECONDS = 10;
@@ -94,18 +94,20 @@ export function MyBidStatus({ bid, listingId }: MyBidStatusProps) {
   }
 
   return (
-    <div className="rounded-xl border bg-white p-4 space-y-2">
+    <div className="rounded-xl border bg-card p-4 space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-600">Your Bid</span>
+        <span className="text-sm font-medium text-muted-foreground">
+          Your Bid
+        </span>
         <Badge className={config.className}>{config.label}</Badge>
       </div>
 
-      <p className="text-2xl font-bold text-[#1a6b3c]">
+      <p className="text-2xl font-bold text-primary">
         {formatBDT(bid.amount)}
       </p>
 
       {bid.message && (
-        <p className="text-xs text-gray-500 italic">{bid.message}</p>
+        <p className="text-xs text-muted-foreground italic">{bid.message}</p>
       )}
 
       {/* PENDING — show withdraw button */}
@@ -123,10 +125,10 @@ export function MyBidStatus({ bid, listingId }: MyBidStatusProps) {
 
       {/* Undo window — shown for 10 seconds after withdraw */}
       {justWithdrawn && (
-        <div className="rounded-lg bg-gray-50 border border-gray-200 p-3 space-y-2">
-          <p className="text-sm text-gray-600">
+        <div className="rounded-lg bg-surface-muted border border-border p-3 space-y-2">
+          <p className="text-sm text-muted-foreground">
             Bid withdrawn.{" "}
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-muted">
               Auto-closing in {countdown}s
             </span>
           </p>
@@ -144,7 +146,7 @@ export function MyBidStatus({ bid, listingId }: MyBidStatusProps) {
       {/* WITHDRAWN — undo window expired, inform they can re-bid */}
       {bid.status === "WITHDRAWN" && !justWithdrawn && (
         <div className="space-y-2">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground">
             You withdrew this bid. Reactivate it or place a new bid.
           </p>
           <Button
