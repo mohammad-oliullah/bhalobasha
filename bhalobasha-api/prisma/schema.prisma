@@ -118,6 +118,8 @@ model Thana {
   id         Int      @id @default(autoincrement())
   name       String
   nameBn     String
+  latitude   Float?
+  longitude  Float?
   districtId Int
   district   District @relation(fields: [districtId], references: [id])
   areas      Area[]
@@ -132,6 +134,9 @@ model Area {
   thanaId  Int
   thana    Thana     @relation(fields: [thanaId], references: [id])
   listings Listing[]
+
+  latitude   Float?
+  longitude  Float?
 
   @@index([thanaId])
 }

@@ -69,6 +69,8 @@ export interface Thana {
   name: string;
   nameBn: string;
   districtId: number;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface Area {
@@ -76,6 +78,8 @@ export interface Area {
   name: string;
   nameBn: string;
   thanaId: number;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface ListingPhoto {
@@ -134,6 +138,9 @@ export interface Listing {
   minimumBid: number | null;
   biddingDeadline: string | null;
   bids?: Bid[];
+
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface ListingFilters {

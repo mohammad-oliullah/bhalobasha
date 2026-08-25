@@ -18,6 +18,10 @@ export function Navbar() {
 
   const isDashboard = pathname.startsWith("/dashboard");
 
+  const displayName = user?.name || user?.phone || user?.email || "";
+  const truncatedName =
+    displayName.length > 50 ? `${displayName.slice(0, 50)}...` : displayName;
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -61,7 +65,7 @@ export function Navbar() {
                 href="/dashboard"
                 className="hidden text-sm text-muted transition-colors hover:text-primary sm:block"
               >
-                {user?.name || user?.phone || user?.email}
+                {truncatedName}
               </Link>
               <Button variant="outline" size="sm" onClick={() => logout()}>
                 <LogOut className="h-4 w-4" />
