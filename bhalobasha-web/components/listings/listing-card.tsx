@@ -11,7 +11,7 @@ import {
   TENANT_POLICY_LABELS,
 } from "@/lib/utils/constants";
 import { formatBDT, formatDate, isFutureDate } from "@/lib/utils/format";
-import { Home, Zap } from "lucide-react";
+import { Home, MapPin, Zap } from "lucide-react";
 import { FavoriteButton } from "./favorite-button";
 
 interface ListingCardProps {
@@ -81,6 +81,25 @@ export function ListingCard({ listing }: ListingCardProps) {
           <p className="mt-1 text-sm text-muted">
             {listing.area.nameBn || listing.area.name},{" "}
             {listing.area.thana.nameBn || listing.area.thana.name}
+            {listing.latitude != null && listing.longitude != null && (
+              <button
+                type="button"
+                aria-label="Open listing location in Google Maps"
+                title="Open location in Google Maps"
+                className="ml-2 inline-flex align-middle text-primary transition-colors hover:text-primary/70"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  window.open(
+                    `https://www.google.com/maps/search/?api=1&query=${listing.latitude},${listing.longitude}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
+                }}
+              >
+                <MapPin className="h-4 w-4" />
+              </button>
+            )}
           </p>
           <p className="mt-2 text-lg font-bold text-primary">
             {formatBDT(listing.rent)}

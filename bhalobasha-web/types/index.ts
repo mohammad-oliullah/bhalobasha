@@ -187,6 +187,8 @@ export interface CreateListingPayload {
   contactPhone: string;
   address: string;
   areaId: number;
+  latitude?: number;
+  longitude?: number;
   photos?: string[];
 }
 
