@@ -11,8 +11,9 @@ import {
   TENANT_POLICY_LABELS,
 } from "@/lib/utils/constants";
 import { formatBDT, formatDate, isFutureDate } from "@/lib/utils/format";
-import { Home, MapPin, Zap } from "lucide-react";
+import { Home, Zap } from "lucide-react";
 import { FavoriteButton } from "./favorite-button";
+import { ListingMapPreview } from "./listing-map-preview";
 
 interface ListingCardProps {
   listing: Listing;
@@ -23,8 +24,8 @@ export function ListingCard({ listing }: ListingCardProps) {
     listing.photos.find((p) => p.isPrimary) || listing.photos[0];
 
   return (
-    <Link href={`/listings/${listing.id}`}>
-      <Card className="group overflow-hidden transition-shadow hover:shadow-md">
+    <Card className="group overflow-hidden transition-shadow hover:shadow-md">
+      <Link href={`/listings/${listing.id}`}>
         <div className="relative aspect-[4/3] overflow-hidden bg-muted/20">
           {primaryPhoto ? (
             <Image
@@ -55,7 +56,9 @@ export function ListingCard({ listing }: ListingCardProps) {
             className="absolute right-2 top-2"
           />
         </div>
-        <CardContent className="p-4">
+      </Link>
+      <CardContent className="p-4">
+        <Link href={`/listings/${listing.id}`}>
           <div className="mb-2 flex flex-wrap gap-1">
             <Badge variant="secondary" className="text-xs">
               {TENANT_POLICY_LABELS[listing.tenantPolicy].split(" / ")[0]}
@@ -81,25 +84,6 @@ export function ListingCard({ listing }: ListingCardProps) {
           <p className="mt-1 text-sm text-muted">
             {listing.area.nameBn || listing.area.name},{" "}
             {listing.area.thana.nameBn || listing.area.thana.name}
-            {listing.latitude != null && listing.longitude != null && (
-              <button
-                type="button"
-                aria-label="Open listing location in Google Maps"
-                title="Open location in Google Maps"
-                className="ml-2 inline-flex align-middle text-primary transition-colors hover:text-primary/70"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  window.open(
-                    `https://www.google.com/maps/search/?api=1&query=${listing.latitude},${listing.longitude}`,
-                    "_blank",
-                    "noopener,noreferrer",
-                  );
-                }}
-              >
-                <MapPin className="h-4 w-4" />
-              </button>
-            )}
           </p>
           <p className="mt-2 text-lg font-bold text-primary">
             {formatBDT(listing.rent)}
@@ -110,8 +94,18 @@ export function ListingCard({ listing }: ListingCardProps) {
               Available from {formatDate(listing.availableFrom)}
             </p>
           )}
-        </CardContent>
-      </Card>
-    </Link>
+        </Link>
+        {listing.latitude != null && listing.longitude != null && (
+          <div className="mt-2">
+            <ListingMapPreview
+              latitude={listing.latitude}
+              longitude={listing.longitude}
+              title={listing.title}
+              trigger="icon"
+            />
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

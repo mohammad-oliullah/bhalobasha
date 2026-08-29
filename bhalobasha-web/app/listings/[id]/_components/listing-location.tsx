@@ -1,7 +1,7 @@
-import { Calendar, ExternalLink, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Calendar, MapPin } from "lucide-react";
 import { formatDate } from "@/lib/utils/format";
 import { Listing } from "@/types";
+import { ListingMapPreview } from "@/components/listings/listing-map-preview";
 
 export function ListingLocation({ listing }: { listing: Listing }) {
   const location = listing.area;
@@ -18,23 +18,13 @@ export function ListingLocation({ listing }: { listing: Listing }) {
       </p>
       <p className="mt-1 font-medium">{listing.address}</p>
       {listing.latitude != null && listing.longitude != null && (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="mt-4"
-          onClick={() =>
-            window.open(
-              `https://www.google.com/maps/search/?api=1&query=${listing.latitude},${listing.longitude}`,
-              "_blank",
-              "noopener,noreferrer",
-            )
-          }
-        >
-          <MapPin className="h-4 w-4" />
-          View on map
-          <ExternalLink className="h-3.5 w-3.5" />
-        </Button>
+        <div className="mt-4">
+          <ListingMapPreview
+            latitude={listing.latitude}
+            longitude={listing.longitude}
+            title={listing.title}
+          />
+        </div>
       )}
       <p className="mt-3 flex items-center gap-2 text-sm text-muted">
         <Calendar className="h-4 w-4" />
