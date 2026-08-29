@@ -24,7 +24,7 @@ export default function DashboardSidebar() {
               className={cn(
                 "flex shrink-0 items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 active
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-primary-foreground"
                   : "text-muted hover:bg-primary-light hover:text-primary",
               )}
             >

@@ -33,7 +33,7 @@ export function DeleteConfirmModal({
           </DialogTitle>
           <DialogDescription className="pt-1">
             Are you sure you want to delete{" "}
-            <span className="font-medium text-gray-800">{title}</span>? This
+            <span className="font-medium text-foreground">{title}</span>? This
             action cannot be undone.
           </DialogDescription>
         </DialogHeader>

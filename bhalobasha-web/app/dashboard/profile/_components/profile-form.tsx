@@ -108,7 +108,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
             <Input
               value={profile.phone ?? ""} // ← raw value, not formatPhone()
               disabled
-              className="bg-gray-50"
+              className="bg-surface-muted"
             />
           ) : (
             <Input
@@ -133,7 +133,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
             <Input
               value={profile.email ?? ""}
               disabled
-              className="bg-gray-50"
+              className="bg-surface-muted"
             />
           ) : (
             <Input

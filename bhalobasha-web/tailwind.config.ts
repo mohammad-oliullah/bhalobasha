@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -39,18 +40,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "rgb(var(--background) / <alpha-value>)",
+        foreground: "rgb(var(--foreground) / <alpha-value>)",
         primary: {
-          DEFAULT: "#1a6b3c",
-          light: "#e8f5ee",
+          DEFAULT: "rgb(var(--primary) / <alpha-value>)",
+          light: "rgb(var(--primary-light) / <alpha-value>)",
         },
-        accent: "#f59e0b",
-        muted: "#6b7280",
-        info: {
-          DEFAULT: "#007BFF",
-          100: "#2196F3",
-        },
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        "muted-foreground": "rgb(var(--muted-foreground) / <alpha-value>)",
+        accent: "rgb(var(--accent) / <alpha-value>)",
+        "accent-foreground": "rgb(var(--accent-foreground) / <alpha-value>)",
+        border: "rgb(var(--border) / <alpha-value>)",
+        card: "rgb(var(--card) / <alpha-value>)",
+        "surface-muted": "rgb(var(--surface-muted) / <alpha-value>)",
+        popover: "rgb(var(--popover) / <alpha-value>)",
+        "popover-foreground": "rgb(var(--foreground) / <alpha-value>)",
+        "primary-foreground": "rgb(var(--primary-foreground) / <alpha-value>)",
+        destructive: "rgb(var(--destructive) / <alpha-value>)",
+        "destructive-foreground": "rgb(var(--destructive-foreground) / <alpha-value>)",
+
+        info: "rgb(var(--info) / <alpha-value>)",
       },
       fontFamily: {
         sans: [

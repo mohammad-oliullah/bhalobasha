@@ -57,7 +57,7 @@ export function ListingRow({ listing }: { listing: Listing }) {
 
   return (
     <>
-      <div className="flex flex-col gap-4 rounded-xl border bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-xl border bg-card p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-semibold">{listing.title}</h3>

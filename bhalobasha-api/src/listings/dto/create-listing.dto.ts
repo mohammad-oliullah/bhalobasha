@@ -11,6 +11,7 @@ import {
   Matches,
   Min,
   ArrayMaxSize,
+  IsNumber,
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
@@ -143,4 +144,14 @@ export class CreateListingDto {
   @IsOptional()
   @IsDateString()
   biddingDeadline?: string;
+
+  @ApiPropertyOptional({ example: 23.7891 })
+  @IsOptional()
+  @IsNumber()
+  latitude?: number;
+
+  @ApiPropertyOptional({ example: 90.4126 })
+  @IsOptional()
+  @IsNumber()
+  longitude?: number;
 }

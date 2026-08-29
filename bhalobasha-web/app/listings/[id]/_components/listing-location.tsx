@@ -1,6 +1,7 @@
 import { Calendar, MapPin } from "lucide-react";
 import { formatDate } from "@/lib/utils/format";
 import { Listing } from "@/types";
+import { ListingMapPreview } from "@/components/listings/listing-map-preview";
 
 export function ListingLocation({ listing }: { listing: Listing }) {
   const location = listing.area;
@@ -16,6 +17,15 @@ export function ListingLocation({ listing }: { listing: Listing }) {
         {location.nameBn}
       </p>
       <p className="mt-1 font-medium">{listing.address}</p>
+      {listing.latitude != null && listing.longitude != null && (
+        <div className="mt-4">
+          <ListingMapPreview
+            latitude={listing.latitude}
+            longitude={listing.longitude}
+            title={listing.title}
+          />
+        </div>
+      )}
       <p className="mt-3 flex items-center gap-2 text-sm text-muted">
         <Calendar className="h-4 w-4" />
         Available from {formatDate(listing.availableFrom)}

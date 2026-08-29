@@ -41,7 +41,7 @@ export function ProfilePhoto({ photoUrl, onUpload }: ProfilePhotoProps) {
         )}
       </div>
       <label className="cursor-pointer">
-        <span className="flex items-center gap-2 rounded-lg border px-4 py-2 text-sm hover:bg-gray-50">
+        <span className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-surface-muted">
           <Upload className="h-4 w-4" />
           {uploading ? "Uploading..." : "Change Photo"}
         </span>

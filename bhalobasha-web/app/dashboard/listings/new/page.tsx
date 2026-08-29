@@ -86,6 +86,8 @@ export default function NewListingPage() {
       contactPhone: step2Data.contactPhone,
       address: step2Data.address,
       areaId: step2Data.areaId,
+      latitude: step2Data?.latitude,
+      longitude: step2Data?.longitude,
 
       photos: photos.map((p) => p.url),
     };

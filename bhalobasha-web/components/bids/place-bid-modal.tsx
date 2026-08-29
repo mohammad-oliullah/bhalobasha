@@ -92,13 +92,13 @@ export function PlaceBidModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Place a Bid</DialogTitle>
-          <p className="text-sm text-gray-500 truncate">{listingTitle}</p>
+          <p className="text-sm text-muted-foreground truncate">{listingTitle}</p>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
           {/* Current highest bid info */}
           {summary.highestBid && (
-            <div className="rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">
+            <div className="rounded-lg bg-green-100/70 px-4 py-2 text-sm text-green-800 dark:bg-green-400/10 dark:text-green-200">
               Current highest bid:{" "}
               <span className="font-semibold">
                 {formatBDT(summary.highestBid)}
@@ -111,13 +111,13 @@ export function PlaceBidModal({
             <Label htmlFor="amount">
               Your Bid Amount (BDT)
               {summary.minimumBid && (
-                <span className="ml-1 text-xs text-gray-400">
+                <span className="ml-1 text-xs text-muted">
                   (min {formatBDT(summary.minimumBid)})
                 </span>
               )}
             </Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted font-medium">
                 ৳
               </span>
               <Input
@@ -137,7 +137,7 @@ export function PlaceBidModal({
           <div className="space-y-1">
             <Label htmlFor="message">
               Message to Owner{" "}
-              <span className="text-xs text-gray-400">(optional)</span>
+              <span className="text-xs text-muted">(optional)</span>
             </Label>
             <Textarea
               id="message"
@@ -162,7 +162,7 @@ export function PlaceBidModal({
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-[#1a6b3c] hover:bg-[#145c32]"
+              className="flex-1"
               disabled={loading}
             >
               {loading ? "Placing..." : "Place Bid"}

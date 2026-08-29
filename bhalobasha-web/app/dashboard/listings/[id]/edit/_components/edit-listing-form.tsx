@@ -32,6 +32,8 @@ const schema = z.object({
   utilitiesIncluded: z.boolean(),
   availableFrom: z.string(),
   contactPhone: z.string().regex(/^01[3-9]\d{8}$/),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 export type EditFormData = z.infer<typeof schema>;
@@ -60,6 +62,8 @@ export function EditListingForm({ listing }: { listing: Listing }) {
       utilitiesIncluded: listing.utilitiesIncluded,
       availableFrom: listing.availableFrom.split("T")[0],
       contactPhone: listing.contactPhone,
+      latitude: listing.latitude ?? undefined,
+      longitude: listing.longitude ?? undefined,
     },
   });
 
@@ -122,7 +126,12 @@ export function EditListingForm({ listing }: { listing: Listing }) {
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
           Location & Contact
         </h2>
-        <EditLocation form={form} thanaId={listing.area.thanaId} />
+        <EditLocation
+          form={form}
+          thanaId={listing.area.thanaId}
+          initialLatitude={listing.latitude ?? undefined}
+          initialLongitude={listing.longitude ?? undefined}
+        />
       </section>
 
       <div className="flex gap-3 pt-2">

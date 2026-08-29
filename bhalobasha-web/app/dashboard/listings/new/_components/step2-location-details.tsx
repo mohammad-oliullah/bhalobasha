@@ -20,6 +20,8 @@ import {
 } from "@/lib/hooks/use-locations";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { z } from "zod";
+import { useEffect, useState } from "react";
+import { LocationPicker } from "./location-picker";
 
 export const step2Schema = z.object({
   divisionId: z.number().min(1, "Select division"),
@@ -34,6 +36,8 @@ export const step2Schema = z.object({
   utilitiesIncluded: z.boolean(),
   availableFrom: z.string().min(1, "Select available date"),
   contactPhone: z.string().regex(/^01[3-9]\d{8}$/, "Invalid phone number"),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 export type Step2Data = z.infer<typeof step2Schema>;
@@ -45,6 +49,9 @@ interface Step2Props {
 }
 
 export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
+  const [mapCenter, setMapCenter] = useState({ lat: 23.7771, lng: 90.3994 });
+  const [gpsChecked, setGpsChecked] = useState(false);
+
   const {
     register,
     watch,
@@ -56,11 +63,63 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
   const divisionId = watch("divisionId");
   const districtId = watch("districtId");
   const thanaId = watch("thanaId");
+  const areaId = watch("areaId");
 
   const { data: divisions = [] } = useDivisions();
   const { data: districts = [] } = useDistricts(divisionId);
   const { data: thanas = [] } = useThanas(districtId);
   const { data: areas = [] } = useAreas(thanaId);
+
+  // Step 1 — try GPS first
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setGpsChecked(true);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setMapCenter({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setGpsChecked(true);
+      },
+      () => {
+        // Permission denied — fall through to thana/area coords
+        setGpsChecked(true);
+      },
+    );
+  }, []);
+
+  // Step 2 — when thana selected, use its coordinates as fallback
+  useEffect(() => {
+    if (!gpsChecked || !thanaId) return;
+    const selectedThana = thanas.find((t) => t.id === thanaId);
+    if (selectedThana?.latitude && selectedThana?.longitude) {
+      setMapCenter({
+        lat: selectedThana.latitude,
+        lng: selectedThana.longitude,
+      });
+    }
+  }, [thanaId, thanas, gpsChecked]);
+  console.log(
+    thanas.find((t) => t.id === thanaId),
+    "selectedThana",
+  );
+
+  // Step 3 — when area selected, use its coordinates (more precise)
+  useEffect(() => {
+    if (!gpsChecked || !areaId) return;
+    const selectedArea = areas.find((a) => a.id === areaId);
+    if (selectedArea?.latitude && selectedArea?.longitude) {
+      setMapCenter({
+        lat: selectedArea.latitude,
+        lng: selectedArea.longitude,
+      });
+    }
+  }, [areaId, areas, gpsChecked]);
+
+  console.log(mapCenter, "mapCenter");
 
   return (
     <form onSubmit={handleSubmit(onNext)} className="space-y-4">
@@ -165,6 +224,25 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
         </div>
       )}
 
+      {/* Map */}
+      <div className="space-y-2">
+        <Label>
+          Pin Your Property Location{" "}
+          <span className="text-xs text-muted">(optional)</span>
+        </Label>
+        <LocationPicker
+          lat={watch("latitude")}
+          lng={watch("longitude")}
+          centerLat={mapCenter.lat}
+          centerLng={mapCenter.lng}
+          onChange={(lat, lng) => {
+            setValue("latitude", lat, { shouldDirty: true });
+            setValue("longitude", lng, { shouldDirty: true });
+          }}
+        />
+      </div>
+
+      {/* Address */}
       <div className="space-y-2">
         <Label>Full Address</Label>
         <Textarea {...register("address")} rows={2} />
@@ -173,6 +251,7 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
         )}
       </div>
 
+      {/* Rooms / Baths / Floor */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">
           <Label>Rooms</Label>
