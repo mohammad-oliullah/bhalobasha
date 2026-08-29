@@ -56,3 +56,16 @@ body {
 * {
   border-color: rgb(var(--border));
 }
+
+
+/* Fix Tailwind Preflight breaking Leaflet tiles */
+.leaflet-container img {
+  max-width: none !important;
+  height: auto;
+}
+
+.leaflet-container {
+  position: relative;
+  z-index: 0;
+  /* keep it below your Dialog overlay, see below */
+}

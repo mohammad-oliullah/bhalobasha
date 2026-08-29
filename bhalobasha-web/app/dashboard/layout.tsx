@@ -1,4 +1,3 @@
-import "leaflet/dist/leaflet.css";
 import DashboardSidebar from "@/components/dashboard/sidebar";
 
 export default function DashboardLayout({
