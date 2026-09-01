@@ -23,9 +23,17 @@ export function LocationPicker({
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+  const latRef = useRef(lat);
+  const lngRef = useRef(lng);
+  const centerLatRef = useRef(centerLat);
+  const centerLngRef = useRef(centerLng);
   const onChangeRef = useRef(onChange);
   const [mounted, setMounted] = useState(false);
 
+  latRef.current = lat;
+  lngRef.current = lng;
+  centerLatRef.current = centerLat;
+  centerLngRef.current = centerLng;
   onChangeRef.current = onChange;
 
   useEffect(() => {
@@ -48,8 +56,8 @@ export function LocationPicker({
           "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
 
-      const initialLat = lat ?? centerLat;
-      const initialLng = lng ?? centerLng;
+      const initialLat = latRef.current ?? centerLatRef.current;
+      const initialLng = lngRef.current ?? centerLngRef.current;
 
       const map = L.map(mapRef.current!).setView([initialLat, initialLng], 15);
 
