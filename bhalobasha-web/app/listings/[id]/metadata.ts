@@ -20,7 +20,7 @@ export async function generateMetadata({
       listing.photos.find((p) => p.isPrimary) || listing.photos[0];
 
     const title = `${listing.title} — ${formatBDT(listing.rent)}/month | Bhalobasha`;
-    const description = `${LISTING_TYPE_LABELS[listing.type].split(" / ")[0]} · ${TENANT_POLICY_LABELS[listing.tenantPolicy].split(" / ")[0]} · ${listing.area.name}, ${listing.area.thana.name}, Dhaka. ${listing.description.slice(0, 120)}...`;
+    const description = `${LISTING_TYPE_LABELS[listing.type].split(" / ")[0]} · ${TENANT_POLICY_LABELS[listing.tenantPolicy].split(" / ")[0]} · ${listing.area.name}, ${listing.area.upazila.name}, Dhaka. ${listing.description.slice(0, 120)}...`;
 
     return {
       title,

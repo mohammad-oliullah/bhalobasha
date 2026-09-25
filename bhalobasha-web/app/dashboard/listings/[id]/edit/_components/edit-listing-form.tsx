@@ -128,7 +128,7 @@ export function EditListingForm({ listing }: { listing: Listing }) {
         </h2>
         <EditLocation
           form={form}
-          thanaId={listing.area.thanaId}
+          upazilaId={listing.area.upazilaId}
           initialLatitude={listing.latitude ?? undefined}
           initialLongitude={listing.longitude ?? undefined}
         />

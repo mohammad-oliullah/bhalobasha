@@ -64,7 +64,7 @@ export interface District {
   divisionId: number;
 }
 
-export interface Thana {
+export interface Upazila {
   id: number;
   name: string;
   nameBn: string;
@@ -77,7 +77,7 @@ export interface Area {
   id: number;
   name: string;
   nameBn: string;
-  thanaId: number;
+  upazilaId: number;
   latitude?: number | null;
   longitude?: number | null;
 }
@@ -98,7 +98,7 @@ export interface ListingOwner {
 }
 
 export interface ListingArea extends Area {
-  thana: Thana & {
+  upazila: Upazila & {
     district: District & {
       division: Division;
     };
@@ -148,7 +148,7 @@ export interface ListingFilters {
   tenantPolicy?: TenantPolicy;
   genderPreference?: GenderPreference;
   areaId?: number;
-  thanaId?: number;
+  upazilaId?: number;
   districtId?: number;
   divisionId?: number;
   minRent?: number;

@@ -28,7 +28,9 @@ function parseFilters(params: URLSearchParams): ExtendedFilters {
     genderPreference:
       (params.get("genderPreference") as GenderPreference) || undefined,
     areaId: params.get("areaId") ? Number(params.get("areaId")) : undefined,
-    thanaId: params.get("thanaId") ? Number(params.get("thanaId")) : undefined,
+    upazilaId: params.get("upazilaId")
+      ? Number(params.get("upazilaId"))
+      : undefined,
     districtId: params.get("districtId")
       ? Number(params.get("districtId"))
       : undefined,
@@ -56,7 +58,7 @@ export default function ListingsPage() {
     tenantPolicy: filters.tenantPolicy,
     genderPreference: filters.genderPreference,
     areaId: filters.areaId,
-    thanaId: filters.thanaId,
+    upazilaId: filters.upazilaId,
     districtId: filters.districtId,
     divisionId: filters.divisionId,
     minRent: filters.minRent,
@@ -95,7 +97,8 @@ export default function ListingsPage() {
       if (newFilters.genderPreference)
         params.set("genderPreference", newFilters.genderPreference);
       if (newFilters.areaId) params.set("areaId", String(newFilters.areaId));
-      if (newFilters.thanaId) params.set("thanaId", String(newFilters.thanaId));
+      if (newFilters.upazilaId)
+        params.set("upazilaId", String(newFilters.upazilaId));
       if (newFilters.districtId)
         params.set("districtId", String(newFilters.districtId));
       if (newFilters.divisionId)

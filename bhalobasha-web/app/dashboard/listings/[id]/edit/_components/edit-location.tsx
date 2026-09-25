@@ -15,12 +15,12 @@ import { LocationPicker } from "../../../new/_components/location-picker";
 
 export function EditLocation({
   form,
-  thanaId,
+  upazilaId,
   initialLatitude,
   initialLongitude,
 }: {
   form: UseFormReturn<EditFormData>;
-  thanaId: number;
+  upazilaId: number;
   initialLatitude?: number;
   initialLongitude?: number;
 }) {
@@ -30,7 +30,7 @@ export function EditLocation({
     setValue,
     formState: { errors },
   } = form;
-  const { data: areas = [] } = useAreas(thanaId);
+  const { data: areas = [] } = useAreas(upazilaId);
   const latitude = watch("latitude");
   const longitude = watch("longitude");
   const selectedArea = areas.find((area) => area.id === watch("areaId"));

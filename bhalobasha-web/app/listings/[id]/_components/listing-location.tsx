@@ -12,8 +12,8 @@ export function ListingLocation({ listing }: { listing: Listing }) {
         Location
       </h2>
       <p className="mt-2 text-sm text-muted">
-        {location.thana.district.division.nameBn} →{" "}
-        {location.thana.district.nameBn} → {location.thana.nameBn} →{" "}
+        {location.upazila.district.division.nameBn} →{" "}
+        {location.upazila.district.nameBn} → {location.upazila.nameBn} →{" "}
         {location.nameBn}
       </p>
       <p className="mt-1 font-medium">{listing.address}</p>

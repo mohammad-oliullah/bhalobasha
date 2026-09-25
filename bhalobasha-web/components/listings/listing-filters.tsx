@@ -24,7 +24,7 @@ import {
 import {
   useDivisions,
   useDistricts,
-  useThanas,
+  useUpazilas,
   useAreas,
 } from "@/lib/hooks/use-locations";
 
@@ -36,11 +36,14 @@ interface ListingFiltersProps {
   onChange: (filters: ListingFiltersProps["filters"]) => void;
 }
 
-export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) {
+export function ListingFiltersPanel({
+  filters,
+  onChange,
+}: ListingFiltersProps) {
   const { data: divisions = [] } = useDivisions();
   const { data: districts = [] } = useDistricts(filters.divisionId);
-  const { data: thanas = [] } = useThanas(filters.districtId);
-  const { data: areas = [] } = useAreas(filters.thanaId);
+  const { data: upazilas = [] } = useUpazilas(filters.districtId);
+  const { data: areas = [] } = useAreas(filters.upazilaId);
 
   const update = (patch: Partial<ListingFiltersProps["filters"]>) => {
     onChange({ ...filters, ...patch });
@@ -56,7 +59,7 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
             update({
               divisionId: v ? Number(v) : undefined,
               districtId: undefined,
-              thanaId: undefined,
+              upazilaId: undefined,
               areaId: undefined,
             })
           }
@@ -82,7 +85,7 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
             onValueChange={(v) =>
               update({
                 districtId: v ? Number(v) : undefined,
-                thanaId: undefined,
+                upazilaId: undefined,
                 areaId: undefined,
               })
             }
@@ -103,21 +106,21 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
 
       {filters.districtId && (
         <div className="space-y-2">
-          <Label>Thana</Label>
+          <Label>Upazila</Label>
           <Select
-            value={filters.thanaId?.toString() || ""}
+            value={filters.upazilaId?.toString() || ""}
             onValueChange={(v) =>
               update({
-                thanaId: v ? Number(v) : undefined,
+                upazilaId: v ? Number(v) : undefined,
                 areaId: undefined,
               })
             }
           >
             <SelectTrigger>
-              <SelectValue placeholder="All thanas" />
+              <SelectValue placeholder="All upazilas" />
             </SelectTrigger>
             <SelectContent>
-              {thanas.map((t) => (
+              {upazilas.map((t) => (
                 <SelectItem key={t.id} value={t.id.toString()}>
                   {t.nameBn} / {t.name}
                 </SelectItem>
@@ -127,14 +130,12 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
         </div>
       )}
 
-      {filters.thanaId && (
+      {filters.upazilaId && (
         <div className="space-y-2">
           <Label>Area</Label>
           <Select
             value={filters.areaId?.toString() || ""}
-            onValueChange={(v) =>
-              update({ areaId: v ? Number(v) : undefined })
-            }
+            onValueChange={(v) => update({ areaId: v ? Number(v) : undefined })}
           >
             <SelectTrigger>
               <SelectValue placeholder="All areas" />

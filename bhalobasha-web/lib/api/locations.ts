@@ -1,5 +1,5 @@
 import apiClient from "./client";
-import { Area, District, Division, Thana } from "@/types";
+import { Area, District, Division, Upazila } from "@/types";
 
 export async function getDivisions(): Promise<Division[]> {
   const { data } = await apiClient.get<Division[]>("/locations/divisions");
@@ -13,16 +13,16 @@ export async function getDistricts(divisionId: number): Promise<District[]> {
   return data;
 }
 
-export async function getThanas(districtId: number): Promise<Thana[]> {
-  const { data } = await apiClient.get<Thana[]>("/locations/thanas", {
+export async function getUPazilas(districtId: number): Promise<Upazila[]> {
+  const { data } = await apiClient.get<Upazila[]>("/locations/upazilas", {
     params: { districtId },
   });
   return data;
 }
 
-export async function getAreas(thanaId: number): Promise<Area[]> {
+export async function getAreas(upazilaId: number): Promise<Area[]> {
   const { data } = await apiClient.get<Area[]>("/locations/areas", {
-    params: { thanaId },
+    params: { upazilaId },
   });
   return data;
 }
