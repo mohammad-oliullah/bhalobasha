@@ -197,7 +197,7 @@ model Listing {
   contactPhone      String
   address           String
   areaId            Int
-  villageId         Int
+  villageId         Int?
   ownerId           String
   area              Area             @relation(fields: [areaId], references: [id])
   village           Village?         @relation(fields: [villageId], references: [id])

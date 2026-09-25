@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class LocationsService {
@@ -7,28 +7,28 @@ export class LocationsService {
 
   findDivisions() {
     return this.prisma.division.findMany({
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     });
   }
 
   findDistricts(divisionId: number) {
     return this.prisma.district.findMany({
       where: { divisionId },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     });
   }
 
   findThanas(districtId: number) {
-    return this.prisma.thana.findMany({
+    return this.prisma.upazila.findMany({
       where: { districtId },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     });
   }
 
-  findAreas(thanaId: number) {
+  findAreas(upazilaId: number) {
     return this.prisma.area.findMany({
-      where: { thanaId },
-      orderBy: { name: 'asc' },
+      where: { upazilaId },
+      orderBy: { name: "asc" },
     });
   }
 }

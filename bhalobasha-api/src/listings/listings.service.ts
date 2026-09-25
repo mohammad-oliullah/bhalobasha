@@ -12,19 +12,24 @@ import { FilterListingDto } from "./dto/filter-listing.dto";
 
 export const listingInclude = {
   photos: true,
-  area: {
+  village: {
     include: {
-      thana: {
+      area: {
         include: {
-          district: {
+          upazila: {
             include: {
-              division: true,
+              district: {
+                include: {
+                  division: true,
+                },
+              },
             },
           },
         },
       },
     },
   },
+
   owner: {
     select: {
       id: true,
@@ -57,11 +62,13 @@ export class ListingsService {
     if (filters.areaId) {
       where.areaId = filters.areaId;
     } else if (filters.thanaId) {
-      where.area = { thanaId: filters.thanaId };
+      where.area = { upazilaId: filters.thanaId };
     } else if (filters.districtId) {
-      where.area = { thana: { districtId: filters.districtId } };
+      where.area = { upazila: { districtId: filters.districtId } };
     } else if (filters.divisionId) {
-      where.area = { thana: { district: { divisionId: filters.divisionId } } };
+      where.area = {
+        upazila: { district: { divisionId: filters.divisionId } },
+      };
     }
 
     return this.prisma.listing.findMany({
