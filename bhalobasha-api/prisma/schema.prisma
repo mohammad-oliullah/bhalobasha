@@ -136,8 +136,9 @@ model Upazila {
   longitude Float?
 
   districtId Int
-  district   District @relation(fields: [districtId], references: [id])
+  district   District  @relation(fields: [districtId], references: [id])
   areas      Area[]
+  listings   Listing[]
 
   @@index([districtId])
 }
@@ -196,16 +197,21 @@ model Listing {
   status            ListingStatus    @default(DRAFT)
   contactPhone      String
   address           String
-  areaId            Int
-  villageId         Int?
-  ownerId           String
-  area              Area             @relation(fields: [areaId], references: [id])
-  village           Village?         @relation(fields: [villageId], references: [id])
-  owner             User             @relation(fields: [ownerId], references: [id])
-  photos            ListingPhoto[]
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  expiresAt         DateTime?
+
+  ownerId   String
+  upazilaId Int
+  areaId    Int?
+  villageId Int?
+
+  upazila Upazila  @relation(fields: [upazilaId], references: [id])
+  area    Area?    @relation(fields: [areaId], references: [id])
+  village Village? @relation(fields: [villageId], references: [id])
+
+  owner     User           @relation(fields: [ownerId], references: [id])
+  photos    ListingPhoto[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  expiresAt DateTime?
 
   isBiddingEnabled Boolean   @default(false)
   minimumBid       Int?

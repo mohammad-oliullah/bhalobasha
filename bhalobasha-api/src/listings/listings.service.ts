@@ -98,13 +98,13 @@ export class ListingsService {
 
     // console.log(JSON.stringify(dto, null, 4));
 
-    const area = await this.prisma.area.findUnique({
-      where: { id: dto.areaId },
-    });
+    // const area = await this.prisma.area.findUnique({
+    //   where: { id: dto.areaId },
+    // });
 
-    if (!area) {
-      throw new NotFoundException("Area not found");
-    }
+    // if (!area) {
+    //   throw new NotFoundException("Area not found");
+    // }
 
     if (dto.photos && dto.photos.length > MAX_LISTING_PHOTOS) {
       throw new BadRequestException("A listing can have a maximum of 8 photos");

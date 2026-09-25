@@ -111,7 +111,27 @@ export class CreateListingDto {
 
   @ApiProperty({ example: 1 })
   @IsInt()
-  areaId!: number;
+  upazilaId!: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  @IsInt()
+  areaId?: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  @IsInt()
+  villageId?: number;
+
+  @ApiPropertyOptional({ example: 23.7891 })
+  @IsOptional()
+  @IsNumber()
+  latitude?: number;
+
+  @ApiPropertyOptional({ example: 90.4126 })
+  @IsOptional()
+  @IsNumber()
+  longitude?: number;
 
   @ApiPropertyOptional({
     example: [
@@ -144,14 +164,4 @@ export class CreateListingDto {
   @IsOptional()
   @IsDateString()
   biddingDeadline?: string;
-
-  @ApiPropertyOptional({ example: 23.7891 })
-  @IsOptional()
-  @IsNumber()
-  latitude?: number;
-
-  @ApiPropertyOptional({ example: 90.4126 })
-  @IsOptional()
-  @IsNumber()
-  longitude?: number;
 }
