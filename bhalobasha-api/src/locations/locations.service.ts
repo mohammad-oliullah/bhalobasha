@@ -18,7 +18,7 @@ export class LocationsService {
     });
   }
 
-  findThanas(districtId: number) {
+  findUpazilas(districtId: number) {
     return this.prisma.upazila.findMany({
       where: { districtId },
       orderBy: { name: "asc" },

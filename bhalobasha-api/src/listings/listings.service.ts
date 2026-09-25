@@ -61,8 +61,8 @@ export class ListingsService {
 
     if (filters.areaId) {
       where.areaId = filters.areaId;
-    } else if (filters.thanaId) {
-      where.area = { upazilaId: filters.thanaId };
+    } else if (filters.upazilaId) {
+      where.area = { upazilaId: filters.upazilaId };
     } else if (filters.districtId) {
       where.area = { upazila: { districtId: filters.districtId } };
     } else if (filters.divisionId) {
