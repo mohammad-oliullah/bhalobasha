@@ -66,8 +66,8 @@ export function ListingRow({ listing }: { listing: Listing }) {
             </Badge>
           </div>
           <p className="mt-1 text-sm text-muted">
-            {LISTING_TYPE_LABELS[listing.type]} · {listing.area.nameBn},{" "}
-            {listing.area.upazila.nameBn}
+            {LISTING_TYPE_LABELS[listing.type]} · {listing?.area?.nameBn},{" "}
+            {listing?.area?.upazila?.nameBn}
           </p>
           <p className="mt-1 font-semibold text-primary">
             {formatBDT(listing.rent)}/month

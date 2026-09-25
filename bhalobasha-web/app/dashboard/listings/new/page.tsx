@@ -18,7 +18,12 @@ import {
   Step2Data,
 } from "./_components/step2-location-details";
 import { Step3Photos } from "./_components/step3-photos";
-import { GenderPreference, ListingType, TenantPolicy } from "@/types";
+import {
+  CreateListingPayload,
+  GenderPreference,
+  ListingType,
+  TenantPolicy,
+} from "@/types";
 
 export default function NewListingPage() {
   const router = useRouter();
@@ -59,7 +64,7 @@ export default function NewListingPage() {
       return;
     }
 
-    const payload = {
+    const payload: CreateListingPayload = {
       // Step 1
       title: step1Data.title,
       description: step1Data.description,
@@ -74,7 +79,7 @@ export default function NewListingPage() {
       minimumBid: step1Data.minimumBid,
       biddingDeadline: step1Data.biddingDeadline
         ? new Date(step1Data.biddingDeadline).toISOString()
-        : undefined,
+        : new Date().toISOString(),
 
       // Step 2
       totalRooms: step2Data.totalRooms,
@@ -84,13 +89,22 @@ export default function NewListingPage() {
       utilitiesIncluded: step2Data.utilitiesIncluded,
       availableFrom: new Date(step2Data.availableFrom).toISOString(),
       contactPhone: step2Data.contactPhone,
+      upazilaId: step2Data.upazilaId,
       address: step2Data.address,
-      areaId: step2Data.areaId,
       latitude: step2Data?.latitude,
       longitude: step2Data?.longitude,
 
       photos: photos.map((p) => p.url),
     };
+
+    if (step2Data.areaId) {
+      payload.areaId = step2Data.areaId;
+    }
+    if (step2Data.villageId) {
+      payload.villageId = step2Data.villageId;
+    }
+
+    console.log(JSON.stringify(payload, null, 4));
 
     try {
       // console.log(JSON.stringify(payload, null, 2));

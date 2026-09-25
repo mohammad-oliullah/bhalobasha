@@ -24,7 +24,7 @@ export function ListingDetail({ id }: { id: string }) {
   const { data: allListings = [] } = useListings(
     listing
       ? {
-          upazilaId: listing.area.upazilaId,
+          upazilaId: listing?.area?.upazilaId,
           type: listing.type,
           status: ListingStatus.ACTIVE,
         }

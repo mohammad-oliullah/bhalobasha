@@ -71,6 +71,8 @@ export interface Upazila {
   districtId: number;
   latitude?: number | null;
   longitude?: number | null;
+
+  type?: "UPAZILA" | "THANA";
 }
 
 export interface Area {
@@ -78,6 +80,17 @@ export interface Area {
   name: string;
   nameBn: string;
   upazilaId: number;
+  latitude?: number | null;
+  longitude?: number | null;
+
+  type?: "UNION" | "WARD";
+}
+
+export interface Village {
+  id: number;
+  name: string;
+  nameBn: string;
+  areaId: number;
   latitude?: number | null;
   longitude?: number | null;
 }
@@ -124,7 +137,9 @@ export interface Listing {
   status: ListingStatus;
   contactPhone: string;
   address: string;
-  areaId: number;
+  upazilaId: number;
+  areaId?: number;
+  villageId?: number;
   ownerId: string;
   area: ListingArea;
   owner: ListingOwner;
@@ -186,10 +201,15 @@ export interface CreateListingPayload {
   status?: ListingStatus;
   contactPhone: string;
   address: string;
-  areaId: number;
+  upazilaId: number;
+  areaId?: number;
+  villageId?: number;
   latitude?: number;
   longitude?: number;
   photos?: string[];
+  isBiddingEnabled: boolean;
+  minimumBid?: number;
+  biddingDeadline: string;
 }
 
 export interface Bid {

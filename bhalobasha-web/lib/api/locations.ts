@@ -1,5 +1,5 @@
 import apiClient from "./client";
-import { Area, District, Division, Upazila } from "@/types";
+import { Area, District, Division, Upazila, Village } from "@/types";
 
 export async function getDivisions(): Promise<Division[]> {
   const { data } = await apiClient.get<Division[]>("/locations/divisions");
@@ -23,6 +23,13 @@ export async function getUPazilas(districtId: number): Promise<Upazila[]> {
 export async function getAreas(upazilaId: number): Promise<Area[]> {
   const { data } = await apiClient.get<Area[]>("/locations/areas", {
     params: { upazilaId },
+  });
+  return data;
+}
+
+export async function getVillages(areaId: number): Promise<Village[]> {
+  const { data } = await apiClient.get<Village[]>("/locations/villages", {
+    params: { areaId },
   });
   return data;
 }

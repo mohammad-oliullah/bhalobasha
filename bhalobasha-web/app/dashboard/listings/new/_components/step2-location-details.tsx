@@ -17,6 +17,7 @@ import {
   useDistricts,
   useUpazilas,
   useAreas,
+  useVillages,
 } from "@/lib/hooks/use-locations";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { z } from "zod";
@@ -26,16 +27,24 @@ import { LocationPicker } from "./location-picker";
 export const step2Schema = z.object({
   divisionId: z.number().min(1, "Select division"),
   districtId: z.number().min(1, "Select district"),
-  upazilaId: z.number().min(1, "Select upazila"),
-  areaId: z.number().min(1, "Select area"),
+  upazilaId: z.number().min(1, "Select district"),
+
+  areaId: z.number().optional(),
+  villageId: z.number().optional(),
+
   address: z.string().min(10, "Enter full address"),
+
   totalRooms: z.number().min(1).optional(),
   totalBaths: z.number().min(1).optional(),
   floor: z.number().optional(),
+
   isFurnished: z.boolean(),
   utilitiesIncluded: z.boolean(),
+
   availableFrom: z.string().min(1, "Select available date"),
+
   contactPhone: z.string().regex(/^01[3-9]\d{8}$/, "Invalid phone number"),
+
   latitude: z.number().optional(),
   longitude: z.number().optional(),
 });
@@ -69,6 +78,7 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
   const { data: districts = [] } = useDistricts(divisionId);
   const { data: upazilas = [] } = useUpazilas(districtId);
   const { data: areas = [] } = useAreas(upazilaId);
+  const { data: villages = [] } = useVillages(areaId);
 
   // Step 1 — try GPS first
   useEffect(() => {
@@ -102,10 +112,10 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
       });
     }
   }, [upazilaId, upazilas, gpsChecked]);
-  console.log(
-    upazilas.find((t) => t.id === upazilaId),
-    "selectedUpazila",
-  );
+  // console.log(
+  //   upazilas.find((t) => t.id === upazilaId),
+  //   "selectedUpazila",
+  // );
 
   // Step 3 — when area selected, use its coordinates (more precise)
   useEffect(() => {
@@ -119,8 +129,6 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
     }
   }, [areaId, areas, gpsChecked]);
 
-  console.log(mapCenter, "mapCenter");
-
   return (
     <form onSubmit={handleSubmit(onNext)} className="space-y-4">
       {/* Division */}
@@ -132,7 +140,8 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
             setValue("divisionId", Number(v));
             setValue("districtId", 0 as unknown as number);
             setValue("upazilaId", 0 as unknown as number);
-            setValue("areaId", 0 as unknown as number);
+            setValue("areaId", undefined);
+            setValue("villageId", undefined);
           }}
         >
           <SelectTrigger>
@@ -160,7 +169,8 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
             onValueChange={(v) => {
               setValue("districtId", Number(v));
               setValue("upazilaId", 0 as unknown as number);
-              setValue("areaId", 0 as unknown as number);
+              setValue("areaId", undefined);
+              setValue("villageId", undefined);
             }}
           >
             <SelectTrigger>
@@ -185,7 +195,8 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
             value={upazilaId?.toString() || ""}
             onValueChange={(v) => {
               setValue("upazilaId", Number(v));
-              setValue("areaId", 0 as unknown as number);
+              setValue("areaId", undefined);
+              setValue("villageId", undefined);
             }}
           >
             <SelectTrigger>
@@ -203,12 +214,15 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
       )}
 
       {/* Area */}
-      {upazilaId > 0 && (
+      {areas.length > 0 && (
         <div className="space-y-2">
           <Label>Area</Label>
           <Select
             value={watch("areaId")?.toString() || ""}
-            onValueChange={(v) => setValue("areaId", Number(v))}
+            onValueChange={(v) => {
+              setValue("areaId", Number(v));
+              setValue("villageId", undefined);
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select area" />
@@ -217,6 +231,32 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
               {areas.map((a) => (
                 <SelectItem key={a.id} value={a.id.toString()}>
                   {a.nameBn} / {a.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Village */}
+      {villages.length > 0 && (
+        <div className="space-y-2">
+          <Label>
+            Village <span className="text-xs text-muted">(optional)</span>
+          </Label>
+
+          <Select
+            value={watch("villageId")?.toString() || ""}
+            onValueChange={(v) => setValue("villageId", Number(v))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select village" />
+            </SelectTrigger>
+
+            <SelectContent>
+              {villages.map((v) => (
+                <SelectItem key={v.id} value={v.id.toString()}>
+                  {v.nameBn} / {v.name}
                 </SelectItem>
               ))}
             </SelectContent>

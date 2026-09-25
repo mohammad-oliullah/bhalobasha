@@ -82,8 +82,8 @@ export function ListingCard({ listing }: ListingCardProps) {
             {listing.title}
           </h3>
           <p className="mt-1 text-sm text-muted">
-            {listing.area.nameBn || listing.area.name},{" "}
-            {listing.area.upazila.nameBn || listing.area.upazila.name}
+            {listing?.area?.nameBn || listing?.area?.name},{" "}
+            {listing?.area?.upazila?.nameBn || listing?.area?.upazila?.name}
           </p>
           <p className="mt-2 text-lg font-bold text-primary">
             {formatBDT(listing.rent)}

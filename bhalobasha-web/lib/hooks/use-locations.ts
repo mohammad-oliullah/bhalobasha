@@ -6,6 +6,7 @@ import {
   getDistricts,
   getUPazilas,
   getAreas,
+  getVillages,
 } from "@/lib/api/locations";
 
 export function useDivisions() {
@@ -39,6 +40,15 @@ export function useAreas(upazilaId?: number) {
     queryKey: ["areas", upazilaId],
     queryFn: () => getAreas(upazilaId!),
     enabled: !!upazilaId,
+    staleTime: 1000 * 60 * 60,
+  });
+}
+
+export function useVillages(areaId?: number) {
+  return useQuery({
+    queryKey: ["villages", areaId],
+    queryFn: () => getVillages(areaId!),
+    enabled: !!areaId,
     staleTime: 1000 * 60 * 60,
   });
 }
