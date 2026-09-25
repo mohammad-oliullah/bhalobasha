@@ -50,76 +50,91 @@ enum BidStatus {
 }
 
 model Bid {
-  id         String    @id @default(uuid())
-  amount     Int
-  message    String?
-  status     BidStatus @default(PENDING)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  expiresAt  DateTime?
+  id        String    @id @default(uuid())
+  amount    Int
+  message   String?
+  status    BidStatus @default(PENDING)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiresAt DateTime?
 
-  listing    Listing   @relation(fields: [listingId], references: [id])
-  listingId  String
+  listing   Listing @relation(fields: [listingId], references: [id])
+  listingId String
 
-  seeker     User      @relation(fields: [seekerId], references: [id])
-  seekerId   String
+  seeker   User   @relation(fields: [seekerId], references: [id])
+  seekerId String
 
   @@unique([listingId, seekerId]) // one active bid per seeker per listing
 }
 
 model User {
-  id           String    @id @default(uuid())
-  phone        String?   @unique @db.VarChar(15)
-  email        String?   @unique @db.VarChar(255)
-  name         String?   @db.VarChar(100)
-  role         UserRole  @default(SEEKER)
-  isVerified   Boolean   @default(false)
-  isActive     Boolean   @default(true)
+  id           String            @id @default(uuid())
+  phone        String?           @unique @db.VarChar(15)
+  email        String?           @unique @db.VarChar(255)
+  name         String?           @db.VarChar(100)
+  role         UserRole          @default(SEEKER)
+  isVerified   Boolean           @default(false)
+  isActive     Boolean           @default(true)
   profilePhoto String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   listings     Listing[]
   bids         Bid[]
-  favorites FavoriteListing[]
+  favorites    FavoriteListing[]
 }
 
 model OtpVerification {
-  id        String    @id @default(uuid())
-  phone     String?   @db.VarChar(15)
-  email     String?   @db.VarChar(255)
-  code      String    @db.VarChar(6)
+  id        String   @id @default(uuid())
+  phone     String?  @db.VarChar(15)
+  email     String?  @db.VarChar(255)
+  code      String   @db.VarChar(6)
   expiresAt DateTime
-  isUsed    Boolean   @default(false)
-  createdAt DateTime  @default(now())
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
 
   @@index([phone, code])
   @@index([email, code])
 }
 
 model Division {
-  id        Int        @id @default(autoincrement())
-  name      String
-  nameBn    String
+  id     Int    @id @default(autoincrement())
+  name   String
+  nameBn String
+
+  latitude  Float?
+  longitude Float?
+
   districts District[]
 }
 
 model District {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   name       String
   nameBn     String
   divisionId Int
-  division   Division @relation(fields: [divisionId], references: [id])
-  thanas     Thana[]
+  division   Division  @relation(fields: [divisionId], references: [id])
+  upazilas   Upazila[]
+
+  latitude  Float?
+  longitude Float?
 
   @@index([divisionId])
 }
 
-model Thana {
-  id         Int      @id @default(autoincrement())
-  name       String
-  nameBn     String
-  latitude   Float?
-  longitude  Float?
+enum UpazilaType {
+  UPAZILA
+  THANA
+}
+
+model Upazila {
+  id     Int         @id @default(autoincrement())
+  name   String
+  nameBn String
+  type   UpazilaType
+
+  latitude  Float?
+  longitude Float?
+
   districtId Int
   district   District @relation(fields: [districtId], references: [id])
   areas      Area[]
@@ -127,52 +142,75 @@ model Thana {
   @@index([districtId])
 }
 
+enum AreaType {
+  UNION
+  WARD
+}
+
 model Area {
-  id       Int       @id @default(autoincrement())
-  name     String
-  nameBn   String
-  thanaId  Int
-  thana    Thana     @relation(fields: [thanaId], references: [id])
+  id        Int      @id @default(autoincrement())
+  name      String
+  nameBn    String
+  upazilaId Int
+  type      AreaType
+
+  upazila  Upazila   @relation(fields: [upazilaId], references: [id])
+  villages Village[]
   listings Listing[]
 
-  latitude   Float?
-  longitude  Float?
+  latitude  Float?
+  longitude Float?
 
-  @@index([thanaId])
+  @@index([upazilaId])
+}
+
+model Village {
+  id        Int       @id @default(autoincrement())
+  name      String
+  nameBn    String
+  areaId    Int
+  area      Area      @relation(fields: [areaId], references: [id])
+  listings  Listing[]
+  latitude  Float?
+  longitude Float?
+
+  @@index([areaId])
 }
 
 model Listing {
-  id                 String           @id @default(uuid())
-  title              String
-  description        String
-  type               ListingType
-  tenantPolicy       TenantPolicy
-  genderPreference   GenderPreference
-  rent               Int
-  advanceAmount      Int?
-  negotiable         Boolean
-  totalRooms         Int?
-  totalBaths         Int?
-  floor              Int?
-  isFurnished        Boolean
-  utilitiesIncluded  Boolean
-  availableFrom      DateTime
-  status             ListingStatus    @default(DRAFT)
-  contactPhone       String
-  address            String
-  areaId             Int
-  ownerId            String
-  area               Area             @relation(fields: [areaId], references: [id])
-  owner              User             @relation(fields: [ownerId], references: [id])
-  photos             ListingPhoto[]
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  expiresAt          DateTime?
+  id                String           @id @default(uuid())
+  title             String
+  description       String
+  type              ListingType
+  tenantPolicy      TenantPolicy
+  genderPreference  GenderPreference
+  rent              Int
+  advanceAmount     Int?
+  negotiable        Boolean
+  totalRooms        Int?
+  totalBaths        Int?
+  floor             Int?
+  isFurnished       Boolean
+  utilitiesIncluded Boolean
+  availableFrom     DateTime
+  status            ListingStatus    @default(DRAFT)
+  contactPhone      String
+  address           String
+  areaId            Int
+  villageId         Int
+  ownerId           String
+  area              Area             @relation(fields: [areaId], references: [id])
+  village           Village?         @relation(fields: [villageId], references: [id])
+  owner             User             @relation(fields: [ownerId], references: [id])
+  photos            ListingPhoto[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  expiresAt         DateTime?
 
-  isBiddingEnabled  Boolean   @default(false)
-  minimumBid        Int?
-  biddingDeadline   DateTime?
-  bids              Bid[]
+  isBiddingEnabled Boolean   @default(false)
+  minimumBid       Int?
+  biddingDeadline  DateTime?
+  bids             Bid[]
 
   favoritedBy FavoriteListing[]
 
@@ -197,14 +235,14 @@ model ListingPhoto {
 }
 
 model FavoriteListing {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   userId    String
   listingId String
-  createdAt DateTime   @default(now())
+  createdAt DateTime @default(now())
 
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  listing   Listing     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
   @@unique([userId, listingId])
-  @@index([userId]) 
+  @@index([userId])
 }

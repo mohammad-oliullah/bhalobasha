@@ -1,74 +1,78 @@
 import { PrismaClient } from "@prisma/client";
-import divisions from "./data/divisions.json";
-import districts from "./data/districts.json";
-import thanas from "./data/thanas.json";
-import areas from "./data/areas.json";
+
+import {
+  getDivisions,
+  getDistricts,
+  getUpazilas,
+  getAreas,
+  getVillages,
+} from "@olism/bd-geo";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌍 Seeding divisions...");
-  for (const d of divisions) {
-    await prisma.division.upsert({
-      where: { id: d.id },
-      update: { name: d.name, nameBn: d.nameBn },
-      create: d,
-    });
-  }
-  console.log(`✅ ${divisions.length} divisions`);
+  console.log("Seeding Bangladesh geographical data...");
 
-  console.log("🏙️ Seeding districts...");
-  for (const d of districts) {
-    await prisma.district.upsert({
-      where: { id: d.id },
-      update: { name: d.name, nameBn: d.nameBn, divisionId: d.divisionId },
-      create: d,
-    });
-  }
-  console.log(`✅ ${districts.length} districts`);
+  console.log("Seeding divisions...");
+  const divisions = getDivisions();
 
-  console.log("🏘️ Seeding thanas...");
-  for (const t of thanas) {
-    await prisma.thana.upsert({
-      where: { id: t.id },
-      update: {
-        name: t.name,
-        nameBn: t.nameBn,
-        districtId: t.districtId,
-        latitude: (t as any).latitude ?? null,
-        longitude: (t as any).longitude ?? null,
-      },
-      create: t,
-    });
-  }
-  console.log(`✅ ${thanas.length} thanas`);
+  await prisma.division.createMany({
+    data: divisions,
+  });
 
-  console.log("📍 Seeding areas...");
-  for (const a of areas) {
-    await prisma.area.upsert({
-      where: { id: a.id },
-      update: {
-        name: a.name,
-        nameBn: a.nameBn,
-        thanaId: a.thanaId,
-        latitude: (a as any).latitude ?? null,
-        longitude: (a as any).longitude ?? null,
-      },
-      create: a,
-    });
-  }
-  console.log(`✅ ${areas.length} areas`);
+  console.log(`✓ ${divisions.length} divisions seeded`);
 
-  console.log("\n🎉 Seed completed!");
-  console.log(`   ${divisions.length} divisions`);
-  console.log(`   ${districts.length} districts`);
-  console.log(`   ${thanas.length} thanas`);
-  console.log(`   ${areas.length} areas`);
+  console.log("Seeding districts...");
+  const districts = getDistricts();
+
+  await prisma.district.createMany({
+    data: districts,
+  });
+
+  console.log(`✓ ${districts.length} districts seeded`);
+
+  console.log("Seeding upazilas...");
+  const upazilas = getUpazilas();
+
+  await prisma.upazila.createMany({
+    data: upazilas.map((ups) => ({
+      ...ups,
+      type: ups.type
+        ? (ups.type.toUpperCase() as "UPAZILA" | "THANA")
+        : "UPAZILA",
+    })),
+  });
+
+  console.log(`✓ ${upazilas.length} upazilas seeded`);
+
+  console.log("Seeding areas...");
+  const areas = getAreas();
+
+  await prisma.area.createMany({
+    data: areas.map((area) => ({
+      ...area,
+      type: area.type.toUpperCase() as "UNION" | "WARD",
+    })),
+  });
+
+  console.log(`✓ ${areas.length} areas seeded`);
+
+  console.log("Seeding villages...");
+  const villages = getVillages();
+
+  await prisma.village.createMany({
+    data: villages,
+  });
+
+  console.log(`✓ ${villages.length} villages seeded`);
+
+  console.log("Bangladesh geographical data seeded successfully.");
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
+  .catch((error) => {
+    console.error("Seeding failed:");
+    console.error(error);
     process.exit(1);
   })
   .finally(async () => {

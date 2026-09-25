@@ -29,6 +29,7 @@
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/swagger": "^11.0.0",
     "@nestjs/throttler": "^6.5.0",
+    "@olism/bd-geo": "^0.1.8",
     "@prisma/client": "^6.0.0",
     "axios": "^1.19.0",
     "class-transformer": "^0.5.1",
@@ -56,6 +57,7 @@
     "@types/streamifier": "^0.1.2",
     "prisma": "^6.0.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.0"
   }
 }
