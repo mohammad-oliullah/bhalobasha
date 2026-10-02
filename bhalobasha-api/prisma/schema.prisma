@@ -39,6 +39,8 @@ enum ListingStatus {
   FILLED
   EXPIRED
   DRAFT
+  PENDING
+  REJECTED
 }
 
 enum BidStatus {

@@ -30,6 +30,8 @@ export enum ListingStatus {
   FILLED = "FILLED",
   EXPIRED = "EXPIRED",
   DRAFT = "DRAFT",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
 }
 
 export interface ApiResponse<T> {

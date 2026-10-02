@@ -92,7 +92,7 @@ export class CreateListingDto {
   @IsDateString()
   availableFrom!: string;
 
-  @ApiPropertyOptional({ enum: ListingStatus, default: ListingStatus.DRAFT })
+  @ApiPropertyOptional({ enum: ListingStatus, default: ListingStatus.PENDING })
   @IsOptional()
   @IsEnum(ListingStatus)
   status?: ListingStatus;

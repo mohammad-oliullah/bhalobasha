@@ -111,7 +111,7 @@ export default function NewListingPage() {
 
       await createListing.mutateAsync(payload);
 
-      toast.success("Listing posted successfully!");
+      toast.success("Listing submitted for review. It will be public after approval.");
       router.push("/dashboard/listings");
     } catch (err) {
       toast.error(

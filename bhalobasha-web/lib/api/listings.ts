@@ -5,7 +5,6 @@ import {
   CreateListingPayload,
   Listing,
   ListingFilters,
-  ListingStatus,
 } from "@/types";
 
 interface ApiResponse<T> {
@@ -22,21 +21,33 @@ export async function getListings(
   return data;
 }
 
-export async function getMyListings(ownerId: string): Promise<Listing[]> {
-  const statuses = [
-    ListingStatus.ACTIVE,
-    ListingStatus.FILLED,
-    ListingStatus.EXPIRED,
-    ListingStatus.DRAFT,
-  ];
-  const results = await Promise.all(
-    statuses.map((status) => getListings({ status })),
-  );
-  return results.flat().filter((l) => l.ownerId === ownerId);
+export async function getMyListings(): Promise<Listing[]> {
+  const { data } = await apiClient.get<Listing[]>("/listings/mine");
+  return data;
 }
 
 export async function getListing(id: string): Promise<Listing> {
   const { data } = await apiClient.get<Listing>(`/listings/${id}`);
+  return data;
+}
+
+export async function getMyListing(id: string): Promise<Listing> {
+  const { data } = await apiClient.get<Listing>(`/listings/mine/${id}`);
+  return data;
+}
+
+export async function getPendingListings(): Promise<Listing[]> {
+  const { data } = await apiClient.get<Listing[]>("/listings/admin/pending");
+  return data;
+}
+
+export async function moderateListing(
+  id: string,
+  action: "approve" | "reject",
+): Promise<Listing> {
+  const { data } = await apiClient.patch<Listing>(
+    `/listings/admin/${id}/${action}`,
+  );
   return data;
 }
 
