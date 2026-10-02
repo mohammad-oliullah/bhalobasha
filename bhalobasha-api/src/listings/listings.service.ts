@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -12,19 +13,24 @@ import { FilterListingDto } from "./dto/filter-listing.dto";
 
 export const listingInclude = {
   photos: true,
-  area: {
+  village: {
     include: {
-      thana: {
+      area: {
         include: {
-          district: {
+          upazila: {
             include: {
-              division: true,
+              district: {
+                include: {
+                  division: true,
+                },
+              },
             },
           },
         },
       },
     },
   },
+
   owner: {
     select: {
       id: true,
@@ -40,8 +46,12 @@ export class ListingsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(filters: FilterListingDto) {
+    if (filters.status && filters.status !== ListingStatus.ACTIVE) {
+      throw new ForbiddenException("Only active listings are publicly available");
+    }
+
     const where: Prisma.ListingWhereInput = {
-      status: filters.status ?? ListingStatus.ACTIVE,
+      status: ListingStatus.ACTIVE,
     };
 
     if (filters.type) where.type = filters.type;
@@ -56,12 +66,14 @@ export class ListingsService {
 
     if (filters.areaId) {
       where.areaId = filters.areaId;
-    } else if (filters.thanaId) {
-      where.area = { thanaId: filters.thanaId };
+    } else if (filters.upazilaId) {
+      where.area = { upazilaId: filters.upazilaId };
     } else if (filters.districtId) {
-      where.area = { thana: { districtId: filters.districtId } };
+      where.area = { upazila: { districtId: filters.districtId } };
     } else if (filters.divisionId) {
-      where.area = { thana: { district: { divisionId: filters.divisionId } } };
+      where.area = {
+        upazila: { district: { divisionId: filters.divisionId } },
+      };
     }
 
     return this.prisma.listing.findMany({
@@ -72,16 +84,47 @@ export class ListingsService {
   }
 
   async findOne(id: string) {
-    const listing = await this.prisma.listing.findUnique({
-      where: { id },
-      include: listingInclude,
-    });
+    const listing = await this.loadListing(id);
 
-    if (!listing) {
+    if (
+      listing.status === ListingStatus.DRAFT ||
+      listing.status === ListingStatus.PENDING ||
+      listing.status === ListingStatus.REJECTED
+    ) {
       throw new NotFoundException("Listing not found");
     }
 
     return listing;
+  }
+
+  async findMyListings(userId: string) {
+    return this.prisma.listing.findMany({
+      where: { ownerId: userId },
+      include: listingInclude,
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  async findMyListing(id: string, userId: string, userRole: UserRole) {
+    const listing = await this.loadListing(id);
+    this.assertOwner(listing.ownerId, userId, userRole);
+    return listing;
+  }
+
+  async findPendingListings() {
+    return this.prisma.listing.findMany({
+      where: { status: ListingStatus.PENDING },
+      include: listingInclude,
+      orderBy: { createdAt: "asc" },
+    });
+  }
+
+  async approveListing(id: string) {
+    return this.moderatePendingListing(id, ListingStatus.ACTIVE);
+  }
+
+  async rejectListing(id: string) {
+    return this.moderatePendingListing(id, ListingStatus.REJECTED);
   }
 
   async create(userId: string, userRole: UserRole, dto: CreateListingDto) {
@@ -91,13 +134,13 @@ export class ListingsService {
 
     // console.log(JSON.stringify(dto, null, 4));
 
-    const area = await this.prisma.area.findUnique({
-      where: { id: dto.areaId },
-    });
+    // const area = await this.prisma.area.findUnique({
+    //   where: { id: dto.areaId },
+    // });
 
-    if (!area) {
-      throw new NotFoundException("Area not found");
-    }
+    // if (!area) {
+    //   throw new NotFoundException("Area not found");
+    // }
 
     if (dto.photos && dto.photos.length > MAX_LISTING_PHOTOS) {
       throw new BadRequestException("A listing can have a maximum of 8 photos");
@@ -112,7 +155,10 @@ export class ListingsService {
       data: {
         ...rest,
         availableFrom: new Date(availableFrom),
-        status: status ?? ListingStatus.ACTIVE,
+        status:
+          userRole === UserRole.ADMIN
+            ? (status ?? ListingStatus.PENDING)
+            : ListingStatus.PENDING,
         ownerId: userId,
         expiresAt,
       },
@@ -128,7 +174,7 @@ export class ListingsService {
       });
     }
 
-    return this.findOne(listing.id);
+    return this.loadListing(listing.id);
   }
 
   async update(
@@ -137,10 +183,14 @@ export class ListingsService {
     userRole: UserRole,
     dto: UpdateListingDto,
   ) {
-    const listing = await this.findOne(id);
+    const listing = await this.loadListing(id);
     this.assertOwner(listing.ownerId, userId, userRole);
 
-    const { photos, availableFrom, ...rest } = dto;
+    const { photos, availableFrom, status, ...rest } = dto;
+
+    if (status !== undefined && userRole !== UserRole.ADMIN) {
+      throw new ForbiddenException("Only admins can change listing status");
+    }
 
     if (photos && photos.length > MAX_LISTING_PHOTOS) {
       throw new BadRequestException("A listing can have a maximum of 8 photos");
@@ -149,6 +199,11 @@ export class ListingsService {
     const updateData: Prisma.ListingUpdateInput = {
       ...rest,
       ...(availableFrom ? { availableFrom: new Date(availableFrom) } : {}),
+      ...(status !== undefined ? { status } : {}),
+      ...(listing.status === ListingStatus.REJECTED &&
+      userRole !== UserRole.ADMIN
+        ? { status: ListingStatus.PENDING }
+        : {}),
     };
 
     if (photos) {
@@ -166,7 +221,7 @@ export class ListingsService {
       data: updateData,
     });
 
-    return this.findOne(id);
+    return this.loadListing(id);
   }
 
   async addPhotosToListing(
@@ -175,7 +230,7 @@ export class ListingsService {
     userRole: UserRole,
     urls: string[],
   ) {
-    const listing = await this.findOne(listingId);
+    const listing = await this.loadListing(listingId);
     this.assertOwner(listing.ownerId, userId, userRole);
 
     const currentCount = listing.photos.length;
@@ -193,7 +248,7 @@ export class ListingsService {
       })),
     });
 
-    return this.findOne(listingId);
+    return this.loadListing(listingId);
   }
 
   async setPrimaryPhoto(
@@ -202,7 +257,7 @@ export class ListingsService {
     userId: string,
     userRole: UserRole,
   ) {
-    const listing = await this.findOne(listingId);
+    const listing = await this.loadListing(listingId);
     this.assertOwner(listing.ownerId, userId, userRole);
 
     const photo = await this.prisma.listingPhoto.findFirst({
@@ -224,11 +279,11 @@ export class ListingsService {
       }),
     ]);
 
-    return this.findOne(listingId);
+    return this.loadListing(listingId);
   }
 
   async softDelete(id: string, userId: string, userRole: UserRole) {
-    const listing = await this.findOne(id);
+    const listing = await this.loadListing(id);
     this.assertOwner(listing.ownerId, userId, userRole);
 
     return this.prisma.listing.update({
@@ -239,8 +294,12 @@ export class ListingsService {
   }
 
   async markFilled(id: string, userId: string, userRole: UserRole) {
-    const listing = await this.findOne(id);
+    const listing = await this.loadListing(id);
     this.assertOwner(listing.ownerId, userId, userRole);
+
+    if (listing.status !== ListingStatus.ACTIVE) {
+      throw new BadRequestException("Only active listings can be marked as filled");
+    }
 
     return this.prisma.listing.update({
       where: { id },
@@ -250,8 +309,12 @@ export class ListingsService {
   }
 
   async markUnFilled(id: string, userId: string, userRole: UserRole) {
-    const listing = await this.findOne(id);
+    const listing = await this.loadListing(id);
     this.assertOwner(listing.ownerId, userId, userRole);
+
+    if (listing.status !== ListingStatus.FILLED) {
+      throw new BadRequestException("Only filled listings can be marked as active");
+    }
 
     return this.prisma.listing.update({
       where: { id },
@@ -268,5 +331,38 @@ export class ListingsService {
     if (ownerId !== userId) {
       throw new ForbiddenException("You can only modify your own listings");
     }
+  }
+
+  private async moderatePendingListing(id: string, status: ListingStatus) {
+    const result = await this.prisma.listing.updateMany({
+      where: { id, status: ListingStatus.PENDING },
+      data: { status },
+    });
+
+    if (result.count === 0) {
+      const listing = await this.prisma.listing.findUnique({
+        where: { id },
+        select: { id: true },
+      });
+      if (!listing) {
+        throw new NotFoundException("Listing not found");
+      }
+      throw new ConflictException("Only pending listings can be moderated");
+    }
+
+    return this.loadListing(id);
+  }
+
+  private async loadListing(id: string) {
+    const listing = await this.prisma.listing.findUnique({
+      where: { id },
+      include: listingInclude,
+    });
+
+    if (!listing) {
+      throw new NotFoundException("Listing not found");
+    }
+
+    return listing;
   }
 }

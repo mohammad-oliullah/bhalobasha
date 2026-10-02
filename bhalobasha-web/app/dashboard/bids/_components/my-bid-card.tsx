@@ -17,7 +17,10 @@ const bidStatusConfig = {
   PENDING: { label: "Pending", className: "bg-amber-100 text-amber-700" },
   ACCEPTED: { label: "Accepted 🎉", className: "bg-green-100 text-green-700" },
   REJECTED: { label: "Rejected", className: "bg-red-100 text-red-600" },
-  WITHDRAWN: { label: "Withdrawn", className: "bg-muted/20 text-muted-foreground" },
+  WITHDRAWN: {
+    label: "Withdrawn",
+    className: "bg-muted/20 text-muted-foreground",
+  },
   EXPIRED: { label: "Expired", className: "bg-muted/20 text-muted" },
 };
 
@@ -85,7 +88,7 @@ export function MyBidCard({ bid }: { bid: Bid }) {
 
             {listing?.area && (
               <p className="text-xs text-muted">
-                {listing.area.thana?.name}, {listing.area.name}
+                {listing.area.upazila?.name}, {listing.area.name}
               </p>
             )}
 

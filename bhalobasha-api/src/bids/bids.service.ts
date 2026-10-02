@@ -298,7 +298,7 @@ export class BidsService {
             area: {
               select: {
                 name: true,
-                thana: { select: { name: true } },
+                upazila: { select: { name: true } },
               },
             },
             photos: {

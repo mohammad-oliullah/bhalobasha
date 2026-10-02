@@ -4,7 +4,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getListings,
   getListing,
+  getMyListing,
   getMyListings,
+  getPendingListings,
+  moderateListing,
   createListing,
   updateListing,
   deleteListing,
@@ -33,10 +36,39 @@ export function useListing(id: string) {
   });
 }
 
+export function useMyListing(id: string) {
+  return useQuery({
+    queryKey: ["my-listing", id],
+    queryFn: () => getMyListing(id),
+    enabled: !!id,
+  });
+}
+
+export function usePendingListings(enabled = true) {
+  return useQuery({
+    queryKey: ["admin", "pending-listings"],
+    queryFn: getPendingListings,
+    enabled,
+  });
+}
+
+export function useModerateListing() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, action }: { id: string; action: "approve" | "reject" }) =>
+      moderateListing(id, action),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "pending-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      queryClient.invalidateQueries({ queryKey: ["my-listings"] });
+    },
+  });
+}
+
 export function useMyListings(ownerId?: string) {
   return useQuery({
     queryKey: ["my-listings", ownerId],
-    queryFn: () => getMyListings(ownerId!),
+    queryFn: getMyListings,
     enabled: !!ownerId,
   });
 }

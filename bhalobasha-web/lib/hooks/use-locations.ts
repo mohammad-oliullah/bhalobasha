@@ -4,8 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getDivisions,
   getDistricts,
-  getThanas,
+  getUPazilas,
   getAreas,
+  getVillages,
 } from "@/lib/api/locations";
 
 export function useDivisions() {
@@ -25,20 +26,29 @@ export function useDistricts(divisionId?: number) {
   });
 }
 
-export function useThanas(districtId?: number) {
+export function useUpazilas(districtId?: number) {
   return useQuery({
-    queryKey: ["thanas", districtId],
-    queryFn: () => getThanas(districtId!),
+    queryKey: ["upazilas", districtId],
+    queryFn: () => getUPazilas(districtId!),
     enabled: !!districtId,
     staleTime: 1000 * 60 * 60,
   });
 }
 
-export function useAreas(thanaId?: number) {
+export function useAreas(upazilaId?: number) {
   return useQuery({
-    queryKey: ["areas", thanaId],
-    queryFn: () => getAreas(thanaId!),
-    enabled: !!thanaId,
+    queryKey: ["areas", upazilaId],
+    queryFn: () => getAreas(upazilaId!),
+    enabled: !!upazilaId,
+    staleTime: 1000 * 60 * 60,
+  });
+}
+
+export function useVillages(areaId?: number) {
+  return useQuery({
+    queryKey: ["villages", areaId],
+    queryFn: () => getVillages(areaId!),
+    enabled: !!areaId,
     staleTime: 1000 * 60 * 60,
   });
 }

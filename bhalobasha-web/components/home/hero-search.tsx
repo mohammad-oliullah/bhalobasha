@@ -16,7 +16,7 @@ import {
 import {
   useDivisions,
   useDistricts,
-  useThanas,
+  useUpazilas,
 } from "@/lib/hooks/use-locations";
 import { ListingType } from "@/types";
 import { LISTING_TYPE_LABELS } from "@/lib/utils/constants";
@@ -25,20 +25,20 @@ export function HeroSearch() {
   const router = useRouter();
   const [divisionId, setDivisionId] = useState<number>();
   const [districtId, setDistrictId] = useState<number>();
-  const [thanaId, setThanaId] = useState<number>();
+  const [upazilaId, setUpazilaId] = useState<number>();
   const [type, setType] = useState<ListingType>();
   const [minRent, setMinRent] = useState("");
   const [maxRent, setMaxRent] = useState("");
 
   const { data: divisions = [] } = useDivisions();
   const { data: districts = [] } = useDistricts(divisionId);
-  const { data: thanas = [] } = useThanas(districtId);
+  const { data: upazilas = [] } = useUpazilas(districtId);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (divisionId) params.set("divisionId", String(divisionId));
     if (districtId) params.set("districtId", String(districtId));
-    if (thanaId) params.set("thanaId", String(thanaId));
+    if (upazilaId) params.set("upazilaId", String(upazilaId));
     if (type) params.set("type", type);
     if (minRent) params.set("minRent", minRent);
     if (maxRent) params.set("maxRent", maxRent);
@@ -65,7 +65,7 @@ export function HeroSearch() {
                 onValueChange={(v) => {
                   setDivisionId(v ? Number(v) : undefined);
                   setDistrictId(undefined);
-                  setThanaId(undefined);
+                  setUpazilaId(undefined);
                 }}
               >
                 <SelectTrigger>
@@ -88,7 +88,7 @@ export function HeroSearch() {
                   value={districtId?.toString() || ""}
                   onValueChange={(v) => {
                     setDistrictId(v ? Number(v) : undefined);
-                    setThanaId(undefined);
+                    setUpazilaId(undefined);
                   }}
                 >
                   <SelectTrigger>
@@ -107,16 +107,16 @@ export function HeroSearch() {
 
             {districtId && (
               <div className="space-y-1.5 text-left">
-                <Label>Thana</Label>
+                <Label>Upazilas</Label>
                 <Select
-                  value={thanaId?.toString() || ""}
-                  onValueChange={(v) => setThanaId(v ? Number(v) : undefined)}
+                  value={upazilaId?.toString() || ""}
+                  onValueChange={(v) => setUpazilaId(v ? Number(v) : undefined)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select thana" />
+                    <SelectValue placeholder="Select upazila" />
                   </SelectTrigger>
                   <SelectContent>
-                    {thanas.map((t) => (
+                    {upazilas.map((t) => (
                       <SelectItem key={t.id} value={t.id.toString()}>
                         {t.nameBn}
                       </SelectItem>

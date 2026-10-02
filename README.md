@@ -50,7 +50,7 @@ A full-stack platform that tackles all four — with one product decision at the
 
 ### Key Features
 
-- **Structured location search** — Division → District → Thana → Area cascading filters built from seeded Bangladesh location data. Not free text that returns garbage results.
+- **Structured location search** — Division → District → Thana/Upazila → Area → Village cascading filters built from seeded Bangladesh location data. Not free text that returns garbage results.
 - **3-minute listing flow** — Owners post from any phone browser in under 3 minutes. Replaces the paper sign on the gate.
 - **Bidding system** — Owners can enable competitive bidding on high-demand listings. Seekers place bids; owner accepts one → listing auto-fills, all other bids auto-reject. Unique in this market.
 - **Dual OTP auth** — Phone OTP (Twilio primary, SMSBD fallback) and email OTP (Gmail). No passwords.
