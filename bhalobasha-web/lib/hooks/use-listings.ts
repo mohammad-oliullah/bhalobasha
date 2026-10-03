@@ -55,8 +55,15 @@ export function usePendingListings(enabled = true) {
 export function useModerateListing() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, action }: { id: string; action: "approve" | "reject" }) =>
-      moderateListing(id, action),
+    mutationFn: ({
+      id,
+      action,
+      reason,
+    }: {
+      id: string;
+      action: "approve" | "reject";
+      reason?: string;
+    }) => moderateListing(id, action, reason),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "pending-listings"] });
       queryClient.invalidateQueries({ queryKey: ["listings"] });

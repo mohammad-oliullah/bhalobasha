@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Check, Clock3, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -18,10 +19,37 @@ function PendingListingCard({
   isPending,
 }: {
   listing: Listing;
-  onModerate: (id: string, action: "approve" | "reject") => void;
+  onModerate: (
+    id: string,
+    action: "approve" | "reject",
+    reason?: string,
+  ) => Promise<boolean>;
   isPending: boolean;
 }) {
+  const [rejecting, setRejecting] = useState(false);
+  const [reason, setReason] = useState("");
+  const [reasonError, setReasonError] = useState("");
   const photo = listing.photos.find((item) => item.isPrimary) ?? listing.photos[0];
+
+  const submitRejection = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmedReason = reason.trim();
+    if (!trimmedReason) {
+      setReasonError("Enter a reason before rejecting this listing.");
+      return;
+    }
+
+    if (trimmedReason.length > 1000) {
+      setReasonError("The reason must be 1000 characters or fewer.");
+      return;
+    }
+
+    if (await onModerate(listing.id, "reject", trimmedReason)) {
+      setRejecting(false);
+      setReason("");
+      setReasonError("");
+    }
+  };
 
   return (
     <Card>
@@ -67,14 +95,58 @@ function PendingListingCard({
               Approve
             </Button>
             <Button
-              variant="destructive"
-              onClick={() => onModerate(listing.id, "reject")}
+              variant="outline"
+              onClick={() => setRejecting((open) => !open)}
               disabled={isPending}
             >
               <X className="h-4 w-4" />
-              Reject
+              {rejecting ? "Cancel rejection" : "Reject"}
             </Button>
           </div>
+          {rejecting && (
+            <form onSubmit={submitRejection} className="space-y-2">
+              <label
+                htmlFor={`rejection-reason-${listing.id}`}
+                className="block text-sm font-medium"
+              >
+                Reason for rejection
+              </label>
+              <textarea
+                id={`rejection-reason-${listing.id}`}
+                value={reason}
+                onChange={(event) => {
+                  setReason(event.target.value);
+                  setReasonError("");
+                }}
+                maxLength={1000}
+                rows={3}
+                required
+                aria-invalid={!!reasonError}
+                aria-describedby={
+                  reasonError ? `rejection-error-${listing.id}` : undefined
+                }
+                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                placeholder="Explain what needs to be corrected"
+              />
+              <div className="flex items-center justify-between gap-3">
+                {reasonError ? (
+                  <p
+                    id={`rejection-error-${listing.id}`}
+                    className="text-sm text-destructive"
+                  >
+                    {reasonError}
+                  </p>
+                ) : (
+                  <span className="text-xs text-muted">
+                    {reason.length}/1000 characters
+                  </span>
+                )}
+                <Button type="submit" variant="destructive" disabled={isPending}>
+                  {isPending ? "Rejecting..." : "Confirm rejection"}
+                </Button>
+              </div>
+            </form>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -90,12 +162,15 @@ export default function AdminModerationPage() {
   const handleModerate = async (
     id: string,
     action: "approve" | "reject",
+    reason?: string,
   ) => {
     try {
-      await moderate.mutateAsync({ id, action });
+      await moderate.mutateAsync({ id, action, reason });
       toast.success(action === "approve" ? "Listing approved" : "Listing rejected");
+      return true;
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not update listing");
+      return false;
     }
   };
 

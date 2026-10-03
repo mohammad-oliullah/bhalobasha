@@ -123,8 +123,12 @@ export class ListingsService {
     return this.moderatePendingListing(id, ListingStatus.ACTIVE);
   }
 
-  async rejectListing(id: string) {
-    return this.moderatePendingListing(id, ListingStatus.REJECTED);
+  async rejectListing(id: string, reason: string) {
+    return this.moderatePendingListing(
+      id,
+      ListingStatus.REJECTED,
+      reason.trim(),
+    );
   }
 
   async create(userId: string, userRole: UserRole, dto: CreateListingDto) {
@@ -202,7 +206,7 @@ export class ListingsService {
       ...(status !== undefined ? { status } : {}),
       ...(listing.status === ListingStatus.REJECTED &&
       userRole !== UserRole.ADMIN
-        ? { status: ListingStatus.PENDING }
+        ? { status: ListingStatus.PENDING, rejectionReason: null }
         : {}),
     };
 
@@ -333,10 +337,14 @@ export class ListingsService {
     }
   }
 
-  private async moderatePendingListing(id: string, status: ListingStatus) {
+  private async moderatePendingListing(
+    id: string,
+    status: ListingStatus,
+    rejectionReason: string | null = null,
+  ) {
     const result = await this.prisma.listing.updateMany({
       where: { id, status: ListingStatus.PENDING },
-      data: { status },
+      data: { status, rejectionReason },
     });
 
     if (result.count === 0) {

@@ -17,6 +17,7 @@ import { CreateListingDto } from "./dto/create-listing.dto";
 import { UpdateListingDto } from "./dto/update-listing.dto";
 import { FilterListingDto } from "./dto/filter-listing.dto";
 import { AddPhotosDto } from "./dto/add-photos.dto";
+import { RejectListingDto } from "./dto/reject-listing.dto";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../common/guards/roles.guard";
 import { Roles } from "../common/decorators/roles.decorator";
@@ -82,8 +83,11 @@ export class ListingsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: "Reject a pending listing" })
-  reject(@Param("id", ParseUUIDPipe) id: string) {
-    return this.listingsService.rejectListing(id);
+  reject(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: RejectListingDto,
+  ) {
+    return this.listingsService.rejectListing(id, dto.reason);
   }
 
   @Get(":id")
