@@ -137,6 +137,7 @@ export interface Listing {
   utilitiesIncluded: boolean;
   availableFrom: string;
   status: ListingStatus;
+  rejectionReason: string | null;
   contactPhone: string;
   address: string;
   upazilaId: number;

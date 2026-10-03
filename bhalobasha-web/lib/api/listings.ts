@@ -44,9 +44,11 @@ export async function getPendingListings(): Promise<Listing[]> {
 export async function moderateListing(
   id: string,
   action: "approve" | "reject",
+  reason?: string,
 ): Promise<Listing> {
   const { data } = await apiClient.patch<Listing>(
     `/listings/admin/${id}/${action}`,
+    action === "reject" ? { reason } : undefined,
   );
   return data;
 }
