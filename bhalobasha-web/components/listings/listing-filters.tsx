@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -40,6 +41,83 @@ export function ListingFiltersPanel({
   filters,
   onChange,
 }: ListingFiltersProps) {
+  const [minRentInput, setMinRentInput] = useState(
+    filters.minRent?.toString() ?? "",
+  );
+  const [maxRentInput, setMaxRentInput] = useState(
+    filters.maxRent?.toString() ?? "",
+  );
+  const filtersRef = useRef(filters);
+  const onChangeRef = useRef(onChange);
+  const rentInputsRef = useRef({ min: minRentInput, max: maxRentInput });
+  const appliedRentRef = useRef({
+    min: filters.minRent,
+    max: filters.maxRent,
+  });
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  filtersRef.current = filters;
+  onChangeRef.current = onChange;
+
+  useEffect(() => {
+    const minChanged = !Object.is(
+      filters.minRent,
+      appliedRentRef.current.min,
+    );
+    const maxChanged = !Object.is(
+      filters.maxRent,
+      appliedRentRef.current.max,
+    );
+
+    if (minChanged || maxChanged) {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      appliedRentRef.current = {
+        min: filters.minRent,
+        max: filters.maxRent,
+      };
+      rentInputsRef.current = {
+        min: filters.minRent?.toString() ?? "",
+        max: filters.maxRent?.toString() ?? "",
+      };
+      setMinRentInput(rentInputsRef.current.min);
+      setMaxRentInput(rentInputsRef.current.max);
+    }
+  }, [filters.minRent, filters.maxRent]);
+
+  useEffect(
+    () => () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    },
+    [],
+  );
+
+  const updateRentInput = (field: "min" | "max", value: string) => {
+    rentInputsRef.current[field] = value;
+    if (field === "min") setMinRentInput(value);
+    else setMaxRentInput(value);
+
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      const minRent = rentInputsRef.current.min
+        ? Number(rentInputsRef.current.min)
+        : undefined;
+      const maxRent = rentInputsRef.current.max
+        ? Number(rentInputsRef.current.max)
+        : undefined;
+
+      appliedRentRef.current = { min: minRent, max: maxRent };
+      onChangeRef.current({
+        ...filtersRef.current,
+        minRent,
+        maxRent,
+      });
+      debounceTimerRef.current = null;
+    }, 400);
+  };
+
   const { data: divisions = [] } = useDivisions();
   const { data: districts = [] } = useDistricts(filters.divisionId);
   const { data: upazilas = [] } = useUpazilas(filters.districtId);
@@ -224,12 +302,8 @@ export function ListingFiltersPanel({
           <Input
             type="number"
             placeholder="0"
-            value={filters.minRent ?? ""}
-            onChange={(e) =>
-              update({
-                minRent: e.target.value ? Number(e.target.value) : undefined,
-              })
-            }
+            value={minRentInput}
+            onChange={(e) => updateRentInput("min", e.target.value)}
           />
         </div>
         <div className="space-y-2">
@@ -237,12 +311,8 @@ export function ListingFiltersPanel({
           <Input
             type="number"
             placeholder="50000"
-            value={filters.maxRent ?? ""}
-            onChange={(e) =>
-              update({
-                maxRent: e.target.value ? Number(e.target.value) : undefined,
-              })
-            }
+            value={maxRentInput}
+            onChange={(e) => updateRentInput("max", e.target.value)}
           />
         </div>
       </div>
