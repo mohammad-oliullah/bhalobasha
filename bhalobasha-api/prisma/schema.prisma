@@ -7,6 +7,185 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Bid {
+  id        String    @id @default(uuid())
+  amount    Int
+  message   String?
+  status    BidStatus @default(PENDING)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiresAt DateTime?
+  listingId String
+  seekerId  String
+  listing   Listing   @relation(fields: [listingId], references: [id])
+  seeker    User      @relation(fields: [seekerId], references: [id])
+
+  @@unique([listingId, seekerId])
+}
+
+model User {
+  id           String            @id @default(uuid())
+  phone        String?           @unique @db.VarChar(15)
+  name         String?           @db.VarChar(100)
+  email        String?           @unique @db.VarChar(255)
+  role         UserRole          @default(SEEKER)
+  isVerified   Boolean           @default(false)
+  isActive     Boolean           @default(true)
+  profilePhoto String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  bids         Bid[]
+  favorites    FavoriteListing[]
+  listings     Listing[]
+}
+
+model OtpVerification {
+  id        String   @id @default(uuid())
+  phone     String?  @db.VarChar(15)
+  code      String   @db.VarChar(6)
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  email     String?  @db.VarChar(255)
+
+  @@index([phone, code])
+  @@index([email, code])
+}
+
+model Division {
+  id        Int        @id @default(autoincrement())
+  name      String
+  nameBn    String
+  latitude  Float?
+  longitude Float?
+  districts District[]
+}
+
+model District {
+  id         Int       @id @default(autoincrement())
+  name       String
+  nameBn     String
+  divisionId Int
+  latitude   Float?
+  longitude  Float?
+  division   Division  @relation(fields: [divisionId], references: [id])
+  upazilas   Upazila[]
+
+  @@index([divisionId])
+}
+
+model Upazila {
+  id         Int         @id @default(autoincrement())
+  name       String
+  nameBn     String
+  latitude   Float?
+  longitude  Float?
+  districtId Int
+  type       UpazilaType
+  areas      Area[]
+  listings   Listing[]
+  district   District    @relation(fields: [districtId], references: [id])
+
+  @@index([districtId])
+}
+
+model Area {
+  id        Int       @id @default(autoincrement())
+  name      String
+  nameBn    String
+  latitude  Float?
+  longitude Float?
+  upazilaId Int
+  type      AreaType
+  upazila   Upazila   @relation(fields: [upazilaId], references: [id])
+  listings  Listing[]
+  villages  Village[]
+
+  @@index([upazilaId])
+}
+
+model Village {
+  id        Int       @id @default(autoincrement())
+  name      String
+  nameBn    String
+  areaId    Int
+  latitude  Float?
+  longitude Float?
+  listings  Listing[]
+  area      Area      @relation(fields: [areaId], references: [id])
+
+  @@index([areaId])
+}
+
+model Listing {
+  id                String            @id @default(uuid())
+  title             String
+  description       String
+  type              ListingType
+  tenantPolicy      TenantPolicy
+  genderPreference  GenderPreference
+  rent              Int
+  advanceAmount     Int?
+  negotiable        Boolean
+  totalRooms        Int?
+  totalBaths        Int?
+  floor             Int?
+  isFurnished       Boolean
+  utilitiesIncluded Boolean
+  availableFrom     DateTime
+  status            ListingStatus     @default(DRAFT)
+  contactPhone      String
+  address           String
+  areaId            Int?
+  ownerId           String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  expiresAt         DateTime?
+  biddingDeadline   DateTime?
+  isBiddingEnabled  Boolean           @default(false)
+  minimumBid        Int?
+  latitude          Float?
+  longitude         Float?
+  villageId         Int?
+  upazilaId         Int
+  rejectionReason   String?
+  bids              Bid[]
+  favoritedBy       FavoriteListing[]
+  area              Area?             @relation(fields: [areaId], references: [id])
+  owner             User              @relation(fields: [ownerId], references: [id])
+  upazila           Upazila           @relation(fields: [upazilaId], references: [id])
+  village           Village?          @relation(fields: [villageId], references: [id])
+  photos            ListingPhoto[]
+
+  @@index([areaId])
+  @@index([ownerId])
+  @@index([status])
+  @@index([type])
+}
+
+model ListingPhoto {
+  id        String   @id @default(uuid())
+  url       String
+  isPrimary Boolean  @default(false)
+  listingId String
+  createdAt DateTime @default(now())
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId])
+}
+
+model FavoriteListing {
+  id        String   @id @default(uuid())
+  userId    String
+  listingId String
+  createdAt DateTime @default(now())
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId])
+  @@index([userId])
+}
+
 enum UserRole {
   SEEKER
   OWNER
@@ -51,207 +230,12 @@ enum BidStatus {
   EXPIRED
 }
 
-model Bid {
-  id        String    @id @default(uuid())
-  amount    Int
-  message   String?
-  status    BidStatus @default(PENDING)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  expiresAt DateTime?
-
-  listing   Listing @relation(fields: [listingId], references: [id])
-  listingId String
-
-  seeker   User   @relation(fields: [seekerId], references: [id])
-  seekerId String
-
-  @@unique([listingId, seekerId]) // one active bid per seeker per listing
-}
-
-model User {
-  id           String            @id @default(uuid())
-  phone        String?           @unique @db.VarChar(15)
-  email        String?           @unique @db.VarChar(255)
-  name         String?           @db.VarChar(100)
-  role         UserRole          @default(SEEKER)
-  isVerified   Boolean           @default(false)
-  isActive     Boolean           @default(true)
-  profilePhoto String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  listings     Listing[]
-  bids         Bid[]
-  favorites    FavoriteListing[]
-}
-
-model OtpVerification {
-  id        String   @id @default(uuid())
-  phone     String?  @db.VarChar(15)
-  email     String?  @db.VarChar(255)
-  code      String   @db.VarChar(6)
-  expiresAt DateTime
-  isUsed    Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  @@index([phone, code])
-  @@index([email, code])
-}
-
-model Division {
-  id     Int    @id @default(autoincrement())
-  name   String
-  nameBn String
-
-  latitude  Float?
-  longitude Float?
-
-  districts District[]
-}
-
-model District {
-  id         Int       @id @default(autoincrement())
-  name       String
-  nameBn     String
-  divisionId Int
-  division   Division  @relation(fields: [divisionId], references: [id])
-  upazilas   Upazila[]
-
-  latitude  Float?
-  longitude Float?
-
-  @@index([divisionId])
-}
-
 enum UpazilaType {
   UPAZILA
   THANA
 }
 
-model Upazila {
-  id     Int         @id @default(autoincrement())
-  name   String
-  nameBn String
-  type   UpazilaType
-
-  latitude  Float?
-  longitude Float?
-
-  districtId Int
-  district   District  @relation(fields: [districtId], references: [id])
-  areas      Area[]
-  listings   Listing[]
-
-  @@index([districtId])
-}
-
 enum AreaType {
   UNION
   WARD
-}
-
-model Area {
-  id        Int      @id @default(autoincrement())
-  name      String
-  nameBn    String
-  upazilaId Int
-  type      AreaType
-
-  upazila  Upazila   @relation(fields: [upazilaId], references: [id])
-  villages Village[]
-  listings Listing[]
-
-  latitude  Float?
-  longitude Float?
-
-  @@index([upazilaId])
-}
-
-model Village {
-  id        Int       @id @default(autoincrement())
-  name      String
-  nameBn    String
-  areaId    Int
-  area      Area      @relation(fields: [areaId], references: [id])
-  listings  Listing[]
-  latitude  Float?
-  longitude Float?
-
-  @@index([areaId])
-}
-
-model Listing {
-  id                String           @id @default(uuid())
-  title             String
-  description       String
-  type              ListingType
-  tenantPolicy      TenantPolicy
-  genderPreference  GenderPreference
-  rent              Int
-  advanceAmount     Int?
-  negotiable        Boolean
-  totalRooms        Int?
-  totalBaths        Int?
-  floor             Int?
-  isFurnished       Boolean
-  utilitiesIncluded Boolean
-  availableFrom     DateTime
-  status            ListingStatus    @default(DRAFT)
-  rejectionReason   String?
-  contactPhone      String
-  address           String
-
-  ownerId   String
-  upazilaId Int
-  areaId    Int?
-  villageId Int?
-
-  upazila Upazila  @relation(fields: [upazilaId], references: [id])
-  area    Area?    @relation(fields: [areaId], references: [id])
-  village Village? @relation(fields: [villageId], references: [id])
-
-  owner     User           @relation(fields: [ownerId], references: [id])
-  photos    ListingPhoto[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  expiresAt DateTime?
-
-  isBiddingEnabled Boolean   @default(false)
-  minimumBid       Int?
-  biddingDeadline  DateTime?
-  bids             Bid[]
-
-  favoritedBy FavoriteListing[]
-
-  latitude  Float?
-  longitude Float?
-
-  @@index([areaId])
-  @@index([ownerId])
-  @@index([status])
-  @@index([type])
-}
-
-model ListingPhoto {
-  id        String   @id @default(uuid())
-  url       String
-  isPrimary Boolean  @default(false)
-  listingId String
-  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@index([listingId])
-}
-
-model FavoriteListing {
-  id        String   @id @default(uuid())
-  userId    String
-  listingId String
-  createdAt DateTime @default(now())
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, listingId])
-  @@index([userId])
 }
