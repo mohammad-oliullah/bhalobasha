@@ -1,0 +1,35 @@
+{
+  "navigation": {
+    "browse": "Browse",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "logout": "Logout",
+    "quickLinks": "Quick Links",
+    "browseListings": "Browse Listings",
+    "postListing": "Post a Listing",
+    "contact": "Contact",
+    "allRightsReserved": "All rights reserved."
+  },
+  "home": {
+    "heroTitle": "Find your perfect home in Bangladesh",
+    "heroSubtitle": "Find your perfect home in Bangladesh — flats, rooms, sublets & bachelor seats",
+    "searchHomes": "Search Homes",
+    "division": "Division",
+    "district": "District",
+    "upazila": "Upazila",
+    "type": "Type",
+    "minRent": "Min Rent",
+    "maxRent": "Max Rent",
+    "selectDivision": "Select division",
+    "selectDistrict": "Select district",
+    "selectUpazila": "Select upazila",
+    "selectType": "Any type",
+    "listings": "Listings",
+    "areas": "Areas",
+    "free": "Free",
+    "brokerFree": "Broker free",
+    "haveProperty": "Have a property to rent?",
+    "listYourProperty": "List your flat, room, or mess for free",
+    "postListingAction": "Post a Listing"
+  }
+}

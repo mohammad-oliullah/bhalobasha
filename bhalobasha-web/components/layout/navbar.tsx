@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutDashboard, LogIn, LogOut, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/lib/hooks/use-auth";
@@ -10,11 +11,13 @@ import { useAuthStore } from "@/lib/store/auth.store";
 import { cn } from "@/lib/utils";
 import { BhalobashaLogo } from "../common/bhalobasha-logo";
 import { ThemeToggle } from "../ui/theme-toggle";
+import { LanguageToggle } from "../ui/language-toggle";
 
 export function Navbar() {
   const pathname = usePathname();
   const { isAuthenticated, user, logout } = useAuth();
   const isLoading = useAuthStore((state) => state.isLoading);
+  const t = useTranslations("navigation");
 
   const isDashboard = pathname.startsWith("/dashboard");
 
@@ -24,7 +27,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6">
         {/* Logo */}
         <BhalobashaLogo />
 
@@ -38,7 +41,7 @@ export function Navbar() {
             )}
           >
             <Search className="h-4 w-4" />
-            <span className="hidden md:inline">Browse</span>
+            <span className="hidden md:inline">{t("browse")}</span>
           </Link>
 
           {!isLoading && isAuthenticated && (
@@ -50,7 +53,7 @@ export function Navbar() {
               )}
             >
               <LayoutDashboard className="h-4 w-4" />
-              <span className="hidden md:inline">Dashboard</span>
+              <span className="hidden md:inline">{t("dashboard")}</span>
             </Link>
           )}
         </nav>
@@ -69,18 +72,19 @@ export function Navbar() {
               </Link>
               <Button variant="outline" size="sm" onClick={() => logout()}>
                 <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Logout</span>
+                <span className="hidden sm:inline">{t("logout")}</span>
               </Button>
             </>
           ) : (
             <Button asChild size="sm">
               <Link href="/login">
                 <LogIn className="h-4 w-4" />
-                Login
+                {t("login")}
               </Link>
             </Button>
           )}
 
+          <LanguageToggle />
           <ThemeToggle />
 
           <Button asChild variant="ghost" size="icon" className="md:hidden">
