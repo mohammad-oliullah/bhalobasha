@@ -1,5 +1,11 @@
-import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
-import { Type } from "class-transformer";
+import {
+  IsBoolean,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  Min,
+} from "class-validator";
+import { Transform, Type } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import {
   GenderPreference,
@@ -61,6 +67,22 @@ export class FilterListingDto {
   @IsInt()
   @Min(0)
   maxRent?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === "true" ? true : value === "false" ? false : value,
+  )
+  @IsBoolean()
+  isFurnished?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === "true" ? true : value === "false" ? false : value,
+  )
+  @IsBoolean()
+  utilitiesIncluded?: boolean;
 
   @ApiPropertyOptional({ enum: ListingStatus, default: ListingStatus.ACTIVE })
   @IsOptional()

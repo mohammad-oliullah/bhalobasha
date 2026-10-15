@@ -12,6 +12,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { BidsModule } from "./bids/bids.module";
 import { HealthController } from "./health/health.controller";
 import { FavoritesModule } from "./favorites/favorites.module";
+import { SavedSearchesModule } from "./saved-searches/saved-searches.module";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FavoritesModule } from "./favorites/favorites.module";
     MediaModule,
     BidsModule,
     FavoritesModule,
+    SavedSearchesModule,
   ],
   controllers: [HealthController],
   providers: [

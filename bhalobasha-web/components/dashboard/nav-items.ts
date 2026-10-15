@@ -5,6 +5,7 @@ import {
   PlusCircle,
   Gavel,
   Heart,
+  BellRing,
 } from "lucide-react";
 
 export const navItems = [
@@ -34,4 +35,9 @@ export const navItems = [
     icon: User,
   },
   { href: "/dashboard/favorites", label: "Saved", icon: Heart },
+  {
+    href: "/dashboard/saved-searches",
+    label: "Search Alerts",
+    icon: BellRing,
+  },
 ];

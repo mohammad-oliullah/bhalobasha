@@ -5,16 +5,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ListingFiltersPanel } from "@/components/listings/listing-filters";
 import { ListingGrid } from "@/components/listings/listing-grid";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useListings } from "@/lib/hooks/use-listings";
+import { useCreateSavedSearch } from "@/lib/hooks/use-saved-searches";
+import { useAuth } from "@/lib/hooks/use-auth";
 import {
   GenderPreference,
   ListingFilters,
-  ListingStatus,
   ListingType,
   TenantPolicy,
 } from "@/types";
 import { LISTINGS_PER_PAGE } from "@/lib/utils/constants";
-import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
+import { ChevronLeft, ChevronRight, Save, SlidersHorizontal } from "lucide-react";
+import { toast } from "sonner";
 
 type ExtendedFilters = ListingFilters & {
   isFurnished?: boolean;
@@ -39,7 +50,6 @@ function parseFilters(params: URLSearchParams): ExtendedFilters {
       : undefined,
     minRent: params.get("minRent") ? Number(params.get("minRent")) : undefined,
     maxRent: params.get("maxRent") ? Number(params.get("maxRent")) : undefined,
-    status: ListingStatus.ACTIVE,
     isFurnished: params.get("isFurnished") === "true" || undefined,
     utilitiesIncluded: params.get("utilitiesIncluded") === "true" || undefined,
   };
@@ -50,6 +60,10 @@ export default function ListingsPage() {
   const searchParams = useSearchParams();
   const [page, setPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [searchName, setSearchName] = useState("My saved search");
+  const createSavedSearch = useCreateSavedSearch();
+  const { isAuthenticated, user } = useAuth();
 
   const filters = useMemo(() => parseFilters(searchParams), [searchParams]);
 
@@ -63,7 +77,8 @@ export default function ListingsPage() {
     divisionId: filters.divisionId,
     minRent: filters.minRent,
     maxRent: filters.maxRent,
-    status: ListingStatus.ACTIVE,
+    isFurnished: filters.isFurnished,
+    utilitiesIncluded: filters.utilitiesIncluded,
   };
 
   const { data: listings = [], isLoading } = useListings(apiFilters);
@@ -113,6 +128,22 @@ export default function ListingsPage() {
     [router],
   );
 
+  const saveCurrentSearch = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      await createSavedSearch.mutateAsync({
+        name: searchName,
+        ...apiFilters,
+      });
+      setSaveDialogOpen(false);
+      toast.success("Saved search created. Email alerts are on.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Could not save this search",
+      );
+    }
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex items-center justify-between">
@@ -120,15 +151,65 @@ export default function ListingsPage() {
           <h1 className="text-2xl font-bold">Browse Listings</h1>
           <p className="text-muted">{filtered.length} টি বাসা পাওয়া গেছে</p>
         </div>
-        <Button
-          variant="outline"
-          className="lg:hidden"
-          onClick={() => setShowMobileFilters(!showMobileFilters)}
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-          Filters
-        </Button>
+        <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            <Button variant="outline" onClick={() => setSaveDialogOpen(true)}>
+              <Save className="h-4 w-4" />
+              Save search
+            </Button>
+          ) : (
+            <Button variant="outline" asChild>
+              <Link href="/login">Sign in to save</Link>
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            className="lg:hidden"
+            onClick={() => setShowMobileFilters(!showMobileFilters)}
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            Filters
+          </Button>
+        </div>
       </div>
+
+      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save this search</DialogTitle>
+            <DialogDescription>
+              We’ll email you when a new active listing matches these filters.
+              {user?.email
+                ? ` Alerts will go to ${user.email}.`
+                : " Add an email address to your profile to use alerts."}
+            </DialogDescription>
+          </DialogHeader>
+          {!user?.email && (
+            <Button variant="outline" asChild>
+              <Link href="/dashboard/profile">Add an email address</Link>
+            </Button>
+          )}
+          <form className="space-y-4" onSubmit={saveCurrentSearch}>
+            <Input
+              aria-label="Search name"
+              maxLength={100}
+              required
+              value={searchName}
+              onChange={(event) => setSearchName(event.target.value)}
+              placeholder="e.g. Flats in Mirpur"
+            />
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={
+                createSavedSearch.isPending || !searchName.trim() || !user?.email
+              }
+            >
+              {createSavedSearch.isPending ? "Saving..." : "Save search"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex gap-8">
         <aside

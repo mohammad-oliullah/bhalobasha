@@ -171,7 +171,17 @@ export interface ListingFilters {
   divisionId?: number;
   minRent?: number;
   maxRent?: number;
+  isFurnished?: boolean;
+  utilitiesIncluded?: boolean;
   status?: ListingStatus;
+}
+
+export interface SavedSearch extends ListingFilters {
+  id: string;
+  name: string;
+  alertsEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthVerifyResponse {
