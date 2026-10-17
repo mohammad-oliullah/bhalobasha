@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -37,6 +39,7 @@ export function PlaceBidModal({
   summary,
   onSuccess,
 }: PlaceBidModalProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
 
@@ -75,6 +78,10 @@ export function PlaceBidModal({
       onSuccess();
       onClose();
     } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 403) {
+        router.push("/dashboard/subscription");
+        return;
+      }
       const message =
         typeof err === "object" && err !== null && "response" in err
           ? ((err as { response?: { data?: { message?: string } } }).response

@@ -10,6 +10,8 @@ import { PrismaService } from "../prisma/prisma.service";
 import { CreateListingDto, MAX_LISTING_PHOTOS } from "./dto/create-listing.dto";
 import { UpdateListingDto } from "./dto/update-listing.dto";
 import { FilterListingDto } from "./dto/filter-listing.dto";
+import { SavedSearchesService } from "../saved-searches/saved-searches.service";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
 
 export const listingInclude = {
   photos: true,
@@ -41,9 +43,23 @@ export const listingInclude = {
   },
 } satisfies Prisma.ListingInclude;
 
+export function hideListingContact<
+  T extends { contactPhone: string; owner: { phone: string | null } },
+>(listing: T) {
+  return {
+    ...listing,
+    contactPhone: null,
+    owner: { ...listing.owner, phone: null },
+  };
+}
+
 @Injectable()
 export class ListingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly savedSearchesService: SavedSearchesService,
+    private readonly subscriptionsService: SubscriptionsService,
+  ) {}
 
   async findAll(filters: FilterListingDto) {
     if (filters.status && filters.status !== ListingStatus.ACTIVE) {
@@ -58,6 +74,10 @@ export class ListingsService {
     if (filters.tenantPolicy) where.tenantPolicy = filters.tenantPolicy;
     if (filters.genderPreference)
       where.genderPreference = filters.genderPreference;
+    if (filters.isFurnished !== undefined)
+      where.isFurnished = filters.isFurnished;
+    if (filters.utilitiesIncluded !== undefined)
+      where.utilitiesIncluded = filters.utilitiesIncluded;
     if (filters.minRent !== undefined || filters.maxRent !== undefined) {
       where.rent = {};
       if (filters.minRent !== undefined) where.rent.gte = filters.minRent;
@@ -67,20 +87,19 @@ export class ListingsService {
     if (filters.areaId) {
       where.areaId = filters.areaId;
     } else if (filters.upazilaId) {
-      where.area = { upazilaId: filters.upazilaId };
+      where.upazilaId = filters.upazilaId;
     } else if (filters.districtId) {
-      where.area = { upazila: { districtId: filters.districtId } };
+      where.upazila = { districtId: filters.districtId };
     } else if (filters.divisionId) {
-      where.area = {
-        upazila: { district: { divisionId: filters.divisionId } },
-      };
+      where.upazila = { district: { divisionId: filters.divisionId } };
     }
 
-    return this.prisma.listing.findMany({
+    const listings = await this.prisma.listing.findMany({
       where,
       include: listingInclude,
       orderBy: { createdAt: "desc" },
     });
+    return listings.map(hideListingContact);
   }
 
   async findOne(id: string) {
@@ -94,7 +113,24 @@ export class ListingsService {
       throw new NotFoundException("Listing not found");
     }
 
-    return listing;
+    return hideListingContact(listing);
+  }
+
+  async getContact(id: string, userId: string) {
+    await this.subscriptionsService.assertActive(userId);
+    const listing = await this.prisma.listing.findUnique({
+      where: { id },
+      select: { contactPhone: true, status: true },
+    });
+    if (
+      !listing ||
+      listing.status === ListingStatus.DRAFT ||
+      listing.status === ListingStatus.PENDING ||
+      listing.status === ListingStatus.REJECTED
+    ) {
+      throw new NotFoundException("Listing not found");
+    }
+    return { contactPhone: listing.contactPhone };
   }
 
   async findMyListings(userId: string) {
@@ -132,6 +168,7 @@ export class ListingsService {
   }
 
   async create(userId: string, userRole: UserRole, dto: CreateListingDto) {
+    await this.subscriptionsService.assertActive(userId);
     // if (userRole !== UserRole.OWNER && userRole !== UserRole.ADMIN) {
     //   throw new ForbiddenException('Only owners and admins can create listings');
     // }
@@ -178,7 +215,12 @@ export class ListingsService {
       });
     }
 
-    return this.loadListing(listing.id);
+    const createdListing = await this.loadListing(listing.id);
+    if (createdListing.status === ListingStatus.ACTIVE) {
+      await this.savedSearchesService.notifyMatchingSearches(createdListing.id);
+    }
+
+    return createdListing;
   }
 
   async update(
@@ -225,7 +267,15 @@ export class ListingsService {
       data: updateData,
     });
 
-    return this.loadListing(id);
+    const updatedListing = await this.loadListing(id);
+    if (
+      listing.status !== ListingStatus.ACTIVE &&
+      updatedListing.status === ListingStatus.ACTIVE
+    ) {
+      await this.savedSearchesService.notifyMatchingSearches(updatedListing.id);
+    }
+
+    return updatedListing;
   }
 
   async addPhotosToListing(
@@ -320,11 +370,13 @@ export class ListingsService {
       throw new BadRequestException("Only filled listings can be marked as active");
     }
 
-    return this.prisma.listing.update({
+    const updatedListing = await this.prisma.listing.update({
       where: { id },
       data: { status: ListingStatus.ACTIVE },
       include: listingInclude,
     });
+    await this.savedSearchesService.notifyMatchingSearches(id);
+    return updatedListing;
   }
 
   private assertOwner(ownerId: string, userId: string, userRole: UserRole) {
@@ -358,7 +410,11 @@ export class ListingsService {
       throw new ConflictException("Only pending listings can be moderated");
     }
 
-    return this.loadListing(id);
+    const listing = await this.loadListing(id);
+    if (status === ListingStatus.ACTIVE) {
+      await this.savedSearchesService.notifyMatchingSearches(id);
+    }
+    return listing;
   }
 
   private async loadListing(id: string) {

@@ -96,6 +96,17 @@ export class ListingsController {
     return this.listingsService.findOne(id);
   }
 
+  @Get(":id/contact")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "Get listing contact details (active subscription required)" })
+  getContact(
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.listingsService.getContact(id, user.sub);
+  }
+
   @Post()
   @ApiBearerAuth()
   // @UseGuards(JwtAuthGuard, RolesGuard)

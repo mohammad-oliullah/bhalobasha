@@ -24,19 +24,38 @@ model Bid {
 }
 
 model User {
-  id           String            @id @default(uuid())
-  phone        String?           @unique @db.VarChar(15)
-  name         String?           @db.VarChar(100)
-  email        String?           @unique @db.VarChar(255)
-  role         UserRole          @default(SEEKER)
-  isVerified   Boolean           @default(false)
-  isActive     Boolean           @default(true)
-  profilePhoto String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  bids         Bid[]
-  favorites    FavoriteListing[]
-  listings     Listing[]
+  id                    String                @id @default(uuid())
+  phone                 String?               @unique @db.VarChar(15)
+  name                  String?               @db.VarChar(100)
+  email                 String?               @unique @db.VarChar(255)
+  role                  UserRole              @default(SEEKER)
+  isVerified            Boolean               @default(false)
+  isActive              Boolean               @default(true)
+  profilePhoto          String?
+  subscriptionExpiresAt DateTime?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  bids                  Bid[]
+  favorites             FavoriteListing[]
+  listings              Listing[]
+  subscriptionPayments  SubscriptionPayment[]
+  savedSearches         SavedSearch[]
+}
+
+model SubscriptionPayment {
+  id           String                    @id @default(uuid())
+  tranId       String                    @unique
+  amount       Int
+  durationDays Int
+  status       SubscriptionPaymentStatus @default(PENDING)
+  valId        String?
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  userId       String
+  user         User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status])
 }
 
 model OtpVerification {
@@ -186,6 +205,30 @@ model FavoriteListing {
   @@index([userId])
 }
 
+model SavedSearch {
+  id                String            @id @default(uuid())
+  name              String            @db.VarChar(100)
+  type              ListingType?
+  tenantPolicy      TenantPolicy?
+  genderPreference  GenderPreference?
+  areaId            Int?
+  upazilaId         Int?
+  districtId        Int?
+  divisionId        Int?
+  minRent           Int?
+  maxRent           Int?
+  isFurnished       Boolean           @default(false)
+  utilitiesIncluded Boolean           @default(false)
+  alertsEnabled     Boolean           @default(true)
+  userId            String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([alertsEnabled])
+}
+
 enum UserRole {
   SEEKER
   OWNER
@@ -228,6 +271,13 @@ enum BidStatus {
   REJECTED
   WITHDRAWN
   EXPIRED
+}
+
+enum SubscriptionPaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
 }
 
 enum UpazilaType {

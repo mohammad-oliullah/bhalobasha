@@ -90,7 +90,7 @@ export function ListingDetail({ id }: { id: string }) {
       <ContactOwnerModal
         open={contactOpen}
         onOpenChange={setContactOpen}
-        contactPhone={listing.contactPhone}
+        listingId={listing.id}
         listingTitle={listing.title}
         isAuthenticated={isAuthenticated}
       />

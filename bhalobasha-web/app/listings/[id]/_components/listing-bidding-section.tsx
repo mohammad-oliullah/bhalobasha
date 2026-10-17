@@ -11,6 +11,7 @@ import { PublicBidsList } from "@/components/bids/public-bids-list";
 import { MyBidStatus } from "@/components/bids/my-bid-status";
 import { PlaceBidModal } from "@/components/bids/place-bid-modal";
 import { BidSummaryCard } from "@/components/bids/bid-summary";
+import { useSubscriptionStatus } from "@/lib/hooks/use-subscription";
 
 interface ListingBiddingSectionProps {
   listing: Listing;
@@ -25,6 +26,7 @@ export function ListingBiddingSection({
 }: ListingBiddingSectionProps) {
   const router = useRouter();
   const [bidModalOpen, setBidModalOpen] = useState(false);
+  const subscription = useSubscriptionStatus();
 
   const { data: bidSummary, isLoading: summaryLoading } = useBidSummary(
     listing.id,
@@ -87,7 +89,14 @@ export function ListingBiddingSection({
             !biddingDeadlinePassed && (
               <Button
                 className="w-full bg-amber-500 text-amber-950 hover:bg-amber-400"
-                onClick={() => setBidModalOpen(true)}
+                disabled={subscription.isLoading}
+                onClick={() => {
+                  if (subscription.data?.isActive !== true) {
+                    router.push("/dashboard/subscription");
+                    return;
+                  }
+                  setBidModalOpen(true);
+                }}
               >
                 <Gavel className="h-4 w-4 mr-2" />
                 Place a Bid

@@ -7,13 +7,18 @@ import {
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateBidDto } from "./dto/create-bid.dto";
 import { BidStatus, ListingStatus } from "@prisma/client";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
 
 @Injectable()
 export class BidsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly subscriptionsService: SubscriptionsService,
+  ) {}
 
   // Seeker places a bid on a listing
   async placeBid(listingId: string, seekerId: string, dto: CreateBidDto) {
+    await this.subscriptionsService.assertActive(seekerId);
     const listing = await this.prisma.listing.findUnique({
       where: { id: listingId },
     });

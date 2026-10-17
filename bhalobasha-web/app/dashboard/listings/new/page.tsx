@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -24,14 +25,35 @@ import {
   ListingType,
   TenantPolicy,
 } from "@/types";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { useSubscriptionStatus } from "@/lib/hooks/use-subscription";
+import { Button } from "@/components/ui/button";
 
 export default function NewListingPage() {
   const router = useRouter();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const subscription = useSubscriptionStatus();
   const createListing = useCreateListing();
   const [step, setStep] = useState(0);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
   const [step2Data, setStep2Data] = useState<Step2Data | null>(null);
   const [photos, setPhotos] = useState<{ url: string; id: string }[]>([]);
+
+  useEffect(() => {
+    if (isAuthLoading) return;
+    if (!isAuthenticated) {
+      router.replace("/login?redirect=/dashboard/listings/new");
+      return;
+    }
+    if (subscription.data?.isActive === false) {
+      router.replace("/dashboard/subscription");
+    }
+  }, [
+    isAuthLoading,
+    isAuthenticated,
+    router,
+    subscription.data?.isActive,
+  ]);
 
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -114,11 +136,40 @@ export default function NewListingPage() {
       toast.success("Listing submitted for review. It will be public after approval.");
       router.push("/dashboard/listings");
     } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 403) {
+        router.push("/dashboard/subscription");
+        return;
+      }
       toast.error(
-        err instanceof Error ? err.message : "Failed to create listing",
+        axios.isAxiosError(err) && typeof err.response?.data?.message === "string"
+          ? err.response.data.message
+          : err instanceof Error
+            ? err.message
+            : "Failed to create listing",
       );
     }
   };
+
+  if (isAuthLoading || subscription.isLoading) {
+    return <p className="text-sm text-muted">Checking subscription access…</p>;
+  }
+
+  if (subscription.isError) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-destructive">
+          Could not verify subscription access. Please try again.
+        </p>
+        <Button variant="outline" onClick={() => subscription.refetch()}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !subscription.data?.isActive) {
+    return <p className="text-sm text-muted">Redirecting to subscription…</p>;
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
