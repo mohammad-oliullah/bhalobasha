@@ -5,7 +5,10 @@ import {
 } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
-import { listingInclude } from "../listings/listings.service";
+import {
+  hideListingContact,
+  listingInclude,
+} from "../listings/listings.service";
 
 @Injectable()
 export class FavoritesService {
@@ -75,7 +78,7 @@ export class FavoritesService {
       },
     });
 
-    return favorites.map(({ listing }) => listing);
+    return favorites.map(({ listing }) => hideListingContact(listing));
   }
 
   async getFavoriteIds(userId: string): Promise<string[]> {

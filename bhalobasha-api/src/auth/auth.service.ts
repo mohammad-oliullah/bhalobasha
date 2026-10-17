@@ -10,16 +10,11 @@ import { PrismaService } from "../prisma/prisma.service";
 import { SendOtpDto } from "./dto/send-otp.dto";
 import { VerifyOtpDto } from "./dto/verify-otp.dto";
 import { SmsService } from "../common/services/sms.service";
+import { DEMO_ACCOUNTS } from "./demo-accounts";
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  private readonly DEMO_ACCOUNTS = [
-    { email: "demo-seeker@bhalobasha.com", code: "123456", role: "SEEKER" },
-    { email: "demo-seeker1@bhalobasha.com", code: "123456", role: "SEEKER" },
-    { email: "demo-owner@bhalobasha.com", code: "123456", role: "OWNER" },
-    { email: "demo-admin@bhalobasha.com", code: "123456", role: "ADMIN" },
-  ];
 
   constructor(
     private readonly prisma: PrismaService,
@@ -65,7 +60,7 @@ export class AuthService {
 
     // ── Demo bypass ──────────────────────────────────────────────────────────
     if (dto.isDemoLogin) {
-      const demoAccount = this.DEMO_ACCOUNTS.find(
+      const demoAccount = DEMO_ACCOUNTS.find(
         (d) => d.email === dto.email && d.code === dto.code,
       );
 
@@ -79,7 +74,7 @@ export class AuthService {
             data: {
               email: demoAccount.email,
               isVerified: true,
-              role: demoAccount.role as any,
+              role: demoAccount.role,
             },
           });
         }

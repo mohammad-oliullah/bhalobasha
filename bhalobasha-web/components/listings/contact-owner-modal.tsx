@@ -1,5 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -7,14 +11,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { formatPhone, toWhatsAppLink } from "@/lib/utils/format";
-import { Phone, MessageCircle } from "lucide-react";
+import { toWhatsAppLink } from "@/lib/utils/format";
+import { MessageCircle } from "lucide-react";
 import Link from "next/link";
+import { getListingContact } from "@/lib/api/listings";
 
 interface ContactOwnerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  contactPhone: string;
+  listingId: string;
   listingTitle: string;
   isAuthenticated: boolean;
 }
@@ -22,12 +27,44 @@ interface ContactOwnerModalProps {
 export function ContactOwnerModal({
   open,
   onOpenChange,
-  contactPhone,
+  listingId,
   listingTitle,
   isAuthenticated,
 }: ContactOwnerModalProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const whatsappMessage = `Bhalobasha তে আপনার বাসাটি দেখলাম — ${listingTitle}`;
-  const whatsappUrl = toWhatsAppLink(contactPhone, whatsappMessage);
+
+  async function messageOnWhatsApp() {
+    const whatsappWindow = window.open("", "_blank");
+    if (whatsappWindow) {
+      whatsappWindow.opener = null;
+    }
+    setIsLoading(true);
+    try {
+      const { contactPhone } = await getListingContact(listingId);
+      const whatsappUrl = toWhatsAppLink(contactPhone, whatsappMessage);
+      if (whatsappWindow) {
+        whatsappWindow.location.href = whatsappUrl;
+      } else {
+        window.location.assign(whatsappUrl);
+      }
+    } catch (error) {
+      whatsappWindow?.close();
+      if (axios.isAxiosError(error) && error.response?.status === 403) {
+        onOpenChange(false);
+        router.push("/dashboard/subscription");
+        return;
+      }
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        router.push(`/login?redirect=/listings/${listingId}`);
+        return;
+      }
+      toast.error("Could not retrieve the owner's contact details");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,18 +74,17 @@ export function ContactOwnerModal({
         </DialogHeader>
         {isAuthenticated ? (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 rounded-lg bg-primary-light p-4">
-              <Phone className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted">Phone Number</p>
-                <p className="text-lg font-semibold">{formatPhone(contactPhone)}</p>
-              </div>
-            </div>
-            <Button asChild className="w-full" size="lg">
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="h-5 w-5" />
-                Message on WhatsApp
-              </a>
+            <p className="text-sm text-muted">
+              An active subscription is required to contact the owner.
+            </p>
+            <Button
+              className="w-full"
+              size="lg"
+              onClick={messageOnWhatsApp}
+              disabled={isLoading}
+            >
+              <MessageCircle className="h-5 w-5" />
+              {isLoading ? "Checking subscription…" : "Message on WhatsApp"}
             </Button>
           </div>
         ) : (

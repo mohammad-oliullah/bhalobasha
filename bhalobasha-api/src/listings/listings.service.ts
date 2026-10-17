@@ -11,6 +11,7 @@ import { CreateListingDto, MAX_LISTING_PHOTOS } from "./dto/create-listing.dto";
 import { UpdateListingDto } from "./dto/update-listing.dto";
 import { FilterListingDto } from "./dto/filter-listing.dto";
 import { SavedSearchesService } from "../saved-searches/saved-searches.service";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
 
 export const listingInclude = {
   photos: true,
@@ -42,11 +43,22 @@ export const listingInclude = {
   },
 } satisfies Prisma.ListingInclude;
 
+export function hideListingContact<
+  T extends { contactPhone: string; owner: { phone: string | null } },
+>(listing: T) {
+  return {
+    ...listing,
+    contactPhone: null,
+    owner: { ...listing.owner, phone: null },
+  };
+}
+
 @Injectable()
 export class ListingsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly savedSearchesService: SavedSearchesService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   async findAll(filters: FilterListingDto) {
@@ -82,11 +94,12 @@ export class ListingsService {
       where.upazila = { district: { divisionId: filters.divisionId } };
     }
 
-    return this.prisma.listing.findMany({
+    const listings = await this.prisma.listing.findMany({
       where,
       include: listingInclude,
       orderBy: { createdAt: "desc" },
     });
+    return listings.map(hideListingContact);
   }
 
   async findOne(id: string) {
@@ -100,7 +113,24 @@ export class ListingsService {
       throw new NotFoundException("Listing not found");
     }
 
-    return listing;
+    return hideListingContact(listing);
+  }
+
+  async getContact(id: string, userId: string) {
+    await this.subscriptionsService.assertActive(userId);
+    const listing = await this.prisma.listing.findUnique({
+      where: { id },
+      select: { contactPhone: true, status: true },
+    });
+    if (
+      !listing ||
+      listing.status === ListingStatus.DRAFT ||
+      listing.status === ListingStatus.PENDING ||
+      listing.status === ListingStatus.REJECTED
+    ) {
+      throw new NotFoundException("Listing not found");
+    }
+    return { contactPhone: listing.contactPhone };
   }
 
   async findMyListings(userId: string) {
@@ -138,6 +168,7 @@ export class ListingsService {
   }
 
   async create(userId: string, userRole: UserRole, dto: CreateListingDto) {
+    await this.subscriptionsService.assertActive(userId);
     // if (userRole !== UserRole.OWNER && userRole !== UserRole.ADMIN) {
     //   throw new ForbiddenException('Only owners and admins can create listings');
     // }

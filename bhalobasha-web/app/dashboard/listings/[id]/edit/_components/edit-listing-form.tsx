@@ -61,7 +61,7 @@ export function EditListingForm({ listing }: { listing: Listing }) {
       isFurnished: listing.isFurnished,
       utilitiesIncluded: listing.utilitiesIncluded,
       availableFrom: listing.availableFrom.split("T")[0],
-      contactPhone: listing.contactPhone,
+      contactPhone: listing.contactPhone ?? "",
       latitude: listing.latitude ?? undefined,
       longitude: listing.longitude ?? undefined,
     },

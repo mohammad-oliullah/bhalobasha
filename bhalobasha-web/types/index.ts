@@ -108,7 +108,7 @@ export interface ListingPhoto {
 export interface ListingOwner {
   id: string;
   name: string | null;
-  phone: string;
+  phone: string | null;
   profilePhoto: string | null;
 }
 
@@ -138,7 +138,7 @@ export interface Listing {
   availableFrom: string;
   status: ListingStatus;
   rejectionReason: string | null;
-  contactPhone: string;
+  contactPhone: string | null;
   address: string;
   upazilaId: number;
   areaId?: number;

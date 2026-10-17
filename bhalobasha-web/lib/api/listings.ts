@@ -31,6 +31,15 @@ export async function getListing(id: string): Promise<Listing> {
   return data;
 }
 
+export async function getListingContact(
+  id: string,
+): Promise<{ contactPhone: string }> {
+  const { data } = await apiClient.get<{ contactPhone: string }>(
+    `/listings/${id}/contact`,
+  );
+  return data;
+}
+
 export async function getMyListing(id: string): Promise<Listing> {
   const { data } = await apiClient.get<Listing>(`/listings/mine/${id}`);
   return data;
