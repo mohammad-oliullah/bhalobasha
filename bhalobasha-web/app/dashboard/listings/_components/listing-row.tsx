@@ -66,12 +66,18 @@ export function ListingRow({ listing }: { listing: Listing }) {
             </Badge>
           </div>
           <p className="mt-1 text-sm text-muted">
-            {LISTING_TYPE_LABELS[listing.type]} · {listing.area.nameBn},{" "}
-            {listing.area.thana.nameBn}
+            {LISTING_TYPE_LABELS[listing.type]} · {listing?.area?.nameBn},{" "}
+            {listing?.area?.upazila?.nameBn}
           </p>
           <p className="mt-1 font-semibold text-primary">
             {formatBDT(listing.rent)}/month
           </p>
+          {listing.status === "REJECTED" && listing.rejectionReason && (
+            <p className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+              <span className="font-semibold">Rejection reason: </span>
+              {listing.rejectionReason}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2">

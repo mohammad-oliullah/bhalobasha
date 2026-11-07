@@ -2,12 +2,12 @@
 
 import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useListing } from "@/lib/hooks/use-listings";
+import { useMyListing } from "@/lib/hooks/use-listings";
 import { EditListingForm } from "./_components/edit-listing-form";
 
 export default function EditListingPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: listing, isLoading } = useListing(id);
+  const { data: listing, isLoading } = useMyListing(id);
 
   if (isLoading) {
     return (

@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bhalobasha
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bhalobasha"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./bhalobasha-api
+    restart: unless-stopped
+    env_file:
+      - ./bhalobasha-api/.env
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/bhalobasha?schema=public"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "until npx prisma migrate deploy; do
+        echo 'Waiting for database...';
+        sleep 2;
+      done &&
+      npm run start:prod"
+    ports:
+      - "4040:4040"
+
+  web:
+    build:
+      context: ./bhalobasha-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:

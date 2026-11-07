@@ -30,6 +30,8 @@ export enum ListingStatus {
   FILLED = "FILLED",
   EXPIRED = "EXPIRED",
   DRAFT = "DRAFT",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
 }
 
 export interface ApiResponse<T> {
@@ -64,20 +66,33 @@ export interface District {
   divisionId: number;
 }
 
-export interface Thana {
+export interface Upazila {
   id: number;
   name: string;
   nameBn: string;
   districtId: number;
   latitude?: number | null;
   longitude?: number | null;
+
+  type?: "UPAZILA" | "THANA";
 }
 
 export interface Area {
   id: number;
   name: string;
   nameBn: string;
-  thanaId: number;
+  upazilaId: number;
+  latitude?: number | null;
+  longitude?: number | null;
+
+  type?: "UNION" | "WARD";
+}
+
+export interface Village {
+  id: number;
+  name: string;
+  nameBn: string;
+  areaId: number;
   latitude?: number | null;
   longitude?: number | null;
 }
@@ -93,12 +108,12 @@ export interface ListingPhoto {
 export interface ListingOwner {
   id: string;
   name: string | null;
-  phone: string;
+  phone: string | null;
   profilePhoto: string | null;
 }
 
 export interface ListingArea extends Area {
-  thana: Thana & {
+  upazila: Upazila & {
     district: District & {
       division: Division;
     };
@@ -122,9 +137,12 @@ export interface Listing {
   utilitiesIncluded: boolean;
   availableFrom: string;
   status: ListingStatus;
-  contactPhone: string;
+  rejectionReason: string | null;
+  contactPhone: string | null;
   address: string;
-  areaId: number;
+  upazilaId: number;
+  areaId?: number;
+  villageId?: number;
   ownerId: string;
   area: ListingArea;
   owner: ListingOwner;
@@ -148,12 +166,22 @@ export interface ListingFilters {
   tenantPolicy?: TenantPolicy;
   genderPreference?: GenderPreference;
   areaId?: number;
-  thanaId?: number;
+  upazilaId?: number;
   districtId?: number;
   divisionId?: number;
   minRent?: number;
   maxRent?: number;
+  isFurnished?: boolean;
+  utilitiesIncluded?: boolean;
   status?: ListingStatus;
+}
+
+export interface SavedSearch extends ListingFilters {
+  id: string;
+  name: string;
+  alertsEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthVerifyResponse {
@@ -186,10 +214,15 @@ export interface CreateListingPayload {
   status?: ListingStatus;
   contactPhone: string;
   address: string;
-  areaId: number;
+  upazilaId: number;
+  areaId?: number;
+  villageId?: number;
   latitude?: number;
   longitude?: number;
   photos?: string[];
+  isBiddingEnabled: boolean;
+  minimumBid?: number;
+  biddingDeadline: string;
 }
 
 export interface Bid {

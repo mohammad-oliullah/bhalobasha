@@ -31,6 +31,8 @@ export const LISTING_STATUS_LABELS: Record<ListingStatus, string> = {
   [ListingStatus.FILLED]: "ভর্তি হয়েছে / Filled",
   [ListingStatus.EXPIRED]: "মেয়াদোত্তীর্ণ / Expired",
   [ListingStatus.DRAFT]: "খসড়া / Draft",
+  [ListingStatus.PENDING]: "পর্যালোচনাধীন / Pending review",
+  [ListingStatus.REJECTED]: "প্রত্যাখ্যাত / Rejected",
 };
 
 export const LISTING_TYPE_COLORS: Record<ListingType, string> = {
@@ -46,6 +48,8 @@ export const LISTING_STATUS_COLORS: Record<ListingStatus, string> = {
   [ListingStatus.FILLED]: "bg-blue-100 text-blue-800",
   [ListingStatus.EXPIRED]: "bg-muted/20 text-muted-foreground",
   [ListingStatus.DRAFT]: "bg-yellow-100 text-yellow-800",
+  [ListingStatus.PENDING]: "bg-yellow-100 text-yellow-800",
+  [ListingStatus.REJECTED]: "bg-red-100 text-red-800",
 };
 
 export const LISTINGS_PER_PAGE = 12;

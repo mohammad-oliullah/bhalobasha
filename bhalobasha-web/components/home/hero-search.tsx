@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -16,29 +17,30 @@ import {
 import {
   useDivisions,
   useDistricts,
-  useThanas,
+  useUpazilas,
 } from "@/lib/hooks/use-locations";
 import { ListingType } from "@/types";
 import { LISTING_TYPE_LABELS } from "@/lib/utils/constants";
 
 export function HeroSearch() {
   const router = useRouter();
+  const t = useTranslations("home");
   const [divisionId, setDivisionId] = useState<number>();
   const [districtId, setDistrictId] = useState<number>();
-  const [thanaId, setThanaId] = useState<number>();
+  const [upazilaId, setUpazilaId] = useState<number>();
   const [type, setType] = useState<ListingType>();
   const [minRent, setMinRent] = useState("");
   const [maxRent, setMaxRent] = useState("");
 
   const { data: divisions = [] } = useDivisions();
   const { data: districts = [] } = useDistricts(divisionId);
-  const { data: thanas = [] } = useThanas(districtId);
+  const { data: upazilas = [] } = useUpazilas(districtId);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (divisionId) params.set("divisionId", String(divisionId));
     if (districtId) params.set("districtId", String(districtId));
-    if (thanaId) params.set("thanaId", String(thanaId));
+    if (upazilaId) params.set("upazilaId", String(upazilaId));
     if (type) params.set("type", type);
     if (minRent) params.set("minRent", minRent);
     if (maxRent) params.set("maxRent", maxRent);
@@ -49,27 +51,24 @@ export function HeroSearch() {
     <section className="bg-gradient-to-b from-primary-light to-background px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-4xl text-center">
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
-          আপনার ভালো বাসা খুঁজে নিন
+          {t("heroTitle")}
         </h1>
-        <p className="mt-4 text-lg text-muted sm:text-xl">
-          Find your perfect home in Bangladesh — flats, rooms, sublets &amp;
-          bachelor seats
-        </p>
+        <p className="mt-4 text-lg text-muted sm:text-xl">{t("heroSubtitle")}</p>
 
         <div className="mx-auto mt-10 max-w-3xl rounded-xl border border-border bg-card p-4 shadow-sm sm:p-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-1.5 text-left">
-              <Label>Division</Label>
+              <Label>{t("division")}</Label>
               <Select
                 value={divisionId?.toString() || ""}
                 onValueChange={(v) => {
                   setDivisionId(v ? Number(v) : undefined);
                   setDistrictId(undefined);
-                  setThanaId(undefined);
+                  setUpazilaId(undefined);
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select division" />
+                  <SelectValue placeholder={t("selectDivision")} />
                 </SelectTrigger>
                 <SelectContent>
                   {divisions.map((d) => (
@@ -83,16 +82,16 @@ export function HeroSearch() {
 
             {divisionId && (
               <div className="space-y-1.5 text-left">
-                <Label>District</Label>
+                <Label>{t("district")}</Label>
                 <Select
                   value={districtId?.toString() || ""}
                   onValueChange={(v) => {
                     setDistrictId(v ? Number(v) : undefined);
-                    setThanaId(undefined);
+                    setUpazilaId(undefined);
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select district" />
+                    <SelectValue placeholder={t("selectDistrict")} />
                   </SelectTrigger>
                   <SelectContent>
                     {districts.map((d) => (
@@ -107,16 +106,16 @@ export function HeroSearch() {
 
             {districtId && (
               <div className="space-y-1.5 text-left">
-                <Label>Thana</Label>
+                <Label>{t("upazila")}</Label>
                 <Select
-                  value={thanaId?.toString() || ""}
-                  onValueChange={(v) => setThanaId(v ? Number(v) : undefined)}
+                  value={upazilaId?.toString() || ""}
+                  onValueChange={(v) => setUpazilaId(v ? Number(v) : undefined)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select thana" />
+                    <SelectValue placeholder={t("selectUpazila")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {thanas.map((t) => (
+                    {upazilas.map((t) => (
                       <SelectItem key={t.id} value={t.id.toString()}>
                         {t.nameBn}
                       </SelectItem>
@@ -127,7 +126,7 @@ export function HeroSearch() {
             )}
 
             <div className="space-y-1.5 text-left">
-              <Label>Type</Label>
+              <Label>{t("type")}</Label>
               <Select
                 value={type || ""}
                 onValueChange={(v) =>
@@ -135,7 +134,7 @@ export function HeroSearch() {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Any type" />
+                  <SelectValue placeholder={t("selectType")} />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(ListingType).map((t) => (
@@ -148,7 +147,7 @@ export function HeroSearch() {
             </div>
 
             <div className="space-y-1.5 text-left">
-              <Label>Min Rent</Label>
+              <Label>{t("minRent")}</Label>
               <Input
                 type="number"
                 placeholder="৳ 0"
@@ -158,7 +157,7 @@ export function HeroSearch() {
             </div>
 
             <div className="space-y-1.5 text-left">
-              <Label>Max Rent</Label>
+              <Label>{t("maxRent")}</Label>
               <Input
                 type="number"
                 placeholder="৳ 50,000"
@@ -174,7 +173,7 @@ export function HeroSearch() {
             onClick={handleSearch}
           >
             <Search className="h-5 w-5" />
-            Search Homes
+            {t("searchHomes")}
           </Button>
         </div>
       </div>

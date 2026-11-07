@@ -15,8 +15,9 @@ import { PhoneInput } from "@/components/auth/phone-input";
 import {
   useDivisions,
   useDistricts,
-  useThanas,
+  useUpazilas,
   useAreas,
+  useVillages,
 } from "@/lib/hooks/use-locations";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { z } from "zod";
@@ -26,16 +27,24 @@ import { LocationPicker } from "./location-picker";
 export const step2Schema = z.object({
   divisionId: z.number().min(1, "Select division"),
   districtId: z.number().min(1, "Select district"),
-  thanaId: z.number().min(1, "Select thana"),
-  areaId: z.number().min(1, "Select area"),
+  upazilaId: z.number().min(1, "Select district"),
+
+  areaId: z.number().optional(),
+  villageId: z.number().optional(),
+
   address: z.string().min(10, "Enter full address"),
+
   totalRooms: z.number().min(1).optional(),
   totalBaths: z.number().min(1).optional(),
   floor: z.number().optional(),
+
   isFurnished: z.boolean(),
   utilitiesIncluded: z.boolean(),
+
   availableFrom: z.string().min(1, "Select available date"),
+
   contactPhone: z.string().regex(/^01[3-9]\d{8}$/, "Invalid phone number"),
+
   latitude: z.number().optional(),
   longitude: z.number().optional(),
 });
@@ -62,13 +71,14 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
 
   const divisionId = watch("divisionId");
   const districtId = watch("districtId");
-  const thanaId = watch("thanaId");
+  const upazilaId = watch("upazilaId");
   const areaId = watch("areaId");
 
   const { data: divisions = [] } = useDivisions();
   const { data: districts = [] } = useDistricts(divisionId);
-  const { data: thanas = [] } = useThanas(districtId);
-  const { data: areas = [] } = useAreas(thanaId);
+  const { data: upazilas = [] } = useUpazilas(districtId);
+  const { data: areas = [] } = useAreas(upazilaId);
+  const { data: villages = [] } = useVillages(areaId);
 
   // Step 1 — try GPS first
   useEffect(() => {
@@ -85,27 +95,27 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
         setGpsChecked(true);
       },
       () => {
-        // Permission denied — fall through to thana/area coords
+        // Permission denied — fall through to upazila/area coords
         setGpsChecked(true);
       },
     );
   }, []);
 
-  // Step 2 — when thana selected, use its coordinates as fallback
+  // Step 2 — when upazila selected, use its coordinates as fallback
   useEffect(() => {
-    if (!gpsChecked || !thanaId) return;
-    const selectedThana = thanas.find((t) => t.id === thanaId);
-    if (selectedThana?.latitude && selectedThana?.longitude) {
+    if (!gpsChecked || !upazilaId) return;
+    const selectedUpazila = upazilas.find((t) => t.id === upazilaId);
+    if (selectedUpazila?.latitude && selectedUpazila?.longitude) {
       setMapCenter({
-        lat: selectedThana.latitude,
-        lng: selectedThana.longitude,
+        lat: selectedUpazila.latitude,
+        lng: selectedUpazila.longitude,
       });
     }
-  }, [thanaId, thanas, gpsChecked]);
-  console.log(
-    thanas.find((t) => t.id === thanaId),
-    "selectedThana",
-  );
+  }, [upazilaId, upazilas, gpsChecked]);
+  // console.log(
+  //   upazilas.find((t) => t.id === upazilaId),
+  //   "selectedUpazila",
+  // );
 
   // Step 3 — when area selected, use its coordinates (more precise)
   useEffect(() => {
@@ -119,8 +129,6 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
     }
   }, [areaId, areas, gpsChecked]);
 
-  console.log(mapCenter, "mapCenter");
-
   return (
     <form onSubmit={handleSubmit(onNext)} className="space-y-4">
       {/* Division */}
@@ -131,8 +139,9 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
           onValueChange={(v) => {
             setValue("divisionId", Number(v));
             setValue("districtId", 0 as unknown as number);
-            setValue("thanaId", 0 as unknown as number);
-            setValue("areaId", 0 as unknown as number);
+            setValue("upazilaId", 0 as unknown as number);
+            setValue("areaId", undefined);
+            setValue("villageId", undefined);
           }}
         >
           <SelectTrigger>
@@ -159,8 +168,9 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
             value={districtId?.toString() || ""}
             onValueChange={(v) => {
               setValue("districtId", Number(v));
-              setValue("thanaId", 0 as unknown as number);
-              setValue("areaId", 0 as unknown as number);
+              setValue("upazilaId", 0 as unknown as number);
+              setValue("areaId", undefined);
+              setValue("villageId", undefined);
             }}
           >
             <SelectTrigger>
@@ -177,22 +187,23 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
         </div>
       )}
 
-      {/* Thana */}
+      {/* Upazila */}
       {districtId > 0 && (
         <div className="space-y-2">
-          <Label>Thana</Label>
+          <Label>Upazila</Label>
           <Select
-            value={thanaId?.toString() || ""}
+            value={upazilaId?.toString() || ""}
             onValueChange={(v) => {
-              setValue("thanaId", Number(v));
-              setValue("areaId", 0 as unknown as number);
+              setValue("upazilaId", Number(v));
+              setValue("areaId", undefined);
+              setValue("villageId", undefined);
             }}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select thana" />
+              <SelectValue placeholder="Select upazila" />
             </SelectTrigger>
             <SelectContent>
-              {thanas.map((t) => (
+              {upazilas.map((t) => (
                 <SelectItem key={t.id} value={t.id.toString()}>
                   {t.nameBn} / {t.name}
                 </SelectItem>
@@ -203,12 +214,15 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
       )}
 
       {/* Area */}
-      {thanaId > 0 && (
+      {areas.length > 0 && (
         <div className="space-y-2">
           <Label>Area</Label>
           <Select
             value={watch("areaId")?.toString() || ""}
-            onValueChange={(v) => setValue("areaId", Number(v))}
+            onValueChange={(v) => {
+              setValue("areaId", Number(v));
+              setValue("villageId", undefined);
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select area" />
@@ -217,6 +231,32 @@ export function Step2LocationDetails({ form, onNext, onBack }: Step2Props) {
               {areas.map((a) => (
                 <SelectItem key={a.id} value={a.id.toString()}>
                   {a.nameBn} / {a.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Village */}
+      {villages.length > 0 && (
+        <div className="space-y-2">
+          <Label>
+            Village <span className="text-xs text-muted">(optional)</span>
+          </Label>
+
+          <Select
+            value={watch("villageId")?.toString() || ""}
+            onValueChange={(v) => setValue("villageId", Number(v))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select village" />
+            </SelectTrigger>
+
+            <SelectContent>
+              {villages.map((v) => (
+                <SelectItem key={v.id} value={v.id.toString()}>
+                  {v.nameBn} / {v.name}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -6,6 +6,7 @@ import { useListings } from "@/lib/hooks/use-listings";
 import { ListingStatus } from "@/types";
 import { RecentListings } from "./../components/home/recent-listings";
 import { CtaBanner } from "./../components/home/cta-banner";
+import { RentCalculator } from "@/components/home/rent-calculator";
 
 export default function HomePage() {
   const { data: listings = [], isLoading } = useListings({
@@ -20,6 +21,7 @@ export default function HomePage() {
       <HeroSearch />
       <StatsBar listingCount={listings.length} areaCount={areaCount} />
       <RecentListings listings={recentListings} isLoading={isLoading} />
+      <RentCalculator />
       <CtaBanner />
     </div>
   );

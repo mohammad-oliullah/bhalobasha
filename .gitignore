@@ -40,3 +40,7 @@ next-env.d.ts
 *.bak
 /bhalobasha_dump.backup
 DOC.md
+# Environment files
+.env
+.env.*
+!.env.example

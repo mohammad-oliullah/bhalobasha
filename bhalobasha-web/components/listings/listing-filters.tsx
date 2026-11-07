@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -24,7 +25,7 @@ import {
 import {
   useDivisions,
   useDistricts,
-  useThanas,
+  useUpazilas,
   useAreas,
 } from "@/lib/hooks/use-locations";
 
@@ -36,11 +37,91 @@ interface ListingFiltersProps {
   onChange: (filters: ListingFiltersProps["filters"]) => void;
 }
 
-export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) {
+export function ListingFiltersPanel({
+  filters,
+  onChange,
+}: ListingFiltersProps) {
+  const [minRentInput, setMinRentInput] = useState(
+    filters.minRent?.toString() ?? "",
+  );
+  const [maxRentInput, setMaxRentInput] = useState(
+    filters.maxRent?.toString() ?? "",
+  );
+  const filtersRef = useRef(filters);
+  const onChangeRef = useRef(onChange);
+  const rentInputsRef = useRef({ min: minRentInput, max: maxRentInput });
+  const appliedRentRef = useRef({
+    min: filters.minRent,
+    max: filters.maxRent,
+  });
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  filtersRef.current = filters;
+  onChangeRef.current = onChange;
+
+  useEffect(() => {
+    const minChanged = !Object.is(
+      filters.minRent,
+      appliedRentRef.current.min,
+    );
+    const maxChanged = !Object.is(
+      filters.maxRent,
+      appliedRentRef.current.max,
+    );
+
+    if (minChanged || maxChanged) {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      appliedRentRef.current = {
+        min: filters.minRent,
+        max: filters.maxRent,
+      };
+      rentInputsRef.current = {
+        min: filters.minRent?.toString() ?? "",
+        max: filters.maxRent?.toString() ?? "",
+      };
+      setMinRentInput(rentInputsRef.current.min);
+      setMaxRentInput(rentInputsRef.current.max);
+    }
+  }, [filters.minRent, filters.maxRent]);
+
+  useEffect(
+    () => () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    },
+    [],
+  );
+
+  const updateRentInput = (field: "min" | "max", value: string) => {
+    rentInputsRef.current[field] = value;
+    if (field === "min") setMinRentInput(value);
+    else setMaxRentInput(value);
+
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      const minRent = rentInputsRef.current.min
+        ? Number(rentInputsRef.current.min)
+        : undefined;
+      const maxRent = rentInputsRef.current.max
+        ? Number(rentInputsRef.current.max)
+        : undefined;
+
+      appliedRentRef.current = { min: minRent, max: maxRent };
+      onChangeRef.current({
+        ...filtersRef.current,
+        minRent,
+        maxRent,
+      });
+      debounceTimerRef.current = null;
+    }, 400);
+  };
+
   const { data: divisions = [] } = useDivisions();
   const { data: districts = [] } = useDistricts(filters.divisionId);
-  const { data: thanas = [] } = useThanas(filters.districtId);
-  const { data: areas = [] } = useAreas(filters.thanaId);
+  const { data: upazilas = [] } = useUpazilas(filters.districtId);
+  const { data: areas = [] } = useAreas(filters.upazilaId);
 
   const update = (patch: Partial<ListingFiltersProps["filters"]>) => {
     onChange({ ...filters, ...patch });
@@ -56,7 +137,7 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
             update({
               divisionId: v ? Number(v) : undefined,
               districtId: undefined,
-              thanaId: undefined,
+              upazilaId: undefined,
               areaId: undefined,
             })
           }
@@ -82,7 +163,7 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
             onValueChange={(v) =>
               update({
                 districtId: v ? Number(v) : undefined,
-                thanaId: undefined,
+                upazilaId: undefined,
                 areaId: undefined,
               })
             }
@@ -103,21 +184,21 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
 
       {filters.districtId && (
         <div className="space-y-2">
-          <Label>Thana</Label>
+          <Label>Upazila</Label>
           <Select
-            value={filters.thanaId?.toString() || ""}
+            value={filters.upazilaId?.toString() || ""}
             onValueChange={(v) =>
               update({
-                thanaId: v ? Number(v) : undefined,
+                upazilaId: v ? Number(v) : undefined,
                 areaId: undefined,
               })
             }
           >
             <SelectTrigger>
-              <SelectValue placeholder="All thanas" />
+              <SelectValue placeholder="All upazilas" />
             </SelectTrigger>
             <SelectContent>
-              {thanas.map((t) => (
+              {upazilas.map((t) => (
                 <SelectItem key={t.id} value={t.id.toString()}>
                   {t.nameBn} / {t.name}
                 </SelectItem>
@@ -127,14 +208,12 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
         </div>
       )}
 
-      {filters.thanaId && (
+      {filters.upazilaId && (
         <div className="space-y-2">
           <Label>Area</Label>
           <Select
             value={filters.areaId?.toString() || ""}
-            onValueChange={(v) =>
-              update({ areaId: v ? Number(v) : undefined })
-            }
+            onValueChange={(v) => update({ areaId: v ? Number(v) : undefined })}
           >
             <SelectTrigger>
               <SelectValue placeholder="All areas" />
@@ -223,12 +302,8 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
           <Input
             type="number"
             placeholder="0"
-            value={filters.minRent ?? ""}
-            onChange={(e) =>
-              update({
-                minRent: e.target.value ? Number(e.target.value) : undefined,
-              })
-            }
+            value={minRentInput}
+            onChange={(e) => updateRentInput("min", e.target.value)}
           />
         </div>
         <div className="space-y-2">
@@ -236,12 +311,8 @@ export function ListingFiltersPanel({ filters, onChange }: ListingFiltersProps) 
           <Input
             type="number"
             placeholder="50000"
-            value={filters.maxRent ?? ""}
-            onChange={(e) =>
-              update({
-                maxRent: e.target.value ? Number(e.target.value) : undefined,
-              })
-            }
+            value={maxRentInput}
+            onChange={(e) => updateRentInput("max", e.target.value)}
           />
         </div>
       </div>

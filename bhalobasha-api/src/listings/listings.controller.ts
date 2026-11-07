@@ -17,6 +17,7 @@ import { CreateListingDto } from "./dto/create-listing.dto";
 import { UpdateListingDto } from "./dto/update-listing.dto";
 import { FilterListingDto } from "./dto/filter-listing.dto";
 import { AddPhotosDto } from "./dto/add-photos.dto";
+import { RejectListingDto } from "./dto/reject-listing.dto";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../common/guards/roles.guard";
 import { Roles } from "../common/decorators/roles.decorator";
@@ -36,10 +37,74 @@ export class ListingsController {
     return this.listingsService.findAll(filters);
   }
 
+  @Get("mine")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "List the current user's listings" })
+  findMine(@CurrentUser() user: JwtPayload) {
+    return this.listingsService.findMyListings(user.sub);
+  }
+
+  @Get("mine/:id")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "Get one of the current user's listings" })
+  findMyListing(
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.listingsService.findMyListing(
+      id,
+      user.sub,
+      user.role as UserRole,
+    );
+  }
+
+  @Get("admin/pending")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: "List pending listings for moderation" })
+  findPending() {
+    return this.listingsService.findPendingListings();
+  }
+
+  @Patch("admin/:id/approve")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: "Approve a pending listing" })
+  approve(@Param("id", ParseUUIDPipe) id: string) {
+    return this.listingsService.approveListing(id);
+  }
+
+  @Patch("admin/:id/reject")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: "Reject a pending listing" })
+  reject(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: RejectListingDto,
+  ) {
+    return this.listingsService.rejectListing(id, dto.reason);
+  }
+
   @Get(":id")
   @ApiOperation({ summary: "Get a single listing by ID" })
   findOne(@Param("id", ParseUUIDPipe) id: string) {
     return this.listingsService.findOne(id);
+  }
+
+  @Get(":id/contact")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "Get listing contact details (active subscription required)" })
+  getContact(
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.listingsService.getContact(id, user.sub);
   }
 
   @Post()

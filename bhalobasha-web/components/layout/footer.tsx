@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { BhalobashaLogo } from "../common/bhalobasha-logo";
 
 export function Footer() {
+  const t = useTranslations("navigation");
+
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
@@ -14,11 +17,11 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="font-semibold">Quick Links</h4>
+            <h4 className="font-semibold">{t("quickLinks")}</h4>
             <ul className="mt-3 space-y-2 text-sm text-muted">
               <li>
                 <Link href="/listings" className="hover:text-primary">
-                  Browse Listings
+                  {t("browseListings")}
                 </Link>
               </li>
               <li>
@@ -26,18 +29,18 @@ export function Footer() {
                   href="/dashboard/listings/new"
                   className="hover:text-primary"
                 >
-                  Post a Listing
+                  {t("postListing")}
                 </Link>
               </li>
               <li>
                 <Link href="/login" className="hover:text-primary">
-                  Login
+                  {t("login")}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold">Contact</h4>
+            <h4 className="font-semibold">{t("contact")}</h4>
             <p className="mt-3 text-sm text-muted">
               Dhaka, Bangladesh
               <br />
@@ -46,7 +49,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-border pt-6 text-center text-sm text-muted">
-          © {new Date().getFullYear()} Bhalobasha. All rights reserved.
+          © {new Date().getFullYear()} Bhalobasha. {t("allRightsReserved")}
         </div>
       </div>
     </footer>

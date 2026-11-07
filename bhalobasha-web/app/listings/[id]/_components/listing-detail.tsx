@@ -24,7 +24,7 @@ export function ListingDetail({ id }: { id: string }) {
   const { data: allListings = [] } = useListings(
     listing
       ? {
-          thanaId: listing.area.thanaId,
+          upazilaId: listing?.area?.upazilaId,
           type: listing.type,
           status: ListingStatus.ACTIVE,
         }
@@ -90,7 +90,7 @@ export function ListingDetail({ id }: { id: string }) {
       <ContactOwnerModal
         open={contactOpen}
         onOpenChange={setContactOpen}
-        contactPhone={listing.contactPhone}
+        listingId={listing.id}
         listingTitle={listing.title}
         isAuthenticated={isAuthenticated}
       />

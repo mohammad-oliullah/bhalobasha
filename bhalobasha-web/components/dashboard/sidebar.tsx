@@ -2,17 +2,34 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ShieldCheck } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { useSavedSearches } from "@/lib/hooks/use-saved-searches";
+import { UserRole } from "@/types";
 import { navItems } from "./nav-items";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const { data: savedSearches = [] } = useSavedSearches();
+  const items =
+    user?.role === UserRole.ADMIN
+      ? [
+          ...navItems,
+          {
+            href: "/dashboard/admin/moderation",
+            label: "Moderation",
+            icon: ShieldCheck,
+          },
+        ]
+      : navItems;
 
   return (
     <aside className="lg:w-56">
       <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:gap-1">
-        {navItems.map((item) => {
+        {items.map((item) => {
           const Icon = item.icon;
 
           const active = pathname === item.href;
@@ -30,6 +47,20 @@ export default function DashboardSidebar() {
             >
               <Icon className="h-4 w-4" />
               {item.label}
+              {item.href === "/dashboard/saved-searches" &&
+                savedSearches.length > 0 && (
+                  <span
+                    className={cn(
+                      "ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-semibold",
+                      active
+                        ? "bg-primary-foreground/20 text-primary-foreground"
+                        : "bg-primary-light text-primary",
+                    )}
+                    aria-label={`${savedSearches.length} saved searches`}
+                  >
+                    {savedSearches.length}
+                  </span>
+                )}
             </Link>
           );
         })}

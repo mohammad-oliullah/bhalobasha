@@ -1,0 +1,35 @@
+{
+  "navigation": {
+    "browse": "ব্রাউজ",
+    "dashboard": "ড্যাশবোর্ড",
+    "login": "লগইন",
+    "logout": "লগআউট",
+    "quickLinks": "দ্রুত লিঙ্ক",
+    "browseListings": "লিস্টিং ব্রাউজ করুন",
+    "postListing": "লিস্টিং পোস্ট করুন",
+    "contact": "যোগাযোগ",
+    "allRightsReserved": "সর্বস্বত্ব সংরক্ষিত।"
+  },
+  "home": {
+    "heroTitle": "আপনার পারফেক্ট বাসা খুঁজুন",
+    "heroSubtitle": "বাংলাদেশের জন্য আপনার নিখুঁত আবাসন খুঁজুন — ফ্ল্যাট, রুম, সাবলেট ও বাচ্চাদের থাকার জায়গা",
+    "searchHomes": "বাসা খুঁজুন",
+    "division": "বিভাগ",
+    "district": "জেলা",
+    "upazila": "উপজেলা",
+    "type": "ধরন",
+    "minRent": "সর্বনিম্ন ভাড়া",
+    "maxRent": "সর্বোচ্চ ভাড়া",
+    "selectDivision": "বিভাগ নির্বাচন করুন",
+    "selectDistrict": "জেলা নির্বাচন করুন",
+    "selectUpazila": "উপজেলা নির্বাচন করুন",
+    "selectType": "যেকোনো ধরন",
+    "listings": "লিস্টিং",
+    "areas": "এলাকা",
+    "free": "ফ্রি",
+    "brokerFree": "ব্রোকার ছাড়া",
+    "haveProperty": "ভাড়া দেওয়ার জন্য আপনার সম্পত্তি আছে?",
+    "listYourProperty": "আপনার ফ্ল্যাট, রুম বা মেস বিনামূল্যে তালিকাভুক্ত করুন",
+    "postListingAction": "লিস্টিং পোস্ট করুন"
+  }
+}

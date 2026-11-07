@@ -9,7 +9,14 @@ import { SendOtpPayload, VerifyOtpPayload } from "@/types";
 
 export function useAuth() {
   const router = useRouter();
-  const { user, isAuthenticated, setAuth, clearAuth, setUser } = useAuthStore();
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    setAuth,
+    clearAuth,
+    setUser,
+  } = useAuthStore();
 
   const sendOtpMutation = useMutation({
     mutationFn: (payload: SendOtpPayload) => sendOtp(payload),
@@ -32,6 +39,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated,
+    isLoading,
     setAuth,
     setUser,
     logout,
