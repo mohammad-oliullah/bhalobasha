@@ -19,7 +19,7 @@ A full-stack, broker-free property rental platform built for Bangladesh — solv
 
 The live app has instant one-click demo login — no email or OTP required.
 
-Visit the **[Login page](https://bhalobasha.vercel.app/login)** and select the **🎯 Demo** tab.
+Visit the **[Login page](https://bhalobasha-plum.vercel.app/login)** and select the **🎯 Demo** tab.
 
 | Role          | What you can explore                                                                                                        |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------- |
